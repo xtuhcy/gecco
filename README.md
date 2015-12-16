@@ -30,15 +30,14 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 		.run();
 	}
 ###配置需要渲染的SpiderBean
-```java
 	@Gecco(matchUrl="http://list.jd.com/list.html?cat={cat}&delivery={delivery}&page={page}&stock={stock}&JL={JL}", pipelines="consolePipeline")
 	public class JD implements SpiderBean {
 		private static final long serialVersionUID = 4369792078959596706L;
-
+		
 		@Bean
 		@HtmlField(cssPath="#plist .gl-item")
 		private List<JDList> details;
-	
+		
 		@Attr("data-sku")
 		@HtmlField(cssPath="#plist .gl-item .j-sku-item")
 		private List<String> codes;
@@ -63,7 +62,7 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 		public List<JDList> getDetails() {
 			return details;
 		}
-	
+		
 		public void setDetails(List<JDList> details) {
 			this.details = details;
 		}
@@ -71,54 +70,53 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 		public List<String> getCodes() {
 			return codes;
 		}
-	
+		
 		public void setCodes(List<String> codes) {
 			this.codes = codes;
 		}
-	
+		
 		public List<JDPrice> getPrices() {
 			return prices;
 		}
-	
+		
 		public void setPrices(List<JDPrice> prices) {
 			this.prices = prices;
 		}
-	
+		
 		public ArrayList<String> getDetailUrls() {
 			return detailUrls;
 		}
-	
+		
 		public void setDetailUrls(ArrayList<String> detailUrls) {
 			this.detailUrls = detailUrls;
 		}
-	
+		
 		public int getCurrPage() {
 			return currPage;
 		}
-	
+		
 		public void setCurrPage(int currPage) {
 			this.currPage = currPage;
 		}
-	
+		
 		public int getTotalPage() {
 			return totalPage;
 		}
-	
+		
 		public void setTotalPage(int totalPage) {
 			this.totalPage = totalPage;
 		}
-	
+		
 		public String getNextUrl() {
 			return nextUrl;
 		}
-	
+		
 		public void setNextUrl(String nextUrl) {
 			this.nextUrl = nextUrl;
 		}
-	
+		
 		@Override
 		public String toString() {
 			return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
 		}
 	}
-```
