@@ -30,69 +30,111 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 		.run();
 	}
 ###配置需要渲染的SpiderBean
+	/**
+	 * 抓取京东的某个商品列表页
+	 * 
+	 * @author memory
+	 *
+	 */
 	@Gecco(matchUrl="http://list.jd.com/list.html?cat={cat}&delivery={delivery}&page={page}&stock={stock}&JL={JL}", pipelines="consolePipeline")
 	public class JD implements SpiderBean {
 		private static final long serialVersionUID = 4369792078959596706L;
+		/**
+		 * 抓取列表项的详细内容，包括titile，价格，详情页地址等
+		 */
 		@Bean
 		@HtmlField(cssPath="#plist .gl-item")
 		private List<JDList> details;
+		/**
+		 * 抓取所有商品的代码
+		 */
 		@Attr("data-sku")
 		@HtmlField(cssPath="#plist .gl-item .j-sku-item")
 		private List<String> codes;
+		/**
+		 * 利用制定的属性渲染器下载各个商品的价格
+		 */
 		@FieldRenderName("jdPricesFieldRender")
 		private List<JDPrice> prices;
-		@Href(click=false)
+		/**
+		 * 获取所有商品的详情页地址,click为ture表示链接会被放入Scheduler继续抓取
+		 */
+		@Href(click=true)
 		@HtmlField(cssPath="#plist .gl-item .p-name > a")
 		private ArrayList<String> detailUrls;
+		/**
+		 * 活动商品列表的当前页
+		 */
 		@HtmlField(cssPath="#J_topPage > span > b")
 		private int currPage;
+		/**
+		 * 获得商品列表的总页数
+		 */
 		@HtmlField(cssPath="#J_topPage > span > i")
 		private int totalPage;
+		/**
+		 * 获得列表页的下一页的请求地址，并放入Scheduler继续抓取
+		 */
 		@Href(click=true)
 		@HtmlField(cssPath="#J_topPage > a.fp-next")
 		private String nextUrl;
+		
 		public List<JDList> getDetails() {
 			return details;
 		}
+	
 		public void setDetails(List<JDList> details) {
 			this.details = details;
 		}
+		
 		public List<String> getCodes() {
 			return codes;
 		}
+	
 		public void setCodes(List<String> codes) {
 			this.codes = codes;
 		}
+	
 		public List<JDPrice> getPrices() {
 			return prices;
 		}
+	
 		public void setPrices(List<JDPrice> prices) {
 			this.prices = prices;
 		}
+	
 		public ArrayList<String> getDetailUrls() {
 			return detailUrls;
 		}
+	
 		public void setDetailUrls(ArrayList<String> detailUrls) {
 			this.detailUrls = detailUrls;
 		}
+	
 		public int getCurrPage() {
 			return currPage;
 		}
+	
 		public void setCurrPage(int currPage) {
 			this.currPage = currPage;
 		}
+	
 		public int getTotalPage() {
 			return totalPage;
 		}
+	
 		public void setTotalPage(int totalPage) {
 			this.totalPage = totalPage;
 		}
+	
 		public String getNextUrl() {
 			return nextUrl;
 		}
+	
 		public void setNextUrl(String nextUrl) {
 			this.nextUrl = nextUrl;
 		}
+	
 		@Override
 		public String toString() {
 			return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
