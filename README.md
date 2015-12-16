@@ -32,9 +32,8 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 ###配置需要渲染的SpiderBean
 	@Gecco(matchUrl="http://list.jd.com/list.html?cat={cat}&delivery={delivery}&page={page}&stock={stock}&JL={JL}", pipelines="consolePipeline")
 	public class JD implements SpiderBean {
-	
 		private static final long serialVersionUID = 4369792078959596706L;
-		
+
 		@Bean
 		@HtmlField(cssPath="#plist .gl-item")
 		private List<JDList> details;
