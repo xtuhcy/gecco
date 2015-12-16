@@ -30,6 +30,7 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 		.run();
 	}
 ###配置需要渲染的SpiderBean
+```java
 	@Gecco(matchUrl="http://list.jd.com/list.html?cat={cat}&delivery={delivery}&page={page}&stock={stock}&JL={JL}", pipelines="consolePipeline")
 	public class JD implements SpiderBean {
 		private static final long serialVersionUID = 4369792078959596706L;
@@ -120,3 +121,4 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 			return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
 		}
 	}
+```
