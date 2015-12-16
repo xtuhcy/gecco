@@ -31,7 +31,7 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 	}
 ###配置需要渲染的SpiderBean
 	/**
-	 * 抓取京东的某个商品列表页
+	 * 抓取京东的某个商品列表页,将渲染后的bean通过consolePipeline输出到控制台
 	 * 
 	 * @author memory
 	 *
