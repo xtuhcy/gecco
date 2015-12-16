@@ -36,84 +36,63 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 		@Bean
 		@HtmlField(cssPath="#plist .gl-item")
 		private List<JDList> details;
-		
 		@Attr("data-sku")
 		@HtmlField(cssPath="#plist .gl-item .j-sku-item")
 		private List<String> codes;
-		
 		@FieldRenderName("jdPricesFieldRender")
 		private List<JDPrice> prices;
-		
 		@Href(click=false)
 		@HtmlField(cssPath="#plist .gl-item .p-name > a")
 		private ArrayList<String> detailUrls;
-		
 		@HtmlField(cssPath="#J_topPage > span > b")
 		private int currPage;
-		
 		@HtmlField(cssPath="#J_topPage > span > i")
 		private int totalPage;
-		
 		@Href(click=true)
 		@HtmlField(cssPath="#J_topPage > a.fp-next")
 		private String nextUrl;
-		
 		public List<JDList> getDetails() {
 			return details;
 		}
-		
 		public void setDetails(List<JDList> details) {
 			this.details = details;
 		}
-		
 		public List<String> getCodes() {
 			return codes;
 		}
-		
 		public void setCodes(List<String> codes) {
 			this.codes = codes;
 		}
-		
 		public List<JDPrice> getPrices() {
 			return prices;
 		}
-		
 		public void setPrices(List<JDPrice> prices) {
 			this.prices = prices;
 		}
-		
 		public ArrayList<String> getDetailUrls() {
 			return detailUrls;
 		}
-		
 		public void setDetailUrls(ArrayList<String> detailUrls) {
 			this.detailUrls = detailUrls;
 		}
-		
 		public int getCurrPage() {
 			return currPage;
 		}
-		
 		public void setCurrPage(int currPage) {
 			this.currPage = currPage;
 		}
-		
 		public int getTotalPage() {
 			return totalPage;
 		}
-		
 		public void setTotalPage(int totalPage) {
 			this.totalPage = totalPage;
 		}
-		
 		public String getNextUrl() {
 			return nextUrl;
 		}
-		
 		public void setNextUrl(String nextUrl) {
 			this.nextUrl = nextUrl;
 		}
-		
 		@Override
 		public String toString() {
 			return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
