@@ -1,7 +1,7 @@
 # GECCO(绝对易用和轻量化的网络爬虫)
 ####初衷：
 现在开发应用已经离不开爬虫，网络信息浩如烟海，对互联网的信息加以利用是如今所有应用程序都必须要掌握的技术。了解过现在的一些爬虫软件，python语言编写的爬虫 框架scrapy得到了较为广泛的应用。gecco的设计和架构受到了scrapy一些启发，结合java语言的特点，形成了如下软件框架。
-##架构图
+##结构图
 >![架构图](https://raw.githubusercontent.com/xtuhcy/gecco/master/doc/%E6%9E%B6%E6%9E%84%E5%9B%BE.jpg)
 ##基本构件介绍
 ###GeccoEngine
@@ -33,7 +33,6 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 	@Gecco(matchUrl="http://list.jd.com/list.html?cat={cat}&delivery={delivery}&page={page}&stock={stock}&JL={JL}", pipelines="consolePipeline")
 	public class JD implements SpiderBean {
 		private static final long serialVersionUID = 4369792078959596706L;
-		
 		@Bean
 		@HtmlField(cssPath="#plist .gl-item")
 		private List<JDList> details;
