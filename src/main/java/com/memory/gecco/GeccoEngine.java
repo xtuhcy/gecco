@@ -14,6 +14,13 @@ import com.memory.gecco.scheduler.Scheduler;
 import com.memory.gecco.spider.Spider;
 import com.memory.gecco.spider.SpiderBeanFactory;
 
+/**
+ * 爬虫引擎，每个爬虫引擎最好独立进程，在分布式爬虫场景下，可以单独分配一台爬虫服务器。引擎包括Scheduler、Downloader、Spider、
+ * SpiderBeanFactory4个主要模块
+ * 
+ * @author huchengyi
+ *
+ */
 public class GeccoEngine {
 	
 	private HttpRequest startRequest;

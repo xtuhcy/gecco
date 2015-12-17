@@ -5,6 +5,12 @@ import com.memory.gecco.downloader.Downloader;
 import com.memory.gecco.scheduler.Scheduler;
 import com.memory.gecco.spider.render.Render;
 
+/**
+ * 爬虫引擎线程本地变量， 每个Spider线程均持有当前爬虫引擎对象
+ * 
+ * @author huchengyi
+ *
+ */
 public class GeccoEngineThreadLocal {
 	
 	private static ThreadLocal<GeccoEngine> engineThreadLocal = new ThreadLocal<GeccoEngine>();

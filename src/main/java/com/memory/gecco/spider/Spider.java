@@ -12,9 +12,16 @@ import com.memory.gecco.downloader.BeforeDownload;
 import com.memory.gecco.pipeline.Pipeline;
 import com.memory.gecco.request.HttpRequest;
 import com.memory.gecco.response.HttpResponse;
-import com.memory.gecco.spider.render.HtmlParser;
 import com.memory.gecco.spider.render.Render;
+import com.memory.gecco.spider.render.html.HtmlParser;
 
+/**
+ * 一个爬虫引擎可以包含多个爬虫，每个爬虫可以认为是一个单独线程，爬虫会从Scheduler中获取需要待抓取的请求。
+ * 爬虫的任务就是下载网页并渲染相应的JavaBean。
+ * 
+ * @author huchengyi
+ *
+ */
 public class Spider implements Runnable {
 	
 	private static Log log = LogFactory.getLog(HtmlParser.class);

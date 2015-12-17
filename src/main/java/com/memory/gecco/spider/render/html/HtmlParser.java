@@ -1,4 +1,4 @@
-package com.memory.gecco.spider.render;
+package com.memory.gecco.spider.render.html;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -22,6 +22,7 @@ import com.memory.gecco.request.HttpRequest;
 import com.memory.gecco.response.HttpResponse;
 import com.memory.gecco.spider.SpiderBean;
 import com.memory.gecco.spider.conversion.Conversion;
+import com.memory.gecco.spider.render.Render;
 
 public class HtmlParser {
 	

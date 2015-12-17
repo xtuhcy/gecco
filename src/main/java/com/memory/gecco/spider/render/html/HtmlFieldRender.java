@@ -15,7 +15,6 @@ import com.memory.gecco.annotation.HtmlField;
 import com.memory.gecco.request.HttpRequest;
 import com.memory.gecco.response.HttpResponse;
 import com.memory.gecco.spider.SpiderBean;
-import com.memory.gecco.spider.render.HtmlParser;
 import com.memory.gecco.utils.ReflectUtils;
 
 public class HtmlFieldRender implements FieldRender {
