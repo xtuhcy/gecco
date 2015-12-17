@@ -33,7 +33,7 @@ public class GeccoEngine {
 	
 	private List<Spider> spiders;
 	
-	private String classPath;
+	private String classpath;
 	
 	private String userAgent;
 	
@@ -81,8 +81,8 @@ public class GeccoEngine {
 		return this;
 	}
 	
-	public GeccoEngine classPath(String classPath) {
-		this.classPath = classPath;
+	public GeccoEngine classpath(String classpath) {
+		this.classpath = classpath;
 		return this;
 	}
 	
@@ -95,10 +95,10 @@ public class GeccoEngine {
 			downloader.userAgent(userAgent);
 		}
 		if(spiderBeanFactory == null) {
-			if(StringUtils.isEmpty(classPath)) {
-				classPath = "";
+			if(StringUtils.isEmpty(classpath)) {
+				classpath = "";
 			}
-			spiderBeanFactory = new SpiderBeanFactory(classPath);
+			spiderBeanFactory = new SpiderBeanFactory(classpath);
 		}
 		if(threadCount <= 0) {
 			threadCount = 1;

@@ -20,10 +20,11 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 ###启动爬虫引擎
 	public static void main(String[] args) {
 		GeccoEngine.create()
+		.classPath("com.memory.gecco.demo")
 		//爬虫userAgent设置
 		.userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36")
 		//开始抓取的页面地址
-		.start("http://list.jd.com/list.html?cat=737%2C794%2C798&delivery=1&page=2&stock=1&JL=4_7_0")
+		.start("https://github.com/xtuhcy/gecco")
 		//开启几个爬虫线程
 		.thread(1)
 		//单个爬虫每次抓取完一个请求后的间隔时间
@@ -31,116 +32,87 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 		.run();
 	}
 ###配置需要渲染的SpiderBean
-	/**
-	 * 抓取京东的某个商品列表页,将渲染后的bean通过consolePipeline输出到控制台
-	 * 
-	 * @author memory
-	 *
-	 */
-	@Gecco(matchUrl="http://list.jd.com/list.html?cat={cat}&delivery={delivery}&page={page}&stock={stock}&JL={JL}", pipelines="consolePipeline")
-	public class JD implements SpiderBean {
-		private static final long serialVersionUID = 4369792078959596706L;
-		/**
-		 * 抓取列表项的详细内容，包括titile，价格，详情页地址等
-		 */
-		@Bean
-		@HtmlField(cssPath="#plist .gl-item")
-		private List<JDList> details;
-		/**
-		 * 抓取所有商品的代码
-		 */
-		@Attr("data-sku")
-		@HtmlField(cssPath="#plist .gl-item .j-sku-item")
-		private List<String> codes;
-		/**
-		 * 利用制定的属性渲染器下载各个商品的价格
-		 */
-		@FieldRenderName("jdPricesFieldRender")
-		private List<JDPrice> prices;
-		/**
-		 * 获取所有商品的详情页地址,click为ture表示链接会被放入Scheduler继续抓取
-		 */
-		@Href(click=true)
-		@HtmlField(cssPath="#plist .gl-item .p-name > a")
-		private ArrayList<String> detailUrls;
-		/**
-		 * 活动商品列表的当前页
-		 */
-		@HtmlField(cssPath="#J_topPage > span > b")
-		private int currPage;
-		/**
-		 * 获得商品列表的总页数
-		 */
-		@HtmlField(cssPath="#J_topPage > span > i")
-		private int totalPage;
-		/**
-		 * 获得列表页的下一页的请求地址，并放入Scheduler继续抓取
-		 */
-		@Href(click=true)
-		@HtmlField(cssPath="#J_topPage > a.fp-next")
-		private String nextUrl;
+
+	@Gecco(matchUrl="https://github.com/{user}/{project}", pipelines="consolePipeline")
+	public class MyGithub implements SpiderBean {
+	
+		private static final long serialVersionUID = -7127412585200687225L;
 		
-		public List<JDList> getDetails() {
-			return details;
-		}
-	
-		public void setDetails(List<JDList> details) {
-			this.details = details;
-		}
+		@RequestParameter("user")
+		private String user;
 		
-		public List<String> getCodes() {
-			return codes;
+		@RequestParameter("project")
+		private String project;
+		
+		@HtmlField(cssPath=".repository-meta-content")
+		private String title;
+		
+		@Text
+		@HtmlField(cssPath=".pagehead-actions li:nth-child(2) .social-count")
+		private int star;
+		
+		@Text
+		@HtmlField(cssPath=".pagehead-actions li:nth-child(3) .social-count")
+		private int fork;
+		
+		@HtmlField(cssPath=".entry-content")
+		private String readme;
+	
+		public String getReadme() {
+			return readme;
 		}
 	
-		public void setCodes(List<String> codes) {
-			this.codes = codes;
+		public void setReadme(String readme) {
+			this.readme = readme;
 		}
 	
-		public List<JDPrice> getPrices() {
-			return prices;
+		public String getUser() {
+			return user;
 		}
 	
-		public void setPrices(List<JDPrice> prices) {
-			this.prices = prices;
+		public void setUser(String user) {
+			this.user = user;
 		}
 	
-		public ArrayList<String> getDetailUrls() {
-			return detailUrls;
+		public String getProject() {
+			return project;
 		}
 	
-		public void setDetailUrls(ArrayList<String> detailUrls) {
-			this.detailUrls = detailUrls;
+		public void setProject(String project) {
+			this.project = project;
 		}
 	
-		public int getCurrPage() {
-			return currPage;
+		public String getTitle() {
+			return title;
 		}
 	
-		public void setCurrPage(int currPage) {
-			this.currPage = currPage;
+		public void setTitle(String title) {
+			this.title = title;
 		}
 	
-		public int getTotalPage() {
-			return totalPage;
+		public int getStar() {
+			return star;
 		}
 	
-		public void setTotalPage(int totalPage) {
-			this.totalPage = totalPage;
+		public void setStar(int star) {
+			this.star = star;
 		}
 	
-		public String getNextUrl() {
-			return nextUrl;
+		public int getFork() {
+			return fork;
 		}
 	
-		public void setNextUrl(String nextUrl) {
-			this.nextUrl = nextUrl;
+		public void setFork(int fork) {
+			this.fork = fork;
 		}
 	
 		@Override
 		public String toString() {
 			return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
 		}
+		
 	}
+
 ##HTML渲染器注解说明
 ###@Gecco
 >定义一个SpiderBean必须有的注解，告诉爬虫引擎什么样的url转换成该java bean，使用什么渲染器渲染，java bean渲染完成后传递给哪些管道过滤器继续处理
@@ -171,11 +143,13 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 
 - value:表示属性名称
 
-###@Html
->获取html元素的整个节点内容。属性必须是String类型。
-
 ###@Text
->默认类型，表示获取html元素的inner text。属性支持java基本类型的自动转换。
+>获取元素的text或者owntext。属性支持java基本类型的自动转换。
+
+- own:是否获取owntext，默认为是
+
+###@Html
+>默认类型，可以不写，获取html元素的整个节点内容。属性必须是String类型。
 
 ###@Ajax
 >html页面上很多元素是通过ajax请求获取，gecco爬虫支持ajax请求。ajax请求会在html的基本元素渲染完成后调用，可以通过[value]获取当前已经渲染完成的属性值，通过{value}方式获取request的属性值。
@@ -186,3 +160,6 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 >属性的渲染有时会较复杂，不能用上述注解描述，gecco爬虫支持属性渲染的自定义方式，自定义渲染器实现CustomFieldRender接口，并定义属性渲染器名称。
 
 - value：使用的自定义属性渲染器的名称
+
+##JSON渲染器注解说明
+>json渲染器直接采用的[fastjson](https://github.com/alibaba/fastjson)。注解方式请查看fastjson的相关文档

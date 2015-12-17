@@ -18,6 +18,7 @@ import com.memory.gecco.annotation.Href;
 import com.memory.gecco.annotation.Html;
 import com.memory.gecco.annotation.Image;
 import com.memory.gecco.annotation.RenderType;
+import com.memory.gecco.annotation.Text;
 import com.memory.gecco.request.HttpRequest;
 import com.memory.gecco.response.HttpResponse;
 import com.memory.gecco.spider.SpiderBean;
@@ -46,8 +47,10 @@ public class HtmlParser {
 	}
 	
 	public Object $basic(String selector, Field field) {
-		if(field.isAnnotationPresent(Html.class)) {//@Html
-			return $html(selector);
+		if(field.isAnnotationPresent(Text.class)) {//@Text
+			Text text = field.getAnnotation(Text.class);
+			String value = $text(selector, text.own());
+			return Conversion.getValue(field.getType(), value);
 		} else if(field.isAnnotationPresent(Image.class)) {//@Image
 			Image image = field.getAnnotation(Image.class);
 			return $image(selector, image.value());
@@ -58,9 +61,8 @@ public class HtmlParser {
 			Attr attr = field.getAnnotation(Attr.class);
 			String name = attr.value();
 			return $attr(selector, name);
-		} else {//@Text
-			String value = $text(selector);
-			return Conversion.getValue(field.getType(), value);
+		} else {//@Html
+			return $html(selector);
 		}
 	}
 	
@@ -68,20 +70,21 @@ public class HtmlParser {
 		List<Object> list = new ArrayList<Object>();
 		Elements els = $(selector);
 		for(Element el : els) {
-			if(field.isAnnotationPresent(Html.class)) {//@Html
-				list.add(el.html());
+			if(field.isAnnotationPresent(Text.class)) {//@Text
+				Text text = field.getAnnotation(Text.class);
+				list.add(Conversion.getValue(field.getType(), $text(el, text.own())));
 			} else if(field.isAnnotationPresent(Image.class)) {//@Image
 				Image image = field.getAnnotation(Image.class);
 				list.add($image(el, image.value()));
 			} else if(field.isAnnotationPresent(Href.class)) {//@Href
 				Href href = field.getAnnotation(Href.class);
 				list.add($href(el, href.value()));
-			} else if(field.isAnnotationPresent(Attr.class)) {
+			} else if(field.isAnnotationPresent(Attr.class)) {//@Attr
 				Attr attr = field.getAnnotation(Attr.class);
 				String name = attr.value();
 				list.add(Conversion.getValue(field.getType(), $attr(el, name)));
-			} else {//@Text
-				list.add(Conversion.getValue(field.getType(), el.ownText()));
+			} else {//@Html
+				list.add(el.html());
 			}
 		}
 		return list;
@@ -141,10 +144,21 @@ public class HtmlParser {
 		return null;
 	}
 	
-	public String $text(String selector) {
-		Elements elements = $(selector);
-		if(elements != null && elements.size() > 0) {
-			return elements.first().ownText();
+	public String $text(Element element, boolean own) {
+		if(element == null) {
+			return null;
+		}
+		if(own) {
+			return element.ownText();
+		} else {
+			return element.text();
+		}
+	}
+	
+	public String $text(String selector, boolean own) {
+		Element element = $element(selector);
+		if(element != null) {
+			return $text(element, own);
 		}
 		return null;
 	}
