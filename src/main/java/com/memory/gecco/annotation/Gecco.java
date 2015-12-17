@@ -12,7 +12,8 @@ import java.lang.annotation.Target;
 public @interface Gecco {
 
 	/**
-	 * 匹配的url正则表达式
+	 * 摒弃正则表达式的匹配方式，采用更容易理解的{value}方式
+	 * 如：https://github.com/{user}/{project}
 	 * 
 	 * @return
 	 */
@@ -25,5 +26,10 @@ public @interface Gecco {
 	 */
 	RenderType render() default RenderType.HTML;
 	
+	/**
+	 * bean渲染完成后，后续的管道过滤器
+	 * 
+	 * @return
+	 */
 	String[] pipelines() default "";
 }

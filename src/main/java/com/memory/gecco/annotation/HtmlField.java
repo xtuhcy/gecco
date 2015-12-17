@@ -11,5 +11,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HtmlField {
 
+	/**
+	 * query风格的元素选择器，使用jsoup实现。jsoup在分析html方面提供了极大的便利
+	 * 
+	 * @return
+	 */
 	String cssPath();
 }
