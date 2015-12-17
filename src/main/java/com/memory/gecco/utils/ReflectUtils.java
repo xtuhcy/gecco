@@ -4,12 +4,9 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.List;
 import java.util.Set;
 
 import org.reflections.ReflectionUtils;
-
-import com.memory.gecco.spider.SpiderBean;
 
 /**
  * 泛型，Type的相关知识

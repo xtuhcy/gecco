@@ -15,12 +15,15 @@
 ###SpiderBeanFactory
 >SpiderBean是爬虫渲染的JavaBean的统一接口类，所有Bean均继承该接口。SpiderBeanFactroy会根据请求的url地址，匹配相应的SpiderBean，同时生成该SpiderBean的上下文SpiderBeanContext.
 SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON两种Bean的渲染方式）、下载前处理类、下载后处理类以及渲染完成后对SpiderBean的后续处理Pipeline。
+
+##Download
+maven download coming soon
+
 ##QuikStart
->maven下载近期放出
 ###启动爬虫引擎
 	public static void main(String[] args) {
 		GeccoEngine.create()
-		.classPath("com.memory.gecco.demo")
+		.classpath("com.memory.gecco.demo")
 		//爬虫userAgent设置
 		.userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36")
 		//开始抓取的页面地址
@@ -105,12 +108,6 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 		public void setFork(int fork) {
 			this.fork = fork;
 		}
-	
-		@Override
-		public String toString() {
-			return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
-		}
-		
 	}
 
 ##HTML渲染器注解说明
@@ -163,5 +160,7 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 
 ##JSON渲染器注解说明
 >json渲染器直接采用的[fastjson](https://github.com/alibaba/fastjson)。注解方式请查看fastjson的[相关文档](https://github.com/alibaba/fastjson/wiki/JSONField)
+
 ##Ajax例子
+
 ##自定义属性渲染器例子
