@@ -20,6 +20,7 @@ public class MyGithub implements SpiderBean {
 	@RequestParameter("project")
 	private String project;
 	
+	@Text
 	@HtmlField(cssPath=".repository-meta-content")
 	private String title;
 	
@@ -82,9 +83,4 @@ public class MyGithub implements SpiderBean {
 		this.fork = fork;
 	}
 
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
-	}
-	
 }

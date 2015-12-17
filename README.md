@@ -154,7 +154,7 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 ###@Ajax
 >html页面上很多元素是通过ajax请求获取，gecco爬虫支持ajax请求。ajax请求会在html的基本元素渲染完成后调用，可以通过[value]获取当前已经渲染完成的属性值，通过{value}方式获取request的属性值。
 
-- url:ajax请求地址，如：http://p.3.cn/prices/mgets?skuIds=J\_[code]或者http://p.3.cn/prices/mgets?skuIds=J\_{code}
+- url:ajax请求地址，如：http://p.3.cn/prices/mgets?skuIds=J_[code]或者http://p.3.cn/prices/mgets?skuIds=J_{code}
 
 ###@FieldRenderName
 >属性的渲染有时会较复杂，不能用上述注解描述，gecco爬虫支持属性渲染的自定义方式，自定义渲染器实现CustomFieldRender接口，并定义属性渲染器名称。
@@ -162,4 +162,6 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 - value：使用的自定义属性渲染器的名称
 
 ##JSON渲染器注解说明
->json渲染器直接采用的[fastjson](https://github.com/alibaba/fastjson)。注解方式请查看fastjson的相关文档
+>json渲染器直接采用的[fastjson](https://github.com/alibaba/fastjson)。注解方式请查看fastjson的[相关文档](https://github.com/alibaba/fastjson/wiki/JSONField)
+##Ajax例子
+##自定义属性渲染器例子
