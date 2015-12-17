@@ -9,6 +9,12 @@ import com.memory.gecco.request.HttpRequest;
 import com.memory.gecco.response.HttpResponse;
 import com.memory.gecco.spider.SpiderBean;
 
+/**
+ * 将下载下来的json映射到bean中
+ * 
+ * @author huchengyi
+ *
+ */
 public class JsonRender implements Render {
 
 	@Override
