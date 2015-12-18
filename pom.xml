@@ -87,13 +87,6 @@
 						</archive>
 					</configuration>
 				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<configuration>
-						<encoding>UTF-8</encoding>
-					</configuration>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -104,16 +97,12 @@
 		</snapshotRepository>
 		<repository>
 			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
 		</repository>
 	</distributionManagement>
 	<scm>
-		<connection>
-         scm:git:https://github.com/xtuhcy/gecco.git
-      </connection>
-		<developerConnection>
-         scm:git:https://github.com/xtuhcy/gecco.git
-      </developerConnection>
+		<connection>scm:git:https://github.com/xtuhcy/gecco.git</connection>
+		<developerConnection>scm:git:https://github.com/xtuhcy/gecco.git</developerConnection>
 		<url>https://github.com/xtuhcy/gecco</url>
 		<tag>v1.0.0</tag>
 	</scm>
