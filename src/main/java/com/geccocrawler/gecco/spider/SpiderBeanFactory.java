@@ -15,6 +15,7 @@ import com.geccocrawler.gecco.pipeline.Pipeline;
 import com.geccocrawler.gecco.pipeline.PipelineFactory;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.spider.render.RenderFactory;
+import com.geccocrawler.gecco.utils.ReflectUtils;
 import com.geccocrawler.gecco.utils.UrlMatcher;
 
 /**
@@ -89,9 +90,9 @@ public class SpiderBeanFactory {
 		String spiderBeanName = spiderBeanClass.getName();
 		downloadContext(context, spiderBeanName);
 
-		Gecco gecco = spiderBeanClass.getAnnotation(Gecco.class);
-		renderContext(context, gecco.render());
+		renderContext(context, spiderBeanClass);
 		
+		Gecco gecco = spiderBeanClass.getAnnotation(Gecco.class);
 		String[] pipelineNames = gecco.pipelines();
 		pipelineContext(context, pipelineNames);
 		
@@ -103,7 +104,11 @@ public class SpiderBeanFactory {
 		context.setAfterDownload(downloaderAOPFactory.getAfter(spiderName));
 	}
 	
-	private void renderContext(SpiderBeanContext context, RenderType renderType) {
+	private void renderContext(SpiderBeanContext context, Class<?> spiderBeanClass) {
+		RenderType renderType = RenderType.HTML;
+		if(ReflectUtils.haveSuperType(spiderBeanClass, JsonBean.class)) {
+			renderType = RenderType.JSON;
+		}
 		context.setRender(renderFactory.getRender(renderType));
 	}
 	

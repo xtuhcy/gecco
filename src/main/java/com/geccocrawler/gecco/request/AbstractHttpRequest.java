@@ -9,6 +9,8 @@ public abstract class AbstractHttpRequest implements HttpRequest {
 	
 	protected String url;
 	
+	protected String charset;
+	
 	protected Map<String, String> parameters;
 	
 	protected Map<String, String> cookies;
@@ -78,6 +80,16 @@ public abstract class AbstractHttpRequest implements HttpRequest {
 	@Override
 	public Map<String, String> getParameters() {
 		return parameters;
+	}
+
+	@Override
+	public String getCharset() {
+		return charset;
+	}
+
+	@Override
+	public void setCharset(String charset) {
+		this.charset = charset;
 	}
 
 }

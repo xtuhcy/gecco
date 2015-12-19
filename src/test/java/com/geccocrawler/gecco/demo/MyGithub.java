@@ -1,13 +1,14 @@
 package com.geccocrawler.gecco.demo;
 
+import com.geccocrawler.gecco.GeccoEngine;
 import com.geccocrawler.gecco.annotation.Gecco;
 import com.geccocrawler.gecco.annotation.HtmlField;
 import com.geccocrawler.gecco.annotation.RequestParameter;
 import com.geccocrawler.gecco.annotation.Text;
-import com.geccocrawler.gecco.spider.SpiderBean;
+import com.geccocrawler.gecco.spider.HtmlBean;
 
 @Gecco(matchUrl="https://github.com/{user}/{project}", pipelines="consolePipeline")
-public class MyGithub implements SpiderBean {
+public class MyGithub implements HtmlBean {
 
 	private static final long serialVersionUID = -7127412585200687225L;
 	
@@ -78,6 +79,20 @@ public class MyGithub implements SpiderBean {
 
 	public void setFork(int fork) {
 		this.fork = fork;
+	}
+	
+	public static void main(String[] args) {
+		GeccoEngine.create()
+		.classpath("com.geccocrawler.gecco.demo")
+		//爬虫userAgent设置
+		.userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36")
+		//开始抓取的页面地址
+		.start("https://github.com/xtuhcy/gecco")
+		//开启几个爬虫线程
+		.thread(1)
+		//单个爬虫每次抓取完一个请求后的间隔时间
+		.interval(2000)
+		.run();
 	}
 
 }

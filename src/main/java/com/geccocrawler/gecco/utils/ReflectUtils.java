@@ -32,8 +32,8 @@ public class ReflectUtils {
 	/**
 	 * 是否继承某个基类
 	 * 
-	 * @param childClazz
-	 * @param superClazz
+	 * @param childClazz 子类
+	 * @param superClazz 基类
 	 * @return
 	 */
 	public static boolean haveSuperType(Class childClazz, Class superClazz) {

@@ -18,5 +18,9 @@ public interface HttpRequest {
 
 	public void refer(String refer);
 	
+	public String getCharset();
+	
+	public void setCharset(String charset);
+	
 	public HttpRequest subRequest(String url);
 }

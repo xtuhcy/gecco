@@ -7,6 +7,7 @@ import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.mashape.unirest.http.utils.ResponseUtils;
 import com.mashape.unirest.request.HttpRequestWithBody;
 
 public class UnirestDownloader implements Downloader {
@@ -32,14 +33,28 @@ public class UnirestDownloader implements Downloader {
 			} else {
 				response = Unirest.get(request.getUrl()).headers(request.getHeaders()).asString();
 			}
+			String contentType = response.getHeaders().getFirst("Content-Type");
 			HttpResponse resp = new HttpResponse();
-			resp.setContent(response.getBody());
-			resp.setRaw(response.getRawBody());
 			resp.setStatus(response.getStatus());
+			resp.setRaw(response.getRawBody());
+			resp.setContent(response.getBody());
+			resp.setContentType(contentType);
+			resp.setCharset(getCharset(request, contentType));
 			return resp;
 		} catch (UnirestException e) {
 			throw new DownloaderException(e);
 		}
+	}
+	
+	private String getCharset(HttpRequest request, String contentType) {
+		String charset = ResponseUtils.getCharsetFromContentType(contentType);
+		if(charset == null) {
+			charset = request.getCharset();
+		}
+		if(charset == null) {
+			charset = "UTF-8";
+		}
+		return charset;
 	}
 
 	@Override

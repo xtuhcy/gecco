@@ -20,13 +20,6 @@ public @interface Gecco {
 	String matchUrl();
 	
 	/**
-	 * bean渲染类型
-	 * 
-	 * @return
-	 */
-	RenderType render() default RenderType.HTML;
-	
-	/**
 	 * bean渲染完成后，后续的管道过滤器
 	 * 
 	 * @return

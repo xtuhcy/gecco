@@ -1,6 +1,9 @@
 package com.geccocrawler.gecco.response;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import com.google.common.io.CharStreams;
 
 public class HttpResponse {
 	private InputStream raw;
@@ -8,6 +11,8 @@ public class HttpResponse {
 	private String content;
 
 	private String contentType;
+	
+	private String charset;
 
 	private int status;
 	
@@ -28,6 +33,15 @@ public class HttpResponse {
 	public String getContent() {
 		return content;
 	}
+	
+	public String getContent(String charset) {
+		try {
+			return CharStreams.toString(new InputStreamReader(raw, charset));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return content;
+		}
+	}
 
 	public void setContent(String content) {
 		this.content = content;
@@ -47,6 +61,14 @@ public class HttpResponse {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public String getCharset() {
+		return charset;
+	}
+
+	public void setCharset(String charset) {
+		this.charset = charset;
 	}
 
 }
