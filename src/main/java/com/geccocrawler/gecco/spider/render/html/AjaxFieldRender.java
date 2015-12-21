@@ -14,12 +14,19 @@ import com.geccocrawler.gecco.annotation.Ajax;
 import com.geccocrawler.gecco.annotation.RenderType;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
+import com.geccocrawler.gecco.spider.JsonBean;
 import com.geccocrawler.gecco.spider.SpiderBean;
-import com.geccocrawler.gecco.spider.render.JsonRender;
 import com.geccocrawler.gecco.spider.render.Render;
 import com.geccocrawler.gecco.utils.ReflectUtils;
 import com.geccocrawler.gecco.utils.UrlMatcher;
+import com.google.common.base.Preconditions;
 
+/**
+ * 渲染@Ajax属性
+ * 
+ * @author huchengyi
+ *
+ */
 public class AjaxFieldRender implements FieldRender {
 
 	@Override
@@ -35,9 +42,8 @@ public class AjaxFieldRender implements FieldRender {
 	
 	private Object injectAjaxField(HttpRequest request, BeanMap beanMap, Field field) {
 		Class clazz = field.getType();
-		if(!ReflectUtils.haveSuperType(clazz, SpiderBean.class)) {
-			return null;
-		}
+		//ajax的属性类型必须是spiderBean
+		Preconditions.checkArgument(ReflectUtils.haveSuperType(clazz, JsonBean.class), field.getName() + " type must be JsonBean,request is " + request.getUrl());
 		Ajax ajax = field.getAnnotation(Ajax.class);
 		String url = ajax.url();
 		url = UrlMatcher.replaceParams(url, request.getParameters());
