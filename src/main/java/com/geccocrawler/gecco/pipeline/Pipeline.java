@@ -2,8 +2,8 @@ package com.geccocrawler.gecco.pipeline;
 
 import com.geccocrawler.gecco.spider.SpiderBean;
 
-public interface Pipeline {
+public interface Pipeline<T extends SpiderBean> {
 
-	public void process(SpiderBean bean);
+	public void process(T bean);
 
 }

@@ -35,6 +35,9 @@ public class HttpResponse {
 	}
 	
 	public String getContent(String charset) {
+		if(charset == null) {
+			return content;
+		}
 		try {
 			return CharStreams.toString(new InputStreamReader(raw, charset));
 		} catch (Exception e) {

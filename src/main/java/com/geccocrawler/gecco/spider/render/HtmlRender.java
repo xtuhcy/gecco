@@ -78,6 +78,9 @@ public class HtmlRender implements Render {
 			Href href = hrefField.getAnnotation(Href.class);
 			if(href.click()) {
 				Object o = beanMap.get(hrefField.getName());
+				if(o == null) {
+					continue;
+				}
 				boolean isList = ReflectUtils.haveSuperType(o.getClass(), List.class);//是List类型
 				if(isList) {
 					List<String> list = (List<String>)o;

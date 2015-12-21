@@ -30,7 +30,7 @@ public class MyGithub implements HtmlBean {
 	@HtmlField(cssPath=".pagehead-actions li:nth-child(3) .social-count")
 	private int fork;
 	
-	@HtmlField(cssPath=".entry-content")
+	//@HtmlField(cssPath=".entry-content")
 	private String readme;
 
 	public String getReadme() {

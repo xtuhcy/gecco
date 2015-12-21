@@ -60,7 +60,7 @@ public class HtmlParser {
 		} else if(field.isAnnotationPresent(Attr.class)) {//@Attr
 			Attr attr = field.getAnnotation(Attr.class);
 			String name = attr.value();
-			return $attr(selector, name);
+			return Conversion.getValue(field.getType(), $attr(selector, name));
 		} else {//@Html
 			return $html(selector);
 		}

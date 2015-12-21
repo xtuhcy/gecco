@@ -5,32 +5,22 @@ import java.util.Map;
 
 public class HttpPostRequest extends AbstractHttpRequest {
 
-	private String body;
-	
-	private Map<String, Object> fields;
+	private Map<String, String> fields;
 	
 	public HttpPostRequest(String url) {
 		super(url);
-		fields = new HashMap<String, Object>();
+		fields = new HashMap<String, String>();
 	}
 	
-	public String getBody() {
-		return body;
-	}
-
-	public void setBody(String body) {
-		this.body = body;
-	}
-
-	public Map<String, Object> getFields() {
+	public Map<String, String> getFields() {
 		return fields;
 	}
 
-	public void setFields(Map<String, Object> fields) {
+	public void setFields(Map<String, String> fields) {
 		this.fields = fields;
 	}
 
-	public void addField(String name, Object field) {
+	public void addField(String name, String field) {
 		fields.put(name, field);
 	}
 }

@@ -1,18 +1,23 @@
 package com.geccocrawler.gecco;
 
+import java.io.File;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.alibaba.fastjson.JSON;
 import com.geccocrawler.gecco.downloader.Downloader;
 import com.geccocrawler.gecco.downloader.UnirestDownloader;
 import com.geccocrawler.gecco.request.HttpGetRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
+import com.geccocrawler.gecco.request.StartRequest;
 import com.geccocrawler.gecco.scheduler.FIFOScheduler;
 import com.geccocrawler.gecco.scheduler.Scheduler;
 import com.geccocrawler.gecco.spider.Spider;
 import com.geccocrawler.gecco.spider.SpiderBeanFactory;
+import com.google.common.io.Files;
 
 /**
  * 爬虫引擎，每个爬虫引擎最好独立进程，在分布式爬虫场景下，可以单独分配一台爬虫服务器。引擎包括Scheduler、Downloader、Spider、
@@ -47,6 +52,19 @@ public class GeccoEngine {
 		return new GeccoEngine();
 	}
 
+	public GeccoEngine start(File file) {
+		try {
+			String json = Files.toString(file, Charset.forName("UTF-8"));
+			List<StartRequest> list = JSON.parseArray(json, StartRequest.class);
+			for(StartRequest start : list) {
+				start(start.toRequest());
+			}
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		return this;
+	}
+	
 	public GeccoEngine start(String url) {
 		return start(new HttpGetRequest(url));
 	}

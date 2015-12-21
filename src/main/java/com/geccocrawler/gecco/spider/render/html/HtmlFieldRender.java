@@ -27,7 +27,12 @@ public class HtmlFieldRender implements FieldRender {
 			Object value = injectHtmlField(request, response, htmlField, bean.getClass());
 			fieldMap.put(htmlField.getName(), value);
 		}
-		beanMap.putAll(fieldMap);
+		try {
+			beanMap.putAll(fieldMap);
+		} catch(Exception ex) {
+			System.out.println(fieldMap.toString());
+			ex.printStackTrace();
+		}
 	}
 	
 	private Object injectHtmlField(HttpRequest request, HttpResponse response, Field field, Class<? extends SpiderBean> clazz) {

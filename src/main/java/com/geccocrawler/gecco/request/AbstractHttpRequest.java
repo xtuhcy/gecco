@@ -92,4 +92,12 @@ public abstract class AbstractHttpRequest implements HttpRequest {
 		this.charset = charset;
 	}
 
+	public void setCookies(Map<String, String> cookies) {
+		this.cookies = cookies;
+	}
+
+	public void setHeaders(Map<String, String> headers) {
+		this.headers = headers;
+	}
+
 }

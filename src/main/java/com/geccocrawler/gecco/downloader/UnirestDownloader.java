@@ -1,6 +1,7 @@
 package com.geccocrawler.gecco.downloader;
 
 import java.io.IOException;
+import java.util.Map;
 
 import com.geccocrawler.gecco.request.HttpPostRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
@@ -27,8 +28,9 @@ public class UnirestDownloader implements Downloader {
 				HttpPostRequest post = (HttpPostRequest)request;
 				HttpRequestWithBody httpRequestWithBody = Unirest.post(post.getUrl());
 				httpRequestWithBody.headers(post.getHeaders());
-				httpRequestWithBody.body(post.getBody());
-				httpRequestWithBody.fields(post.getFields());
+				for(Map.Entry<String, String> entry : post.getFields().entrySet()) {
+					httpRequestWithBody.field(entry.getKey(), entry.getValue());
+				}
 				response = httpRequestWithBody.asString();
 			} else {
 				response = Unirest.get(request.getUrl()).headers(request.getHeaders()).asString();

@@ -1,15 +1,16 @@
 package com.geccocrawler.gecco.demo.ajax;
 
-import com.geccocrawler.gecco.GeccoEngine;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.alibaba.fastjson.JSON;
 import com.geccocrawler.gecco.annotation.Ajax;
 import com.geccocrawler.gecco.annotation.Gecco;
 import com.geccocrawler.gecco.annotation.HtmlField;
 import com.geccocrawler.gecco.annotation.RequestParameter;
 import com.geccocrawler.gecco.annotation.Text;
-import com.geccocrawler.gecco.request.HttpGetRequest;
-import com.geccocrawler.gecco.request.HttpRequest;
+import com.geccocrawler.gecco.request.StartRequest;
 import com.geccocrawler.gecco.spider.HtmlBean;
-import com.mashape.unirest.http.Unirest;
 
 @Gecco(matchUrl="http://item.jd.com/{code}.html", pipelines="consolePipeline")
 public class JDDetail implements HtmlBean {
@@ -73,9 +74,23 @@ public class JDDetail implements HtmlBean {
 	}
 
 	public static void main(String[] args) throws Exception {
-		HttpRequest request = new HttpGetRequest("http://item.jd.com/1455427.html");
-		request.setCharset("GBK");
-		GeccoEngine.create()
+		StartRequest startRequest = new StartRequest();
+		startRequest.setUrl("http://item.jd.com/1455427.html");
+		startRequest.setCharset("GBK");
+		startRequest.addHeader("header", "value");
+		startRequest.addCookie("cookie", "value");
+		StartRequest startRequest2 = new StartRequest();
+		startRequest2.setUrl("http://item.jd.com/1455427.html");
+		startRequest2.setCharset("GBK");
+		startRequest2.addHeader("header", "value");
+		startRequest2.addCookie("cookie", "value");
+		startRequest2.addPost("field", "value");
+		List<StartRequest> list = new ArrayList<StartRequest>();
+		list.add(startRequest);
+		list.add(startRequest2);
+		System.out.println(JSON.toJSONString(list));
+		
+		/*GeccoEngine.create()
 		.classpath("com.geccocrawler.gecco.demo")
 		//爬虫userAgent设置
 		.userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36")
@@ -85,6 +100,6 @@ public class JDDetail implements HtmlBean {
 		.thread(1)
 		//单个爬虫每次抓取完一个请求后的间隔时间
 		.interval(2000)
-		.run();
+		.run();*/
 	}
 }

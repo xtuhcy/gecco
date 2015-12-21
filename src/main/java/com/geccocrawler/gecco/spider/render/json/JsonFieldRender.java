@@ -22,9 +22,9 @@ public class JsonFieldRender implements FieldRender {
 	@Override
 	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) {
 		Map<String, Object> fieldMap = new HashMap<String, Object>();
-		Set<Field> requestParameterFields = ReflectionUtils.getAllFields(bean.getClass(), ReflectionUtils.withAnnotation(JSONPath.class));
+		Set<Field> jsonPathFields = ReflectionUtils.getAllFields(bean.getClass(), ReflectionUtils.withAnnotation(JSONPath.class));
 		Object json = JSON.parse(response.getContent(response.getCharset()));
-		for(Field field : requestParameterFields) {
+		for(Field field : jsonPathFields) {
 			JSONPath JSONPath = field.getAnnotation(JSONPath.class);
 			String jsonPath = JSONPath.value();
 			Object value = Conversion.getValue(field.getType(), com.alibaba.fastjson.JSONPath.eval(json, jsonPath));

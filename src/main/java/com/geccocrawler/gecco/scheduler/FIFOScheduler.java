@@ -3,6 +3,9 @@ package com.geccocrawler.gecco.scheduler;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.geccocrawler.gecco.request.HttpRequest;
 
 /**
@@ -12,6 +15,8 @@ import com.geccocrawler.gecco.request.HttpRequest;
  *
  */
 public class FIFOScheduler implements Scheduler {
+	
+	private static Log log = LogFactory.getLog(FIFOScheduler.class);
 
 	private LinkedBlockingQueue<HttpRequest> queue;
 	
@@ -24,6 +29,9 @@ public class FIFOScheduler implements Scheduler {
 	 */
 	@Override
 	public void into(HttpRequest request) {
+		if(log.isDebugEnabled()) {
+			log.debug("<==="+request.getUrl());
+		}
 		try {
 			queue.put(request);
 		} catch (InterruptedException e) {
@@ -37,7 +45,11 @@ public class FIFOScheduler implements Scheduler {
 	@Override
 	public HttpRequest out() {
 		try {
-			return queue.take();
+			HttpRequest request = queue.take();
+			if(log.isDebugEnabled()) {
+				log.debug("===>"+request.getUrl());
+			}
+			return request;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			return null;

@@ -13,7 +13,6 @@ import com.geccocrawler.gecco.pipeline.Pipeline;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.spider.render.Render;
-import com.geccocrawler.gecco.spider.render.html.HtmlParser;
 
 /**
  * 一个爬虫引擎可以包含多个爬虫，每个爬虫可以认为是一个单独线程，爬虫会从Scheduler中获取需要待抓取的请求。
@@ -24,7 +23,7 @@ import com.geccocrawler.gecco.spider.render.html.HtmlParser;
  */
 public class Spider implements Runnable {
 	
-	private static Log log = LogFactory.getLog(HtmlParser.class);
+	private static Log log = LogFactory.getLog(Spider.class);
 
 	public GeccoEngine engine;
 	
