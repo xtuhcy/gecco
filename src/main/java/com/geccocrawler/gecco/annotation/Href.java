@@ -20,14 +20,14 @@ public @interface Href {
 	/**
 	 * 默认获取href属性值，可以多选，按顺序查找
 	 * 
-	 * @return
+	 * @return 属性名
 	 */
 	String[] value() default "href";
 	
 	/**
 	 * 表示是否点击打开，继续让爬虫抓取
 	 * 
-	 * @return
+	 * @return 是否继续抓取
 	 */
 	boolean click() default false;
 	

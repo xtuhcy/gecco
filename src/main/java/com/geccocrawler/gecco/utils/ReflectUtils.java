@@ -23,7 +23,7 @@ public class ReflectUtils {
 	 * 获得类的所有基类和接口
 	 * 
 	 * @param clazz
-	 * @return
+	 * @return 所有基类的集合
 	 */
 	public static Set<Class<?>> getAllSuperType(Class clazz) {
 		return ReflectionUtils.getAllSuperTypes(clazz);
@@ -34,7 +34,7 @@ public class ReflectUtils {
 	 * 
 	 * @param childClazz 子类
 	 * @param superClazz 基类
-	 * @return
+	 * @return 是否继承某个基类
 	 */
 	public static boolean haveSuperType(Class childClazz, Class superClazz) {
 		for(Class<?> clazz : getAllSuperType(childClazz)) {
@@ -50,7 +50,7 @@ public class ReflectUtils {
 	 * 
 	 * @param bean
 	 * @param superClazz
-	 * @return
+	 * @return 是否继承某个基类
 	 */
 	public static boolean haveSuperType(Object bean, Class superClazz) {
 		return haveSuperType(bean.getClass(), superClazz);

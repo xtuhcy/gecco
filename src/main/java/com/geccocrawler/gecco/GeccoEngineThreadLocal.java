@@ -1,9 +1,9 @@
 package com.geccocrawler.gecco;
 
-import com.geccocrawler.gecco.annotation.RenderType;
 import com.geccocrawler.gecco.downloader.Downloader;
 import com.geccocrawler.gecco.scheduler.Scheduler;
 import com.geccocrawler.gecco.spider.render.Render;
+import com.geccocrawler.gecco.spider.render.RenderType;
 
 /**
  * 爬虫引擎线程本地变量， 每个Spider线程均持有当前爬虫引擎对象

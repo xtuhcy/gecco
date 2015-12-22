@@ -17,13 +17,13 @@ import com.geccocrawler.gecco.annotation.Attr;
 import com.geccocrawler.gecco.annotation.Href;
 import com.geccocrawler.gecco.annotation.Html;
 import com.geccocrawler.gecco.annotation.Image;
-import com.geccocrawler.gecco.annotation.RenderType;
 import com.geccocrawler.gecco.annotation.Text;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.spider.SpiderBean;
 import com.geccocrawler.gecco.spider.conversion.Conversion;
 import com.geccocrawler.gecco.spider.render.Render;
+import com.geccocrawler.gecco.spider.render.RenderType;
 
 public class HtmlParser {
 	

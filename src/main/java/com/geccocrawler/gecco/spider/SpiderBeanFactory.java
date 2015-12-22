@@ -9,12 +9,12 @@ import java.util.Set;
 import org.reflections.Reflections;
 
 import com.geccocrawler.gecco.annotation.Gecco;
-import com.geccocrawler.gecco.annotation.RenderType;
 import com.geccocrawler.gecco.downloader.DownloaderAOPFactory;
 import com.geccocrawler.gecco.pipeline.Pipeline;
 import com.geccocrawler.gecco.pipeline.PipelineFactory;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.spider.render.RenderFactory;
+import com.geccocrawler.gecco.spider.render.RenderType;
 import com.geccocrawler.gecco.utils.ReflectUtils;
 import com.geccocrawler.gecco.utils.UrlMatcher;
 

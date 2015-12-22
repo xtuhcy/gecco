@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.reflections.Reflections;
 
-import com.geccocrawler.gecco.annotation.RenderType;
 import com.geccocrawler.gecco.spider.render.html.CustomFieldRenderFactory;
 
 public class RenderFactory {

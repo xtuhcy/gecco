@@ -11,12 +11,12 @@ import org.reflections.ReflectionUtils;
 
 import com.geccocrawler.gecco.GeccoEngineThreadLocal;
 import com.geccocrawler.gecco.annotation.Ajax;
-import com.geccocrawler.gecco.annotation.RenderType;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.spider.JsonBean;
 import com.geccocrawler.gecco.spider.SpiderBean;
 import com.geccocrawler.gecco.spider.render.Render;
+import com.geccocrawler.gecco.spider.render.RenderType;
 import com.geccocrawler.gecco.utils.ReflectUtils;
 import com.geccocrawler.gecco.utils.UrlMatcher;
 import com.google.common.base.Preconditions;

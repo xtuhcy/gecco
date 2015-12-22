@@ -19,7 +19,7 @@ public @interface Attr {
 	
 	/**
 	 * 表示属性名称
-	 * @return
+	 * @return 属性名称
 	 */
 	String value();
 	

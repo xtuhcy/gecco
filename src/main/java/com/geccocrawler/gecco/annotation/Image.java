@@ -20,14 +20,14 @@ public @interface Image {
 	/**
 	 * 默认获取src属性值，可以多选，按顺序查找
 	 * 
-	 * @return
+	 * @return 属性名称
 	 */
 	String[] value() default "src";
 	
 	/**
 	 * 表示是否需要将图片下载到本地
 	 * 
-	 * @return
+	 * @return 是否下载到本地
 	 */
 	boolean download() default false;
 	
