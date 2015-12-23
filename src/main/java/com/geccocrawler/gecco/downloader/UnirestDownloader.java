@@ -16,7 +16,7 @@ public class UnirestDownloader implements Downloader {
 	private String userAgent;
 	
 	public UnirestDownloader() {
-		Unirest.setConcurrency(200, 20);
+		Unirest.setConcurrency(1000, 50);
 	}
 	
 	@Override

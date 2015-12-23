@@ -1,6 +1,6 @@
 # GECCO(易用的轻量化的网络爬虫)
-####初衷：
->现在开发应用已经离不开爬虫，网络信息浩如烟海，对互联网的信息加以利用是如今所有应用程序都必须要掌握的技术。了解过现在的一些爬虫软件，python语言编写的爬虫框架[scrapy](https://github.com/scrapy/scrapy)得到了较为广泛的应用。gecco的设计和架构受到了scrapy一些启发，结合java语言的特点，形成了如下软件框架。
+####初衷
+>现在开发应用已经离不开爬虫，网络信息浩如烟海，对互联网的信息加以利用是如今所有应用程序都必须要掌握的技术。了解过现在的一些爬虫软件，python语言编写的爬虫框架[scrapy](https://github.com/scrapy/scrapy)得到了较为广泛的应用。gecco的设计和架构受到了scrapy一些启发，结合java语言的特点，形成了如下软件框架。易用是gecco框架主要目标，只要有一些java开发基础，会写jquery的选择器，就能轻松配置爬虫。
 ##结构图
 ![架构图](https://raw.githubusercontent.com/xtuhcy/gecco/master/doc/%E6%9E%B6%E6%9E%84%E5%9B%BE.jpg)
 ##基本构件介绍
@@ -163,8 +163,14 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 - value：使用的自定义属性渲染器的名称
 
 ##JSON渲染器注解说明
->json渲染器直接采用的[fastjson](https://github.com/alibaba/fastjson)。注解方式请查看fastjson的[相关文档](https://github.com/alibaba/fastjson/wiki/JSONField)
+>json渲染器采用的[fastjson](https://github.com/alibaba/fastjson)。
+###@JSONPath
+>使用fastjson的jsonpath，jsonpath类似是一种对象查询语言，能方便的查询json中个字段的值，详情请[查看fastjson-jsonpath](https://github.com/alibaba/fastjson/wiki/JSONPath)
 
+	@JSONPath("$.p[0]")
+	private float price;
 ##Ajax例子
-
-##自定义属性渲染器例子
+>ajax例子请查看源码中的com.geccocrawler.gecco.demo.ajax。
+##其他可扩展特性
+- Spider支持下载前后的自定义，实现接口BeforeDownload自定义下载前操作，实现接口AfterDownload自定义下载后操作，通过注解@SpiderName("com.geccocrawler.gecco.demo.MyGithub")关联到某个SpiderBean
+- SpiderBean的属性渲染有时通过注解无法获取需要的数据，比如十分复杂的ajax请求，可以采用自定义属性渲染器的方式，实现接口CustomFieldRender，属性增加注解：@FieldRenderName("CustomFieldRenderName")
