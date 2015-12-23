@@ -171,6 +171,7 @@ SpiderBeanContext包括需要改SpiderBean的渲染类（目前支持HTML、JSON
 	private float price;
 ##Ajax例子
 >ajax例子请查看源码中的com.geccocrawler.gecco.demo.ajax。
+
 ##其他可扩展特性
 - Spider支持下载前后的自定义，实现接口BeforeDownload自定义下载前操作，实现接口AfterDownload自定义下载后操作，通过注解@SpiderName("com.geccocrawler.gecco.demo.MyGithub")关联到某个SpiderBean
 - SpiderBean的属性渲染有时通过注解无法获取需要的数据，比如十分复杂的ajax请求，可以采用自定义属性渲染器的方式，实现接口CustomFieldRender，属性增加注解：@FieldRenderName("CustomFieldRenderName")
