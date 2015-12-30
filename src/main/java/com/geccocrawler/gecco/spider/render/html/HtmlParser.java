@@ -15,7 +15,6 @@ import org.jsoup.select.Elements;
 import com.geccocrawler.gecco.GeccoEngineThreadLocal;
 import com.geccocrawler.gecco.annotation.Attr;
 import com.geccocrawler.gecco.annotation.Href;
-import com.geccocrawler.gecco.annotation.Html;
 import com.geccocrawler.gecco.annotation.Image;
 import com.geccocrawler.gecco.annotation.Text;
 import com.geccocrawler.gecco.request.HttpRequest;
@@ -39,7 +38,9 @@ public class HtmlParser {
 		this.baseUri = baseUri;
 		this.document = Jsoup.parse(content, baseUri);
 		long endTime = System.currentTimeMillis();
-		log.debug("init html parser : " + (endTime - beginTime) + "ms");
+		if(log.isTraceEnabled()) {
+			log.trace("init html parser : " + (endTime - beginTime) + "ms");
+		}
 	}
 	
 	public String baseUri() {
@@ -56,7 +57,8 @@ public class HtmlParser {
 			return $image(selector, image.value());
 		} else if(field.isAnnotationPresent(Href.class)) {//@Href
 			Href href = field.getAnnotation(Href.class);
-			return $href(selector, href.value());
+			String url = $href(selector, href.value());
+			return url;
 		} else if(field.isAnnotationPresent(Attr.class)) {//@Attr
 			Attr attr = field.getAnnotation(Attr.class);
 			String name = attr.value();
@@ -78,7 +80,8 @@ public class HtmlParser {
 				list.add($image(el, image.value()));
 			} else if(field.isAnnotationPresent(Href.class)) {//@Href
 				Href href = field.getAnnotation(Href.class);
-				list.add($href(el, href.value()));
+				String url = $href(el, href.value());
+				list.add(url);
 			} else if(field.isAnnotationPresent(Attr.class)) {//@Attr
 				Attr attr = field.getAnnotation(Attr.class);
 				String name = attr.value();
@@ -111,9 +114,6 @@ public class HtmlParser {
 
 	public Elements $(String selector) {
 		Elements elements = document.select(selector);
-		if(log.isDebugEnabled()) {
-			//log.debug(selector + " >>>>> " + elements);
-		}
 		return elements;
 	}
 	

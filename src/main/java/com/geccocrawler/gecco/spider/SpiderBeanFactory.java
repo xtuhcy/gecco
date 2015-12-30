@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
 
 import com.geccocrawler.gecco.annotation.Gecco;
 import com.geccocrawler.gecco.downloader.DownloaderAOPFactory;
 import com.geccocrawler.gecco.pipeline.Pipeline;
+import com.geccocrawler.gecco.pipeline.DefaultPipelineFactory;
 import com.geccocrawler.gecco.pipeline.PipelineFactory;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.spider.render.RenderFactory;
@@ -40,10 +42,23 @@ public class SpiderBeanFactory {
 	private PipelineFactory pipelineFactory;
 	
 	public SpiderBeanFactory(String classPath) {
-		Reflections reflections = new Reflections("com.geccocrawler.gecco", classPath);
+		this(classPath, null);
+	}
+	
+	public SpiderBeanFactory(String classPath, PipelineFactory pipelineFactory) {
+		Reflections reflections = null;
+		if(StringUtils.isNotEmpty(classPath)) {
+			reflections = new Reflections("com.geccocrawler.gecco", classPath);
+		} else {
+			reflections = new Reflections("com.geccocrawler.gecco");
+		}
 		this.downloaderAOPFactory = new DownloaderAOPFactory(reflections);
 		this.renderFactory = new RenderFactory(reflections);
-		this.pipelineFactory = new PipelineFactory(reflections);
+		if(pipelineFactory != null) {
+			this.pipelineFactory = pipelineFactory;
+		} else {
+			this.pipelineFactory = new DefaultPipelineFactory(reflections);
+		}
 		this.spiderBeans = new HashMap<String, Class<? extends SpiderBean>>();
 		this.spiderBeanContexts = new HashMap<String, SpiderBeanContext>();
 		loadSpiderBean(reflections);
@@ -76,8 +91,10 @@ public class SpiderBeanFactory {
 				Class<? extends SpiderBean> spider = entrys.getValue();
 				return spider;
 			}
+			//System.out.println("3333333333333");
 		}
 		return null;
+		
 	}
 	
 	public SpiderBeanContext getContext(Class<? extends SpiderBean> spider) {

@@ -28,9 +28,13 @@ public abstract class AbstractHttpRequest implements HttpRequest {
 		cookies.put(name, value);
 	}
 	
+	public void addParameter(String name, String value) {
+		parameters.put(name, value);
+	}
+	
 	@Override
 	public void setParameters(Map<String, String> parameters) {
-		this.parameters = parameters;
+		this.parameters.putAll(parameters);
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import com.geccocrawler.gecco.annotation.HtmlField;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.spider.SpiderBean;
+import com.geccocrawler.gecco.spider.render.FieldRender;
 import com.geccocrawler.gecco.utils.ReflectUtils;
 
 public class HtmlFieldRender implements FieldRender {

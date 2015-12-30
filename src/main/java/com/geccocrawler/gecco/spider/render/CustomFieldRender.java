@@ -1,4 +1,4 @@
-package com.geccocrawler.gecco.spider.render.html;
+package com.geccocrawler.gecco.spider.render;
 
 import java.lang.reflect.Field;
 

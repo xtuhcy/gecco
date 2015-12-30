@@ -38,9 +38,12 @@ public class Spider implements Runnable {
 		GeccoEngineThreadLocal.set(engine);
 		while(true) {
 			HttpRequest request = engine.getScheduler().out();
-			log.info(request.getUrl());
+			if(log.isDebugEnabled()) {
+				log.debug("match url : " + request.getUrl());
+			}
 			currSpiderBeanClass = engine.getSpiderBeanFactory().matchSpider(request);
 			if(currSpiderBeanClass == null) {
+				log.info("cant't match url : " + request.getUrl());
 				continue;
 			}
 			//bean config：beforeDownloader,afterDownloader,render,pipelines
@@ -59,14 +62,16 @@ public class Spider implements Runnable {
 					}
 				}
 				//other requests
-				List<HttpRequest> requests = render.requests(request, spiderBean);//???
+				/*List<HttpRequest> requests = render.requests(request, spiderBean);//???
 				if(requests != null && requests.size() > 0) {
 					for(HttpRequest nextRequest : requests) {
 						engine.getScheduler().into(nextRequest);
 					}
 				} else {
 					engine.getScheduler().into(request);
-				}
+				}*/
+			} else {
+				engine.getScheduler().into(request);
 			}
 			int interval = engine.getInterval();
 			if(interval > 0) {
@@ -91,7 +96,7 @@ public class Spider implements Runnable {
 			return response;
 		} catch(Exception ex) {
 			//下载失败，加入jmx监控
-			ex.printStackTrace();
+			log.error("download error " + startRequest.getUrl() + " : " + ex.getMessage());
 			return null;
 		}
 	}

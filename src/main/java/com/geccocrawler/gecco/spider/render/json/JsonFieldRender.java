@@ -15,7 +15,7 @@ import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.spider.SpiderBean;
 import com.geccocrawler.gecco.spider.conversion.Conversion;
-import com.geccocrawler.gecco.spider.render.html.FieldRender;
+import com.geccocrawler.gecco.spider.render.FieldRender;
 
 public class JsonFieldRender implements FieldRender {
 

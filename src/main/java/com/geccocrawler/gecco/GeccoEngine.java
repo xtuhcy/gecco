@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.geccocrawler.gecco.downloader.Downloader;
 import com.geccocrawler.gecco.downloader.UnirestDownloader;
+import com.geccocrawler.gecco.pipeline.PipelineFactory;
 import com.geccocrawler.gecco.request.HttpGetRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.request.StartRequest;
@@ -36,6 +37,8 @@ public class GeccoEngine {
 	
 	public SpiderBeanFactory spiderBeanFactory;
 	
+	public PipelineFactory pipelineFactory;
+	
 	private List<Spider> spiders;
 	
 	private String classpath;
@@ -45,6 +48,8 @@ public class GeccoEngine {
 	private int threadCount;
 	
 	private int interval;
+	
+	private int timeout;
 	
 	private GeccoEngine() {}
 	
@@ -99,6 +104,11 @@ public class GeccoEngine {
 		return this;
 	}
 	
+	public GeccoEngine timeout(int timeout) {
+		this.timeout = timeout;
+		return this;
+	}
+	
 	public GeccoEngine userAgent(String userAgent) {
 		this.userAgent = userAgent;
 		return this;
@@ -109,6 +119,11 @@ public class GeccoEngine {
 		return this;
 	}
 	
+	public GeccoEngine pipelineFactory(PipelineFactory pipelineFactory) {
+		this.pipelineFactory = pipelineFactory;
+		return this;
+	}
+	
 	public void run() {
 		if(scheduler == null) {
 			scheduler = new FIFOScheduler();
@@ -116,12 +131,13 @@ public class GeccoEngine {
 		if(downloader == null) {
 			downloader = new UnirestDownloader();
 			downloader.userAgent(userAgent);
+			downloader.timeout(timeout);
 		}
 		if(spiderBeanFactory == null) {
 			if(StringUtils.isEmpty(classpath)) {
 				classpath = "";
 			}
-			spiderBeanFactory = new SpiderBeanFactory(classpath);
+			spiderBeanFactory = new SpiderBeanFactory(classpath, pipelineFactory);
 		}
 		if(threadCount <= 0) {
 			threadCount = 1;

@@ -3,15 +3,21 @@ package com.geccocrawler.gecco.downloader;
 import java.io.IOException;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.geccocrawler.gecco.request.HttpPostRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
+import com.geccocrawler.gecco.scheduler.FIFOScheduler;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.http.utils.ResponseUtils;
 import com.mashape.unirest.request.HttpRequestWithBody;
 
 public class UnirestDownloader implements Downloader {
+	
+	private static Log log = LogFactory.getLog(UnirestDownloader.class);
 	
 	private String userAgent;
 	
@@ -21,6 +27,9 @@ public class UnirestDownloader implements Downloader {
 	
 	@Override
 	public HttpResponse download(HttpRequest request) throws DownloaderException {
+		if(log.isDebugEnabled()) {
+			log.debug("downloading..." + request.getUrl());
+		}
 		try {
 			request.addHeader("User-Agent", userAgent);
 			com.mashape.unirest.http.HttpResponse<String> response = null;

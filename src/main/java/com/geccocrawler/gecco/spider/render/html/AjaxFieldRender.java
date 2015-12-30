@@ -15,6 +15,7 @@ import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.spider.JsonBean;
 import com.geccocrawler.gecco.spider.SpiderBean;
+import com.geccocrawler.gecco.spider.render.FieldRender;
 import com.geccocrawler.gecco.spider.render.Render;
 import com.geccocrawler.gecco.spider.render.RenderType;
 import com.geccocrawler.gecco.utils.ReflectUtils;

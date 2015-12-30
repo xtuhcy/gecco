@@ -1,32 +1,9 @@
 package com.geccocrawler.gecco.pipeline;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import com.geccocrawler.gecco.spider.SpiderBean;
 
-import org.reflections.Reflections;
-
-import com.geccocrawler.gecco.annotation.PipelineName;
-
-public class PipelineFactory {
+public interface PipelineFactory {
 	
-	private Map<String, Pipeline> pipelines;
-	
-	public PipelineFactory(Reflections reflections) {
-		this.pipelines = new HashMap<String, Pipeline>();
-		Set<Class<?>> pipelineClasses = reflections.getTypesAnnotatedWith(PipelineName.class);
-		for(Class<?> pipelineClass : pipelineClasses) {
-			PipelineName spiderFilter = (PipelineName)pipelineClass.getAnnotation(PipelineName.class);
-			try {
-				pipelines.put(spiderFilter.value(), (Pipeline)pipelineClass.newInstance());
-			} catch(Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-	}
-	
-	public Pipeline getPipeline(String name) {
-		return pipelines.get(name);
-	}
+	public Pipeline<? extends SpiderBean> getPipeline(String name);
 
 }

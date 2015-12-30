@@ -3,6 +3,7 @@ package com.geccocrawler.gecco.scheduler;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -33,7 +34,9 @@ public class FIFOScheduler implements Scheduler {
 			log.debug("<==="+request.getUrl());
 		}
 		try {
-			queue.put(request);
+			if(StringUtils.isNotEmpty(request.getUrl())) {
+				queue.put(request);
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

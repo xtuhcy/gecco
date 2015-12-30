@@ -3,14 +3,19 @@ package com.geccocrawler.gecco.demo;
 import com.geccocrawler.gecco.GeccoEngine;
 import com.geccocrawler.gecco.annotation.Gecco;
 import com.geccocrawler.gecco.annotation.HtmlField;
+import com.geccocrawler.gecco.annotation.Request;
 import com.geccocrawler.gecco.annotation.RequestParameter;
 import com.geccocrawler.gecco.annotation.Text;
+import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.spider.HtmlBean;
 
 @Gecco(matchUrl="https://github.com/{user}/{project}", pipelines="consolePipeline")
 public class MyGithub implements HtmlBean {
 
 	private static final long serialVersionUID = -7127412585200687225L;
+	
+	@Request
+	private HttpRequest request;
 	
 	@RequestParameter("user")
 	private String user;
@@ -30,8 +35,16 @@ public class MyGithub implements HtmlBean {
 	@HtmlField(cssPath=".pagehead-actions li:nth-child(3) .social-count")
 	private int fork;
 	
-	@HtmlField(cssPath=".entry-content")
+	//@HtmlField(cssPath=".entry-content")
 	private String readme;
+
+	public HttpRequest getRequest() {
+		return request;
+	}
+
+	public void setRequest(HttpRequest request) {
+		this.request = request;
+	}
 
 	public String getReadme() {
 		return readme;

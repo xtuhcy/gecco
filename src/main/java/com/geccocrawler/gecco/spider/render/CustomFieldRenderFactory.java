@@ -1,4 +1,4 @@
-package com.geccocrawler.gecco.spider.render.html;
+package com.geccocrawler.gecco.spider.render;
 
 import java.util.HashMap;
 import java.util.Map;
