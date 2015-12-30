@@ -17,10 +17,11 @@
 SpiderBeanContext包括需要该SpiderBean的渲染类（目前支持HTML、JSON两种Bean的渲染方式）、下载前处理类、下载后处理类以及渲染完成后对SpiderBean的后续处理Pipeline。
 
 ##Download
+
 	<dependency>
 	    <groupId>com.geccocrawler</groupId>
 	    <artifactId>gecco</artifactId>
-	    <version>1.0.0</version>
+	    <version>1.0.1</version>
 	</dependency>
 
 ##QuikStart
