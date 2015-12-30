@@ -1,6 +1,6 @@
 # [GECCO](https://github.com/xtuhcy/gecco)(易用的轻量化的网络爬虫)
 ####初衷
->现在开发应用已经离不开爬虫，网络信息浩如烟海，对互联网的信息加以利用是如今所有应用程序都必须要掌握的技术。了解过现在的一些爬虫软件，python语言编写的爬虫框架[scrapy](https://github.com/scrapy/scrapy)得到了较为广泛的应用。gecco的设计和架构受到了scrapy一些启发，结合java语言的特点，形成了如下软件框架。易用是gecco框架主要目标，只要有一些java开发基础，会写jquery的选择器，就能轻松配置爬虫。
+>现在开发应用已经离不开爬虫，网络信息浩如烟海，对互联网的信息加以利用是如今所有应用程序都必须要掌握的技术。了解过现在的一些爬虫软件，python语言编写的爬虫框架[scrapy](https://github.com/scrapy/scrapy)得到了较为广泛的应用。gecco的设计和架构受到了scrapy一些启发，结合java语言的特点，形成了如下软件框架。易用是gecco框架首要目标，只要有一些java开发基础，会写jquery的选择器，就能轻松配置爬虫。
 ##结构图
 ![架构图](https://raw.githubusercontent.com/xtuhcy/gecco/master/doc/%E6%9E%B6%E6%9E%84%E5%9B%BE.jpg)
 ##基本构件介绍
@@ -25,20 +25,7 @@ SpiderBeanContext包括需要该SpiderBean的渲染类（目前支持HTML、JSON
 	</dependency>
 
 ##QuikStart
-###启动爬虫引擎
-	public static void main(String[] args) {
-		GeccoEngine.create()
-		.classpath("com.geccocrawler.gecco.demo")
-		//爬虫userAgent设置
-		.userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36")
-		//开始抓取的页面地址
-		.start("https://github.com/xtuhcy/gecco")
-		//开启几个爬虫线程
-		.thread(1)
-		//单个爬虫每次抓取完一个请求后的间隔时间
-		.interval(2000)
-		.run();
-	}
+
 ###配置需要渲染的SpiderBean
 
 	@Gecco(matchUrl="https://github.com/{user}/{project}", pipelines="consolePipeline")
@@ -113,6 +100,22 @@ SpiderBeanContext包括需要该SpiderBean的渲染类（目前支持HTML、JSON
 		public void setFork(int fork) {
 			this.fork = fork;
 		}
+	}
+
+###启动爬虫引擎
+
+	public static void main(String[] args) {
+		GeccoEngine.create()
+		.classpath("com.geccocrawler.gecco.demo")
+		//爬虫userAgent设置
+		.userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36")
+		//开始抓取的页面地址
+		.start("https://github.com/xtuhcy/gecco")
+		//开启几个爬虫线程
+		.thread(1)
+		//单个爬虫每次抓取完一个请求后的间隔时间
+		.interval(2000)
+		.run();
 	}
 
 ##公共注解说明
@@ -226,3 +229,11 @@ SpiderBeanContext包括需要该SpiderBean的渲染类（目前支持HTML、JSON
 		private PipelineFactory springPipelineFactory;
 		
 		GeccoEngine.create().pipelineFactory(springPipelineFactory)...
+
+- 在SpiderBean中引起SpringBean的pipeline的方式和之前没有区别
+ 
+		@Service
+		SpringPipeline impelments Pipeline...
+
+		@Gecco(matchUrl="...", pipelines="springPipeline")
+		TestSpiderBean implemnets HtmlBean...
