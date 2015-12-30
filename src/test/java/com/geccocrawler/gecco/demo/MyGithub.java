@@ -2,6 +2,7 @@ package com.geccocrawler.gecco.demo;
 
 import com.geccocrawler.gecco.GeccoEngine;
 import com.geccocrawler.gecco.annotation.Gecco;
+import com.geccocrawler.gecco.annotation.Href;
 import com.geccocrawler.gecco.annotation.HtmlField;
 import com.geccocrawler.gecco.annotation.Request;
 import com.geccocrawler.gecco.annotation.RequestParameter;
@@ -34,8 +35,12 @@ public class MyGithub implements HtmlBean {
 	@Text
 	@HtmlField(cssPath=".pagehead-actions li:nth-child(3) .social-count")
 	private int fork;
+
+	@Href(click=true)
+	@HtmlField(cssPath="ul.numbers-summary > li:nth-child(4) > a")
+	private String contributors;
 	
-	//@HtmlField(cssPath=".entry-content")
+	@HtmlField(cssPath=".entry-content")
 	private String readme;
 
 	public HttpRequest getRequest() {
@@ -94,6 +99,14 @@ public class MyGithub implements HtmlBean {
 		this.fork = fork;
 	}
 	
+	public String getContributors() {
+		return contributors;
+	}
+
+	public void setContributors(String contributors) {
+		this.contributors = contributors;
+	}
+
 	public static void main(String[] args) {
 		GeccoEngine.create()
 		.classpath("com.geccocrawler.gecco.demo")

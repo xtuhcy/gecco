@@ -58,18 +58,13 @@ public class Spider implements Runnable {
 				List<Pipeline> pipelines = context.getPipelines();
 				if(pipelines != null) {
 					for(Pipeline pipeline : pipelines) {
-						pipeline.process(spiderBean);
+						try {
+							pipeline.process(spiderBean);
+						} catch(Exception ex) {
+							ex.printStackTrace();
+						}
 					}
 				}
-				//other requests
-				/*List<HttpRequest> requests = render.requests(request, spiderBean);//???
-				if(requests != null && requests.size() > 0) {
-					for(HttpRequest nextRequest : requests) {
-						engine.getScheduler().into(nextRequest);
-					}
-				} else {
-					engine.getScheduler().into(request);
-				}*/
 			} else {
 				engine.getScheduler().into(request);
 			}
