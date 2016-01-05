@@ -17,5 +17,7 @@ public interface Downloader {
 	
 	public void userAgent(String userAgent);
 	
+	public void proxy(String host, int port);
+	
 	public void shutdown();
 }

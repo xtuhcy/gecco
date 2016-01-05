@@ -148,11 +148,14 @@ public class HtmlParser {
 		if(element == null) {
 			return null;
 		}
+		String text = "";
 		if(own) {
-			return element.ownText();
+			text = element.ownText();
 		} else {
-			return element.text();
+			text = element.text();
 		}
+		//替换掉空格信息
+		return StringUtils.replace(text, "\u00A0", "");
 	}
 	
 	public String $text(String selector, boolean own) {

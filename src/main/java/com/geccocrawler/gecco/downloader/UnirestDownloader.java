@@ -5,11 +5,11 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpHost;
 
 import com.geccocrawler.gecco.request.HttpPostRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
-import com.geccocrawler.gecco.scheduler.FIFOScheduler;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.http.utils.ResponseUtils;
@@ -89,5 +89,10 @@ public class UnirestDownloader implements Downloader {
 	@Override
 	public void userAgent(String userAgent) {
 		this.userAgent = userAgent;
+	}
+
+	@Override
+	public void proxy(String host, int port) {
+		Unirest.setProxy(new HttpHost(host, port));
 	}
 }
