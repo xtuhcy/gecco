@@ -47,7 +47,7 @@ public class HtmlParser {
 		return baseUri;
 	}
 	
-	public Object $basic(String selector, Field field) {
+	public Object $basic(String selector, Field field) throws Exception {
 		if(field.isAnnotationPresent(Text.class)) {//@Text
 			Text text = field.getAnnotation(Text.class);
 			String value = $text(selector, text.own());
@@ -68,7 +68,7 @@ public class HtmlParser {
 		}
 	}
 	
-	public List<Object> $basicList(String selector, Field field) {
+	public List<Object> $basicList(String selector, Field field) throws Exception {
 		List<Object> list = new ArrayList<Object>();
 		Elements els = $(selector);
 		for(Element el : els) {

@@ -9,6 +9,8 @@ import java.util.Set;
 
 import net.sf.cglib.beans.BeanMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.reflections.ReflectionUtils;
 
 import com.geccocrawler.gecco.annotation.HtmlField;
@@ -20,13 +22,17 @@ import com.geccocrawler.gecco.utils.ReflectUtils;
 
 public class HtmlFieldRender implements FieldRender {
 
+	private static Log log = LogFactory.getLog(HtmlFieldRender.class);
+	
 	@Override
 	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) {
 		Map<String, Object> fieldMap = new HashMap<String, Object>();
 		Set<Field> htmlFields = ReflectionUtils.getAllFields(bean.getClass(), ReflectionUtils.withAnnotation(HtmlField.class));
 		for(Field htmlField : htmlFields) {
 			Object value = injectHtmlField(request, response, htmlField, bean.getClass());
-			fieldMap.put(htmlField.getName(), value);
+			if(value != null) {
+				fieldMap.put(htmlField.getName(), value);
+			}
 		}
 		try {
 			beanMap.putAll(fieldMap);
@@ -51,7 +57,12 @@ public class HtmlFieldRender implements FieldRender {
 				return parser.$beanList(cssPath, request, genericClass);
 			} else {
 				//List<Object>
-				return parser.$basicList(cssPath, field);
+				try {
+					return parser.$basicList(cssPath, field);
+				} catch(Exception ex) {
+					log.error("field [" + field.getName() + "] render error");
+					return null;
+				}
 			}
 		} else {
 			if(ReflectUtils.haveSuperType(type, SpiderBean.class)) {
@@ -59,7 +70,12 @@ public class HtmlFieldRender implements FieldRender {
 				return parser.$bean(cssPath, request, (Class<? extends SpiderBean>)type);
 			} else {
 				//Object
-				return parser.$basic(cssPath, field);
+				try {
+					return parser.$basic(cssPath, field);
+				} catch(Exception ex) {
+					log.error("field [" + field.getName() + "] render error");
+					return null;
+				}
 			}
 		}
 	}

@@ -6,6 +6,8 @@ public interface HttpRequest {
 	
 	public String getUrl();
 	
+	public void addParameter(String name, String value);
+	
 	public void setParameters(Map<String, String> parameters);
 	
 	public String getParameter(String name);

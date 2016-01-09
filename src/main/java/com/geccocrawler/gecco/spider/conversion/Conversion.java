@@ -30,7 +30,7 @@ public class Conversion {
 		TYPE_HANDLERS.remove(type);
 	}
 	
-	public static Object getValue(Class<?> type, Object value) {
+	public static Object getValue(Class<?> type, Object value) throws Exception {
 		TypeHandle th = TYPE_HANDLERS.get(type);
 		if(th != null) {
 			return th.getValue(value);
@@ -38,7 +38,7 @@ public class Conversion {
 		return value;
 	}
 
-	public static Object getDateValue(Object value, String format) {
+	public static Object getDateValue(Object value, String format) throws Exception {
 		DateTypeHandle th = (DateTypeHandle)TYPE_HANDLERS.get(Date.class);
 		return th.getValue(value, format);
 	}

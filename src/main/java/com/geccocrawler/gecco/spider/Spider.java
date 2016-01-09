@@ -66,6 +66,7 @@ public class Spider implements Runnable {
 					}
 				}
 			} else {
+				//如果没有抓取到任何信息，重新加入请求队列
 				engine.getScheduler().into(request);
 			}
 			int interval = engine.getInterval();
