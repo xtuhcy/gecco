@@ -91,6 +91,7 @@ public class Spider implements Runnable {
 			}
 			return response;
 		} catch(Exception ex) {
+			ex.printStackTrace();
 			//下载失败，加入jmx监控
 			log.error("download error " + startRequest.getUrl() + " : " + ex.getMessage());
 			return null;

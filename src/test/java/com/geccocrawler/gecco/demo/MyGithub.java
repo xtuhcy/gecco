@@ -36,7 +36,7 @@ public class MyGithub implements HtmlBean {
 	@HtmlField(cssPath=".pagehead-actions li:nth-child(3) .social-count")
 	private int fork;
 
-	@Href(click=true)
+	@Href(click=false)
 	@HtmlField(cssPath="ul.numbers-summary > li:nth-child(4) > a")
 	private String contributors;
 	

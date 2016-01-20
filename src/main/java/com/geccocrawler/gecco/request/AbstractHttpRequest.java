@@ -1,21 +1,26 @@
 package com.geccocrawler.gecco.request;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import net.sf.cglib.beans.BeanCopier;
 
-public abstract class AbstractHttpRequest implements HttpRequest {
+public abstract class AbstractHttpRequest implements HttpRequest, Comparable<HttpRequest>, Serializable {
 	
-	protected String url;
+	private static final long serialVersionUID = -7284636094595149962L;
+
+	private String url;
 	
-	protected String charset;
+	private String charset;
 	
-	protected Map<String, String> parameters;
+	private Map<String, String> parameters;
 	
-	protected Map<String, String> cookies;
+	private Map<String, String> cookies;
 	
-	protected Map<String, String> headers;
+	private Map<String, String> headers;
+	
+	private int priority;
 	
 	public AbstractHttpRequest(String url) {
 		this.parameters = new HashMap<String, String>(1);
@@ -105,4 +110,32 @@ public abstract class AbstractHttpRequest implements HttpRequest {
 		this.headers = headers;
 	}
 
+	@Override
+	public int getPriority() {
+		return priority;
+	}
+
+	@Override
+	public void setPriority(int prio) {
+		this.priority = prio;
+	}
+
+	@Override
+	public Map<String, String> getCookies() {
+		return cookies;
+	}
+
+	@Override
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	/**
+	 * 数字小，优先级高  
+	 */
+	@Override
+	public int compareTo(HttpRequest o) {
+		return this.priority > o.getPriority() ? 1 : this.priority < o.getPriority() ? -1 : 0;
+	}
+	
 }

@@ -13,7 +13,7 @@ import com.geccocrawler.gecco.downloader.UnirestDownloader;
 import com.geccocrawler.gecco.pipeline.PipelineFactory;
 import com.geccocrawler.gecco.request.HttpGetRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
-import com.geccocrawler.gecco.request.StartRequest;
+import com.geccocrawler.gecco.request.StartRequestList;
 import com.geccocrawler.gecco.scheduler.FIFOScheduler;
 import com.geccocrawler.gecco.scheduler.Scheduler;
 import com.geccocrawler.gecco.spider.Spider;
@@ -60,8 +60,8 @@ public class GeccoEngine {
 	public GeccoEngine start(File file) {
 		try {
 			String json = Files.toString(file, Charset.forName("UTF-8"));
-			List<StartRequest> list = JSON.parseArray(json, StartRequest.class);
-			for(StartRequest start : list) {
+			List<StartRequestList> list = JSON.parseArray(json, StartRequestList.class);
+			for(StartRequestList start : list) {
 				start(start.toRequest());
 			}
 		} catch(Exception ex) {
@@ -143,7 +143,7 @@ public class GeccoEngine {
 			threadCount = 1;
 		}
 		for(HttpRequest request : startRequests) {
-			scheduler.into(request);
+			scheduler.start(request);
 		}
 		spiders = new ArrayList<Spider>(threadCount);
 		for(int i = 0; i < threadCount; i++) {

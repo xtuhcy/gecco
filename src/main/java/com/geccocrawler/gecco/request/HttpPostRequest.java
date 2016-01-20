@@ -5,6 +5,8 @@ import java.util.Map;
 
 public class HttpPostRequest extends AbstractHttpRequest {
 
+	private static final long serialVersionUID = -4451221207994730839L;
+
 	private Map<String, Object> fields;
 	
 	public HttpPostRequest(String url) {

@@ -3,7 +3,7 @@ package com.geccocrawler.gecco.request;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StartRequest {
+public class StartRequestList {
 
 	private String url;
 
@@ -15,7 +15,7 @@ public class StartRequest {
 
 	private Map<String, Object> posts;
 	
-	public StartRequest() {
+	public StartRequestList() {
 		cookies = new HashMap<String, String>();
 		headers = new HashMap<String, String>();
 		posts = new HashMap<String, Object>();
