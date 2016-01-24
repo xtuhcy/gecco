@@ -22,10 +22,14 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 	
 	private int priority;
 	
-	public AbstractHttpRequest(String url) {
+	public AbstractHttpRequest() {
 		this.parameters = new HashMap<String, String>(1);
 		this.headers = new HashMap<String, String>(1);
 		this.cookies = new HashMap<String, String>(1);
+	}
+	
+	public AbstractHttpRequest(String url) {
+		this();
 		this.url = url;
 	}
 

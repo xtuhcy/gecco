@@ -9,6 +9,10 @@ public class HttpPostRequest extends AbstractHttpRequest {
 
 	private Map<String, Object> fields;
 	
+	public HttpPostRequest() {
+		super();
+	}
+
 	public HttpPostRequest(String url) {
 		super(url);
 		fields = new HashMap<String, Object>();
