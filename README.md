@@ -206,3 +206,16 @@ SpiderBeanContext包括需要该SpiderBean的渲染类（目前支持HTML、JSON
 	    <artifactId>gecco-spring</artifactId>
 	    <version>1.0.0</version>
 	</dependency>
+
+>四、通过redis支持分布式抓取
+
+- 参考项目[gecco-redis](https://github.com/xtuhcy/gecco-redis)
+
+下载方式
+
+	<dependency>
+	    <groupId>com.geccocrawler</groupId>
+	    <artifactId>gecco-redis</artifactId>
+	    <version>1.0.0</version>
+	</dependency>
+
