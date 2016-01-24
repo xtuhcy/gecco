@@ -197,43 +197,12 @@ SpiderBeanContext包括需要该SpiderBean的渲染类（目前支持HTML、JSON
 
 >三、结合spring开发pipeline
 
-- 实现SpringPipeLineFactory，例如：
-	
-		@Service
-		public class SpringPipelineFactory implements PipelineFactory, ApplicationContextAware {
-	
-			private ApplicationContext applicationContext;
-			
-			@Override
-			public void setApplicationContext(ApplicationContext applicationContext)
-					throws BeansException {
-				this.applicationContext = applicationContext;
-			}
-		
-			@Override
-			public Pipeline<? extends SpiderBean> getPipeline(String name) {
-				try {
-					Object bean = applicationContext.getBean(name);
-					if(bean instanceof Pipeline) {
-						return (Pipeline<? extends SpiderBean>)bean;
-					}
-				} catch(NoSuchBeanDefinitionException ex) {
-					System.out.println("no such pipeline : " + name);
-				}
-				return null;
-			}
-		}
-- 并在GeccoEngine中设置
+- 参考项目[gecco-spring](https://github.com/xtuhcy/gecco-spring)
 
-		@Resource(name="springPipelineFactory")
-		private PipelineFactory springPipelineFactory;
-		
-		GeccoEngine.create().pipelineFactory(springPipelineFactory)...
+下载方式
 
-- 在SpiderBean中引起SpringBean的pipeline的方式和之前没有区别
- 
-		@Service
-		SpringPipeline impelments Pipeline...
-
-		@Gecco(matchUrl="...", pipelines="springPipeline")
-		TestSpiderBean implemnets HtmlBean...
+	<dependency>
+	    <groupId>com.geccocrawler</groupId>
+	    <artifactId>gecco-spring</artifactId>
+	    <version>1.0.0</version>
+	</dependency>
