@@ -16,5 +16,5 @@ public interface Render {
 
 	public SpiderBean inject(Class<? extends SpiderBean> clazz, HttpRequest request, HttpResponse response);
 	
-	public void requests(HttpRequest request, SpiderBean bean);
+	public List<HttpRequest> requests(HttpRequest request, SpiderBean bean);
 }

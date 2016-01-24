@@ -114,8 +114,9 @@ public class MyGithub implements HtmlBean {
 		.userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36")
 		//开始抓取的页面地址
 		.start("https://github.com/xtuhcy/gecco")
-		//开启几个爬虫线程
-		.thread(1)
+		.start("https://github.com/xtuhcy/gecco")
+		//开启几个爬虫线程,线程数量最好不要大于start request数量
+		.thread(2)
 		//单个爬虫每次抓取完一个请求后的间隔时间
 		.interval(2000)
 		.run();

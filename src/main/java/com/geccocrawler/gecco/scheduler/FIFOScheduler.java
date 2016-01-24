@@ -2,8 +2,8 @@ package com.geccocrawler.gecco.scheduler;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -24,24 +24,29 @@ public class FIFOScheduler implements Scheduler {
 	
 	private ConcurrentLinkedQueue<HttpRequest> queue;
 	
+	private ReentrantLock outLock;
+	
 	public FIFOScheduler() {
 		starQueue = new LinkedBlockingQueue<HttpRequest>();
 		queue = new ConcurrentLinkedQueue<HttpRequest>();
+		outLock = new ReentrantLock();
 	}
 	
-	@Override
-	public void start(HttpRequest request) {
-		if(log.isDebugEnabled()) {
-			log.debug("<===[start]"+request.getUrl());
-		}
+	/*@Override
+	public void start(List<HttpRequest> requests) {
 		try {
-			if(StringUtils.isNotEmpty(request.getUrl())) {
-				starQueue.put(request);
+			for(HttpRequest request : requests) {
+				if(StringUtils.isNotEmpty(request.getUrl())) {
+					starQueue.put(request);
+					if(log.isDebugEnabled()) {
+						log.debug("<===[start]"+request.getUrl());
+					}
+				}
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 	/**
 	 * 入队列，超过边界会阻塞等待
@@ -64,25 +69,31 @@ public class FIFOScheduler implements Scheduler {
 	 * 出队列，队列为空会阻塞等待
 	 */
 	@Override
-	public synchronized HttpRequest out() {
-		HttpRequest request = queue.poll();
-		if(request == null) {
-			try {
-				request = starQueue.take();
+	public HttpRequest out() {
+		outLock.lock();
+		try {
+			HttpRequest request = queue.poll();
+			if(request == null) {
+					request = starQueue.take();
+					if(log.isDebugEnabled()) {
+						log.debug("[start]===>"+request.getUrl());
+					}
+					starQueue.put(request);
+					if(log.isDebugEnabled()) {
+						log.debug("<===[start]"+request.getUrl());
+					}
+					return request;
+			} else {
 				if(log.isDebugEnabled()) {
-					log.debug("[start]===>"+request.getUrl());
+					log.debug("===>"+request.getUrl());
 				}
-				start(request);
 				return request;
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				return null;
 			}
-		} else {
-			if(log.isDebugEnabled()) {
-				log.debug("===>"+request.getUrl());
-			}
-			return request;
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			outLock.unlock();
 		}
 	}
 }

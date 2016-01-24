@@ -1,6 +1,7 @@
 package com.geccocrawler.gecco.spider.render;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -9,7 +10,6 @@ import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.lang3.StringUtils;
 import org.reflections.ReflectionUtils;
 
-import com.geccocrawler.gecco.GeccoEngineThreadLocal;
 import com.geccocrawler.gecco.annotation.FieldRenderName;
 import com.geccocrawler.gecco.annotation.Href;
 import com.geccocrawler.gecco.request.HttpRequest;
@@ -45,7 +45,7 @@ public abstract class AbstractRender implements Render {
 	@Override
 	public SpiderBean inject(Class<? extends SpiderBean> clazz, HttpRequest request, HttpResponse response) {
 		try {
-			SpiderBean bean = clazz.newInstance();  
+			SpiderBean bean = clazz.newInstance();
 			BeanMap beanMap = BeanMap.create(bean);
 			requestFieldRender.render(request, response, beanMap, bean);
 			requestParameterFieldRender.render(request, response, beanMap, bean);
@@ -70,7 +70,8 @@ public abstract class AbstractRender implements Render {
 	public abstract void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean);
 
 	@Override
-	public void requests(HttpRequest request, SpiderBean bean) {
+	public List<HttpRequest> requests(HttpRequest request, SpiderBean bean) {
+		List<HttpRequest> subRequests = new ArrayList<HttpRequest>();
 		BeanMap beanMap = BeanMap.create(bean);
 		Set<Field> hrefFields = ReflectionUtils.getAllFields(bean.getClass(), ReflectionUtils.withAnnotation(Href.class));
 		for(Field hrefField : hrefFields) {
@@ -85,17 +86,18 @@ public abstract class AbstractRender implements Render {
 					List<String> list = (List<String>)o;
 					for(String url : list) {
 						if(StringUtils.isNotEmpty(url)) {
-							GeccoEngineThreadLocal.getScheduler().into(request.subRequest(url));
+							subRequests.add(request.subRequest(url));
 						}
 					}
 				} else {
 					String url = (String)o;
 					if(StringUtils.isNotEmpty(url)) {
-						GeccoEngineThreadLocal.getScheduler().into(request.subRequest(url));
+						subRequests.add(request.subRequest(url));
 					}
 				}
 			}
 		}
+		return subRequests;
 	}
 	
 }

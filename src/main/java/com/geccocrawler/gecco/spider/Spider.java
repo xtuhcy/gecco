@@ -12,6 +12,8 @@ import com.geccocrawler.gecco.downloader.BeforeDownload;
 import com.geccocrawler.gecco.pipeline.Pipeline;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
+import com.geccocrawler.gecco.scheduler.Scheduler;
+import com.geccocrawler.gecco.scheduler.SpiderScheduler;
 import com.geccocrawler.gecco.spider.render.Render;
 
 /**
@@ -29,15 +31,24 @@ public class Spider implements Runnable {
 	
 	public Class<? extends SpiderBean> currSpiderBeanClass;
 	
+	public Scheduler spiderScheduler;
+	
 	public Spider(GeccoEngine engine) {
 		this.engine = engine;
+		this.spiderScheduler = new SpiderScheduler();
 	}
 	
 	public void run() {
 		//将engine放入线程本地变量，之后需要使用
 		GeccoEngineThreadLocal.set(engine);
 		while(true) {
-			HttpRequest request = engine.getScheduler().out();
+			boolean start = false;
+			HttpRequest request = spiderScheduler.out();
+			if(request == null) {
+				//startScheduler
+				request = engine.getScheduler().out();
+				start = true;
+			}
 			if(log.isDebugEnabled()) {
 				log.debug("match url : " + request.getUrl());
 			}
@@ -65,15 +76,23 @@ public class Spider implements Runnable {
 						}
 					}
 				}
+				//需要继续下载的子链接
+				for(HttpRequest subRequest : render.requests(request, spiderBean)) {
+					spiderScheduler.into(subRequest);
+				}
 			} else {
-				//如果没有抓取到任何信息，重新加入请求队列
-				engine.getScheduler().into(request);
+				//如果没有抓取到任何信息，重新加入请求队列？？重试次数
+				spiderScheduler.into(request);
 			}
 			int interval = engine.getInterval();
 			if(interval > 0) {
 				try {
 					Thread.sleep(interval);
 				} catch (InterruptedException e) {}
+			}
+			if(start) {
+				//如果是一个开始抓取请求，再返回开始队列中
+				engine.getScheduler().into(request);
 			}
 		}
 	}
