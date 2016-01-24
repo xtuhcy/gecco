@@ -21,7 +21,7 @@ SpiderBeanContext包括需要该SpiderBean的渲染类（目前支持HTML、JSON
 	<dependency>
 	    <groupId>com.geccocrawler</groupId>
 	    <artifactId>gecco</artifactId>
-	    <version>1.0.1</version>
+	    <version>1.0.2</version>
 	</dependency>
 
 ##QuikStart
