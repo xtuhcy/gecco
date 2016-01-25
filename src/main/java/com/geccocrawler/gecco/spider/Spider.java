@@ -1,5 +1,6 @@
 package com.geccocrawler.gecco.spider;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -32,15 +33,19 @@ public class Spider implements Runnable {
 	
 	public Scheduler spiderScheduler;
 	
+	public List<HttpRequest> subRequests;
+	
 	public Spider(GeccoEngine engine) {
 		this.engine = engine;
 		this.spiderScheduler = new SpiderScheduler();
+		this.subRequests = new ArrayList<HttpRequest>();
 	}
 	
 	public void run() {
 		//将engine放入线程本地变量，之后需要使用
 		SpiderThreadLocal.set(this);
 		while(true) {
+			subRequests.clear();
 			boolean start = false;
 			HttpRequest request = spiderScheduler.out();
 			if(request == null) {
@@ -76,7 +81,7 @@ public class Spider implements Runnable {
 					}
 				}
 				//需要继续下载的子链接
-				for(HttpRequest subRequest : render.requests(request, spiderBean)) {
+				for(HttpRequest subRequest : subRequests) {
 					spiderScheduler.into(subRequest);
 				}
 			} else {
@@ -109,7 +114,7 @@ public class Spider implements Runnable {
 			}
 			return response;
 		} catch(Exception ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
 			//下载失败，加入jmx监控
 			log.error("download error " + startRequest.getUrl() + " : " + ex.getMessage());
 			return null;
@@ -126,6 +131,10 @@ public class Spider implements Runnable {
 
 	public void setSpiderScheduler(Scheduler spiderScheduler) {
 		this.spiderScheduler = spiderScheduler;
+	}
+
+	public void addSubRequest(HttpRequest subRequest) {
+		this.subRequests.add(subRequest);
 	}
 	
 }

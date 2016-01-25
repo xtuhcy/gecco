@@ -1,7 +1,5 @@
 package com.geccocrawler.gecco.spider.render;
 
-import java.util.List;
-
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.spider.SpiderBean;
@@ -16,5 +14,5 @@ public interface Render {
 
 	public SpiderBean inject(Class<? extends SpiderBean> clazz, HttpRequest request, HttpResponse response);
 	
-	public List<HttpRequest> requests(HttpRequest request, SpiderBean bean);
+	public void requests(HttpRequest request, SpiderBean bean);
 }

@@ -56,8 +56,9 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 	public HttpRequest subRequest(String url) {
 		try {
 			BeanCopier copier = BeanCopier.create(this.getClass(), this.getClass(), false);
-			HttpRequest request = this.getClass().getConstructor(String.class).newInstance(url);
+			HttpRequest request = this.getClass().getConstructor().newInstance();
 			copier.copy(this, request, null);
+			request.setUrl(url);
 			request.refer(this.getUrl());
 			return request;
 		} catch(Exception ex) {
