@@ -6,7 +6,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.geccocrawler.gecco.GeccoEngine;
-import com.geccocrawler.gecco.GeccoEngineThreadLocal;
 import com.geccocrawler.gecco.downloader.AfterDownload;
 import com.geccocrawler.gecco.downloader.BeforeDownload;
 import com.geccocrawler.gecco.pipeline.Pipeline;
@@ -40,7 +39,7 @@ public class Spider implements Runnable {
 	
 	public void run() {
 		//将engine放入线程本地变量，之后需要使用
-		GeccoEngineThreadLocal.set(engine);
+		SpiderThreadLocal.set(this);
 		while(true) {
 			boolean start = false;
 			HttpRequest request = spiderScheduler.out();
@@ -120,4 +119,13 @@ public class Spider implements Runnable {
 	public GeccoEngine getEngine() {
 		return engine;
 	}
+
+	public Scheduler getSpiderScheduler() {
+		return spiderScheduler;
+	}
+
+	public void setSpiderScheduler(Scheduler spiderScheduler) {
+		this.spiderScheduler = spiderScheduler;
+	}
+	
 }

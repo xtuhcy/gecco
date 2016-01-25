@@ -12,7 +12,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.geccocrawler.gecco.GeccoEngineThreadLocal;
 import com.geccocrawler.gecco.annotation.Attr;
 import com.geccocrawler.gecco.annotation.Href;
 import com.geccocrawler.gecco.annotation.Image;
@@ -22,6 +21,7 @@ import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.spider.SpiderBean;
 import com.geccocrawler.gecco.spider.conversion.Conversion;
 import com.geccocrawler.gecco.spider.render.Render;
+import com.geccocrawler.gecco.spider.render.RenderContext;
 import com.geccocrawler.gecco.spider.render.RenderType;
 
 public class HtmlParser {
@@ -96,7 +96,7 @@ public class HtmlParser {
 	public SpiderBean $bean(String selector, HttpRequest request, Class<? extends SpiderBean> clazz) {
 		String subHtml = $html(selector);
 		HttpResponse subResponse = HttpResponse.createSimple(subHtml);
-		Render render = GeccoEngineThreadLocal.getRender(RenderType.HTML);
+		Render render = RenderContext.getRender(RenderType.HTML);
 		return render.inject(clazz, request, subResponse);
 	}
 	
@@ -105,7 +105,7 @@ public class HtmlParser {
 		List<String> els = $list(selector);
 		for(String el : els) {
 			HttpResponse subResponse = HttpResponse.createSimple(el);
-			Render render = GeccoEngineThreadLocal.getRender(RenderType.HTML);
+			Render render = RenderContext.getRender(RenderType.HTML);
 			SpiderBean subBean = render.inject(clazz, request, subResponse);
 			list.add(subBean);
 		}

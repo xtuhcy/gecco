@@ -9,14 +9,15 @@ import net.sf.cglib.beans.BeanMap;
 
 import org.reflections.ReflectionUtils;
 
-import com.geccocrawler.gecco.GeccoEngineThreadLocal;
 import com.geccocrawler.gecco.annotation.Ajax;
+import com.geccocrawler.gecco.downloader.DownloaderContext;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.spider.JsonBean;
 import com.geccocrawler.gecco.spider.SpiderBean;
 import com.geccocrawler.gecco.spider.render.FieldRender;
 import com.geccocrawler.gecco.spider.render.Render;
+import com.geccocrawler.gecco.spider.render.RenderContext;
 import com.geccocrawler.gecco.spider.render.RenderType;
 import com.geccocrawler.gecco.utils.ReflectUtils;
 import com.geccocrawler.gecco.utils.UrlMatcher;
@@ -51,8 +52,8 @@ public class AjaxFieldRender implements FieldRender {
 		url = UrlMatcher.replaceFields(url, beanMap);
 		HttpRequest subRequest = request.subRequest(url);
 		try {
-			HttpResponse subReponse = GeccoEngineThreadLocal.getDownloader().download(subRequest);
-			Render jsonRender = GeccoEngineThreadLocal.getRender(RenderType.JSON);
+			HttpResponse subReponse = DownloaderContext.download(subRequest);
+			Render jsonRender = RenderContext.getRender(RenderType.JSON);
 			return jsonRender.inject(clazz, subRequest, subReponse);
 		} catch(Exception ex) {
 			ex.printStackTrace();
