@@ -13,8 +13,8 @@ import com.geccocrawler.gecco.annotation.FieldRenderName;
 import com.geccocrawler.gecco.annotation.Href;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
+import com.geccocrawler.gecco.scheduler.SchedulerContext;
 import com.geccocrawler.gecco.spider.SpiderBean;
-import com.geccocrawler.gecco.spider.SpiderThreadLocal;
 import com.geccocrawler.gecco.spider.render.CustomFieldRender;
 import com.geccocrawler.gecco.spider.render.CustomFieldRenderFactory;
 import com.geccocrawler.gecco.spider.render.Render;
@@ -85,15 +85,13 @@ public abstract class AbstractRender implements Render {
 					List<String> list = (List<String>)o;
 					for(String url : list) {
 						if(StringUtils.isNotEmpty(url)) {
-							//subRequests.add(request.subRequest(url));
-							SpiderThreadLocal.get().addSubRequest(request.subRequest(url));
+							SchedulerContext.into(request.subRequest(url));
 						}
 					}
 				} else {
 					String url = (String)o;
 					if(StringUtils.isNotEmpty(url)) {
-						//subRequests.add(request.subRequest(url));
-						SpiderThreadLocal.get().addSubRequest(request.subRequest(url));
+						SchedulerContext.into(request.subRequest(url));
 					}
 				}
 			}
