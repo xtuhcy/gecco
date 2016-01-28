@@ -42,9 +42,9 @@ public class UnirestDownloader implements Downloader {
 				HttpRequestWithBody httpRequestWithBody = Unirest.post(post.getUrl());
 				httpRequestWithBody.headers(post.getHeaders());
 				httpRequestWithBody.fields(post.getFields());
-				response = httpRequestWithBody.redirectsEnabled(false).asString();
+				response = httpRequestWithBody.asString();
 			} else {
-				response = Unirest.get(request.getUrl()).headers(request.getHeaders()).redirectsEnabled(false).asString();
+				response = Unirest.get(request.getUrl()).headers(request.getHeaders()).asString();
 			}
 			String contentType = response.getHeaders().getFirst("Content-Type");
 			HttpResponse resp = new HttpResponse();

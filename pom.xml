@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>com.mashape.unirest</groupId>
 			<artifactId>unirest-java</artifactId>
-			<version>1.4.8-SNAPSHOT</version>
+			<version>1.4.7</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
