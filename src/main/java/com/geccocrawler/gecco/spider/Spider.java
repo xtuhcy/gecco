@@ -53,7 +53,13 @@ public class Spider implements Runnable {
 			}
 			currSpiderBeanClass = engine.getSpiderBeanFactory().matchSpider(request);
 			if(currSpiderBeanClass == null) {
-				log.error("cant't match url : " + request.getUrl());
+				log.info("cant't match url : " + request.getUrl());
+				HttpResponse response = download(null, null, request);
+				if(response != null) {
+					if(response.getStatus() == 302 || response.getStatus() == 301){
+						spiderScheduler.into(request.subRequest(response.getContent()));
+					}
+				}
 				continue;
 			}
 			//bean config：beforeDownloader,afterDownloader,render,pipelines
