@@ -127,12 +127,6 @@ public class HttpClientDownloader implements Downloader {
 	
 	private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*\"?([^\\s;\"]*)");
 
-	/**
-	 * Parse out a charset from a content type header.
-	 * 
-	 * @param contentType e.g. "text/html; charset=EUC-JP"
-	 * @return "EUC-JP", or null if not found. Charset is trimmed and uppercased.
-	 */
 	public String getCharsetFromContentType(String contentType) {
 		if (contentType == null)
 			return null;
@@ -145,11 +139,14 @@ public class HttpClientDownloader implements Downloader {
 	}
 	
 	private String getCharset(HttpRequest request, String contentType) {
+		//先去contentType的字符集
 		String charset = getCharsetFromContentType(contentType);
 		if(charset == null) {
+			//再取request指定的字符集
 			charset = request.getCharset();
 		}
 		if(charset == null) {
+			//默认采用utf-8
 			charset = "UTF-8";
 		}
 		return charset;

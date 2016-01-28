@@ -86,7 +86,7 @@ public class Spider implements Runnable {
 			int interval = engine.getInterval();
 			if(interval > 0) {
 				try {
-					Thread.sleep(interval);
+					Thread.sleep(randomInterval(interval));
 				} catch (InterruptedException e) {}
 			}
 			if(start) {
@@ -118,6 +118,21 @@ public class Spider implements Runnable {
 		}
 	}
 
+	/**
+	 * 间隔时间在左右1s的范围内随机
+	 * 
+	 * @param interval
+	 * @return
+	 */
+	private int randomInterval(int interval) {
+		int min = interval - 1000;
+		if(min < 1) {
+			min = 1;
+		}
+		int max = interval + 1000;
+		return (int)Math.rint(Math.random()*(max-min)+min);
+	}
+	
 	public GeccoEngine getEngine() {
 		return engine;
 	}
