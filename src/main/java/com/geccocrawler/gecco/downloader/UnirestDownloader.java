@@ -19,8 +19,6 @@ public class UnirestDownloader implements Downloader {
 	
 	private static Log log = LogFactory.getLog(UnirestDownloader.class);
 	
-	private String userAgent;
-	
 	public UnirestDownloader() {
 		Unirest.setConcurrency(1000, 50);
 	}
@@ -31,7 +29,7 @@ public class UnirestDownloader implements Downloader {
 			log.debug("downloading..." + request.getUrl());
 		}
 		try {
-			request.addHeader("User-Agent", userAgent);
+			request.addHeader("User-Agent", UserAgent.getUserAgent());
 			com.mashape.unirest.http.HttpResponse<String> response = null;
 			if(request instanceof HttpPostRequest) {
 				HttpPostRequest post = (HttpPostRequest)request;
@@ -82,11 +80,6 @@ public class UnirestDownloader implements Downloader {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public void userAgent(String userAgent) {
-		this.userAgent = userAgent;
 	}
 
 	@Override

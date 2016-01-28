@@ -110,8 +110,6 @@ public class MyGithub implements HtmlBean {
 	public static void main(String[] args) {
 		GeccoEngine.create()
 		.classpath("com.geccocrawler.gecco.demo")
-		//爬虫userAgent设置
-		.userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36")
 		//开始抓取的页面地址
 		.start("https://github.com/xtuhcy/gecco")
 		.start("https://github.com/xtuhcy/gecco")

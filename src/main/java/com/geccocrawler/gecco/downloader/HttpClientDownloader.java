@@ -25,7 +25,6 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import com.geccocrawler.gecco.request.HttpGetRequest;
 import com.geccocrawler.gecco.request.HttpPostRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
@@ -45,8 +44,6 @@ public class HttpClientDownloader implements Downloader {
 	
 	private long timeout;
 	
-	private String userAgent;
-	
 	private HttpHost proxy;
 	
 	public HttpClientDownloader() {
@@ -63,27 +60,30 @@ public class HttpClientDownloader implements Downloader {
 			log.debug("downloading..." + request.getUrl());
 		}
 		HttpRequestBase reqObj = null;
-		if(request instanceof HttpPostRequest) {
+		if(request instanceof HttpPostRequest) {//post
 			HttpPostRequest post = (HttpPostRequest)request;
+			reqObj = new HttpPost(post.getUrl());
+			//post fields
 			List<NameValuePair> fields = new ArrayList<NameValuePair>();
 			for(Map.Entry<String, Object> entry : post.getFields().entrySet()) {
 				NameValuePair nvp = new BasicNameValuePair(entry.getKey(), entry.getValue().toString());
 				fields.add(nvp);
 			}
-			reqObj = new HttpPost(post.getUrl());
 			try {
 				HttpEntity entity = new UrlEncodedFormEntity(fields, "UTF-8");
 				((HttpEntityEnclosingRequestBase) reqObj).setEntity(entity);
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
-		} else {
+		} else {//get
 			reqObj = new HttpGet(request.getUrl());
 		}
-		reqObj.addHeader("User-Agent", userAgent);
+		//header
+		reqObj.addHeader("User-Agent", UserAgent.getUserAgent());
 		for(Map.Entry<String, String> entry : request.getHeaders().entrySet()) {
 			reqObj.addHeader(entry.getKey(), entry.getValue());
 		}
+		//request config
 		reqObj.setConfig(RequestConfig.custom()
 				.setConnectionRequestTimeout(((Long)timeout).intValue())
 				.setSocketTimeout(((Long)timeout).intValue())
@@ -91,6 +91,7 @@ public class HttpClientDownloader implements Downloader {
 				.setRedirectsEnabled(false)
 				//.setProxy(proxy)
 				.build());
+		//request and response
 		try {
 			org.apache.http.HttpResponse response = httpClient.execute(reqObj);
 			int status = response.getStatusLine().getStatusCode();
@@ -160,11 +161,6 @@ public class HttpClientDownloader implements Downloader {
 	}
 
 	@Override
-	public void userAgent(String userAgent) {
-		this.userAgent = userAgent;
-	}
-
-	@Override
 	public void proxy(String host, int port) {
 		// TODO Auto-generated method stub
 
@@ -179,12 +175,4 @@ public class HttpClientDownloader implements Downloader {
 		}
 	}
 
-	public static void main(String[] args) throws Exception {
-		HttpClientDownloader hd = new HttpClientDownloader();
-		hd.timeout(3000);
-		//http://temai.tuniu.com/tours/212032167
-		//http://san-yun.iteye.com/blog/2065732
-		HttpResponse resp = hd.download(new HttpGetRequest("http://temai.tuniu.com/tours/212032167"));
-		System.out.println(resp.getContent());
-	}
 }

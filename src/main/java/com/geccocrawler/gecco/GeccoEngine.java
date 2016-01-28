@@ -43,8 +43,6 @@ public class GeccoEngine {
 	
 	private String classpath;
 	
-	private String userAgent;
-	
 	private int threadCount;
 	
 	private int interval;
@@ -109,11 +107,6 @@ public class GeccoEngine {
 		return this;
 	}
 	
-	public GeccoEngine userAgent(String userAgent) {
-		this.userAgent = userAgent;
-		return this;
-	}
-	
 	public GeccoEngine classpath(String classpath) {
 		this.classpath = classpath;
 		return this;
@@ -130,7 +123,6 @@ public class GeccoEngine {
 		}
 		if(downloader == null) {
 			downloader = new HttpClientDownloader();
-			downloader.userAgent(userAgent);
 			downloader.timeout(timeout);
 		}
 		if(spiderBeanFactory == null) {
