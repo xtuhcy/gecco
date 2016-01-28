@@ -9,7 +9,7 @@
 ###Scheduler
 >需要下载的请求都放在这里管理，可以认为这里是一个队列，保存了所有待抓取的请求。系统默认采用FIFO的方式管理请求。
 ###Downloader
->下载器，负责将Scheduler里的请求下载下来，系统默认采用[Unirest](https://github.com/Mashape/unirest-java)作为下载引擎。
+>下载器，负责将Scheduler里的请求下载下来，系统默认采用HttpClient4.x作为下载引擎。
 ###Spider
 >一个爬虫引擎可以包含多个爬虫，每个爬虫可以认为是一个单独线程，爬虫会从Scheduler中获取需要待抓取的请求。爬虫的任务就是下载网页并渲染相应的JavaBean。
 ###SpiderBeanFactory
@@ -219,3 +219,14 @@ SpiderBeanContext包括需要该SpiderBean的渲染类（目前支持HTML、JSON
 	    <version>1.0.0</version>
 	</dependency>
 
+>五、支持多UserAgent随机选择
+
+- 爬虫需要模拟用户行为，否则可能会被屏蔽，模拟用户行为需要经常变化UserAgent，Gecco支持多UserAgent随机选择
+- 在classpath下放置userAgents文件，每行表示一个userAgent，爬虫每次下载都会从该文件随机选择一个userAgent。
+- Gecco中已经默认放置了userAgents文件,包含了一些常用的UserAgent，如果需要自定义请在自己的项目的classpath根目录放置userAgents文件
+
+>六、支持多Proxy随机选择
+
+- 模拟用户行为，就需要多ip下载，Gecco支持多代理随机选择下载
+- 在classpath下放置proxys文件，每行表示一个代理服务器如：127.0.0.1:8888，爬虫每次下载都会从该文件随机选择一个proxy作为代理服务器。
+- Gecco默认不开启代理模式，如果需要自定义请在自己的项目的classpath根目录放置proxys文件
