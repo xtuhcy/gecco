@@ -44,8 +44,6 @@ public class HttpClientDownloader implements Downloader {
 	
 	private long timeout;
 	
-	private HttpHost proxy;
-	
 	public HttpClientDownloader() {
 		RequestConfig clientConfig = RequestConfig.custom().setRedirectsEnabled(false).build();
 		PoolingHttpClientConnectionManager syncConnectionManager = new PoolingHttpClientConnectionManager();
@@ -84,13 +82,16 @@ public class HttpClientDownloader implements Downloader {
 			reqObj.addHeader(entry.getKey(), entry.getValue());
 		}
 		//request config
-		reqObj.setConfig(RequestConfig.custom()
-				.setConnectionRequestTimeout(((Long)timeout).intValue())
-				.setSocketTimeout(((Long)timeout).intValue())
-				.setConnectionRequestTimeout(((Long)timeout).intValue())
-				.setRedirectsEnabled(false)
-				//.setProxy(proxy)
-				.build());
+		RequestConfig.Builder builder = RequestConfig.custom()
+		.setConnectionRequestTimeout(((Long)timeout).intValue())
+		.setSocketTimeout(((Long)timeout).intValue())
+		.setConnectionRequestTimeout(((Long)timeout).intValue())
+		.setRedirectsEnabled(false);
+		HttpHost proxy = Proxys.getProxy();
+		if(proxy != null) {
+			builder.setProxy(proxy);
+		}
+		reqObj.setConfig(builder.build());
 		//request and response
 		try {
 			org.apache.http.HttpResponse response = httpClient.execute(reqObj);
@@ -139,7 +140,7 @@ public class HttpClientDownloader implements Downloader {
 	}
 	
 	private String getCharset(HttpRequest request, String contentType) {
-		//先去contentType的字符集
+		//先取contentType的字符集
 		String charset = getCharsetFromContentType(contentType);
 		if(charset == null) {
 			//再取request指定的字符集
@@ -155,12 +156,6 @@ public class HttpClientDownloader implements Downloader {
 	@Override
 	public void timeout(long timeout) {
 		this.timeout = timeout;
-	}
-
-	@Override
-	public void proxy(String host, int port) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

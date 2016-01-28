@@ -29,6 +29,12 @@ public class UnirestDownloader implements Downloader {
 			log.debug("downloading..." + request.getUrl());
 		}
 		try {
+			HttpHost proxy = Proxys.getProxy();
+			if(proxy != null) {
+				Unirest.setProxy(proxy);
+			} else {
+				Unirest.setProxy(null);
+			}
 			request.addHeader("User-Agent", UserAgent.getUserAgent());
 			com.mashape.unirest.http.HttpResponse<String> response = null;
 			if(request instanceof HttpPostRequest) {
@@ -82,11 +88,6 @@ public class UnirestDownloader implements Downloader {
 		}
 	}
 
-	@Override
-	public void proxy(String host, int port) {
-		Unirest.setProxy(new HttpHost(host, port));
-	}
-	
 	public static void main(String[] args) throws Exception {
 		UnirestDownloader ud = new UnirestDownloader();
 		HttpResponse resp = ud.download(new HttpGetRequest("http://temai.tuniu.com/tours/212032167"));

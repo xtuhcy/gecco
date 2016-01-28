@@ -21,13 +21,11 @@ public class UserAgent {
 	
 	private static List<String> userAgents = null;
 	static {
-		URL url = Resources.getResource("userAgents");
-		if(url != null) {
+		try {
+			URL url = Resources.getResource("userAgents");
 			File file = new File(url.getPath());
-			try {
-				userAgents = Files.readLines(file, Charsets.UTF_8);
-			} catch(Exception ex) {}
-		}
+			userAgents = Files.readLines(file, Charsets.UTF_8);
+		} catch(Exception ex) {}
 	}
 	
 	public static String getUserAgent() {

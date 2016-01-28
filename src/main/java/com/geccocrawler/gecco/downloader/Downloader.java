@@ -15,7 +15,5 @@ public interface Downloader {
 	
 	public void timeout(long timeout);
 	
-	public void proxy(String host, int port);
-	
 	public void shutdown();
 }
