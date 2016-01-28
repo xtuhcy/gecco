@@ -53,27 +53,31 @@ public class Spider implements Runnable {
 			}
 			currSpiderBeanClass = engine.getSpiderBeanFactory().matchSpider(request);
 			if(currSpiderBeanClass == null) {
-				log.info("cant't match url : " + request.getUrl());
+				log.error("cant't match url : " + request.getUrl());
 				continue;
 			}
 			//bean config：beforeDownloader,afterDownloader,render,pipelines
 			SpiderBeanContext context = engine.getSpiderBeanFactory().getContext(currSpiderBeanClass);
 			//download
-			HttpResponse response = download(context, request);
+			HttpResponse response = download(context.getBeforeDownload(), context.getAfterDownload(), request);
 			if(response != null) {
-				//render
-				Render render = context.getRender();
-				SpiderBean spiderBean = render.inject(currSpiderBeanClass, request, response);
-				//pipelines
-				List<Pipeline> pipelines = context.getPipelines();
-				if(pipelines != null) {
-					for(Pipeline pipeline : pipelines) {
-						try {
-							pipeline.process(spiderBean);
-						} catch(Exception ex) {
-							ex.printStackTrace();
+				if(response.getStatus() == 200) {
+					//render
+					Render render = context.getRender();
+					SpiderBean spiderBean = render.inject(currSpiderBeanClass, request, response);
+					//pipelines
+					List<Pipeline> pipelines = context.getPipelines();
+					if(pipelines != null) {
+						for(Pipeline pipeline : pipelines) {
+							try {
+								pipeline.process(spiderBean);
+							} catch(Exception ex) {
+								ex.printStackTrace();
+							}
 						}
 					}
+				} else if(response.getStatus() == 302 || response.getStatus() == 301){
+					spiderScheduler.into(request.subRequest(response.getContent()));
 				}
 			} else {
 				//如果没有抓取到任何信息，重新加入请求队列？？重试次数
@@ -92,22 +96,24 @@ public class Spider implements Runnable {
 		}
 	}
 	
-	private HttpResponse download(SpiderBeanContext config, HttpRequest startRequest) {
+	private HttpResponse download(BeforeDownload before, AfterDownload after, HttpRequest request) {
 		try {
-			BeforeDownload before = config.getBeforeDownload();
 			if(before != null) {
-				before.process(startRequest);
+				before.process(request);
 			}
-			HttpResponse response = engine.getDownloader().download(startRequest);
-			AfterDownload after = config.getAfterDownload();
+			HttpResponse response = engine.getDownloader().download(request);
+			int status = response.getStatus();
+			if(status != 200 && status != 301 && status != 302) {
+				log.error("download error " + request.getUrl() + " : " + response.getStatus());
+				return null;
+			}
 			if(after != null) {
 				after.process(response);
 			}
 			return response;
 		} catch(Exception ex) {
-			//ex.printStackTrace();
 			//下载失败，加入jmx监控
-			log.error("download error " + startRequest.getUrl() + " : " + ex.getMessage());
+			log.error("download error " + request.getUrl() + " : " + ex.getMessage());
 			return null;
 		}
 	}

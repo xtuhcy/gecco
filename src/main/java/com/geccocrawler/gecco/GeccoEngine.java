@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.geccocrawler.gecco.downloader.Downloader;
-import com.geccocrawler.gecco.downloader.UnirestDownloader;
+import com.geccocrawler.gecco.downloader.HttpClientDownloader;
 import com.geccocrawler.gecco.pipeline.PipelineFactory;
 import com.geccocrawler.gecco.request.HttpGetRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
@@ -129,7 +129,7 @@ public class GeccoEngine {
 			scheduler = new StartScheduler();
 		}
 		if(downloader == null) {
-			downloader = new UnirestDownloader();
+			downloader = new HttpClientDownloader();
 			downloader.userAgent(userAgent);
 			downloader.timeout(timeout);
 		}

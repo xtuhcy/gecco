@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpHost;
 
+import com.geccocrawler.gecco.request.HttpGetRequest;
 import com.geccocrawler.gecco.request.HttpPostRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
@@ -37,9 +38,9 @@ public class UnirestDownloader implements Downloader {
 				HttpRequestWithBody httpRequestWithBody = Unirest.post(post.getUrl());
 				httpRequestWithBody.headers(post.getHeaders());
 				httpRequestWithBody.fields(post.getFields());
-				response = httpRequestWithBody.asString();
+				response = httpRequestWithBody.redirectsEnabled(false).asString();
 			} else {
-				response = Unirest.get(request.getUrl()).headers(request.getHeaders()).asString();
+				response = Unirest.get(request.getUrl()).headers(request.getHeaders()).redirectsEnabled(false).asString();
 			}
 			String contentType = response.getHeaders().getFirst("Content-Type");
 			HttpResponse resp = new HttpResponse();
@@ -91,5 +92,11 @@ public class UnirestDownloader implements Downloader {
 	@Override
 	public void proxy(String host, int port) {
 		Unirest.setProxy(new HttpHost(host, port));
+	}
+	
+	public static void main(String[] args) throws Exception {
+		UnirestDownloader ud = new UnirestDownloader();
+		HttpResponse resp = ud.download(new HttpGetRequest("http://temai.tuniu.com/tours/212032167"));
+		System.out.println(resp.getContent());
 	}
 }

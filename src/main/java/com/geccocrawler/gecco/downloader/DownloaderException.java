@@ -8,4 +8,8 @@ public class DownloaderException extends Exception {
 		super(cause);
 	}
 
+	public DownloaderException(String message) {
+		super(message);
+	}
+
 }

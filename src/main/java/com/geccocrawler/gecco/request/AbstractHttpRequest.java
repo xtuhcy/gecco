@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sf.cglib.beans.BeanCopier;
 
 public abstract class AbstractHttpRequest implements HttpRequest, Comparable<HttpRequest>, Serializable {
@@ -30,7 +32,7 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 	
 	public AbstractHttpRequest(String url) {
 		this();
-		this.url = url;
+		this.setUrl(url);
 	}
 
 	public void addCookie(String name, String value) {
@@ -132,7 +134,7 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 
 	@Override
 	public void setUrl(String url) {
-		this.url = url;
+		this.url = StringUtils.substringBefore(url, "#");
 	}
 
 	/**
