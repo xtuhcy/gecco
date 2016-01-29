@@ -6,12 +6,14 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sf.cglib.beans.BeanCopier;
+import com.alibaba.fastjson.JSON;
 
 public abstract class AbstractHttpRequest implements HttpRequest, Comparable<HttpRequest>, Serializable {
 	
 	private static final long serialVersionUID = -7284636094595149962L;
 
+	//private static BeanCopier copier = BeanCopier.create(AbstractHttpRequest.class, AbstractHttpRequest.class, false);
+	
 	private String url;
 	
 	private String charset;
@@ -57,9 +59,7 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 	@Override
 	public HttpRequest subRequest(String url) {
 		try {
-			BeanCopier copier = BeanCopier.create(this.getClass(), this.getClass(), false);
-			HttpRequest request = this.getClass().getConstructor().newInstance();
-			copier.copy(this, request, null);
+			HttpRequest request = (HttpRequest)clone();
 			request.setUrl(url);
 			request.refer(this.getUrl());
 			return request;
@@ -143,6 +143,24 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 	@Override
 	public int compareTo(HttpRequest o) {
 		return this.priority > o.getPriority() ? 1 : this.priority < o.getPriority() ? -1 : 0;
+	}
+	
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		//BeanCopier copier = BeanCopier.create(this.getClass(), this.getClass(), false);
+		//HttpRequest request = this.getClass().getConstructor().newInstance();
+		//copier.copy(this, request, null);
+		//通过json的序列号和反序列化实现对象的深度clone
+		String text = JSON.toJSONString(this); //序列化
+		HttpRequest request = JSON.parseObject(text, this.getClass()); //反序列化
+		return request;
+	}
+
+	public static void main(String[] args) {
+		HttpRequest request = new HttpGetRequest("aaa");
+		for(int i = 0; i < 10; i++) {
+			System.out.println(request.subRequest(""+i).getHeaders().get("Referer"));
+		}
 	}
 	
 }

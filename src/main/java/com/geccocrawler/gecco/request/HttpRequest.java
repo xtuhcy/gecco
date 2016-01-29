@@ -2,7 +2,7 @@ package com.geccocrawler.gecco.request;
 
 import java.util.Map;
 
-public interface HttpRequest {
+public interface HttpRequest extends Cloneable {
 	
 	public String getUrl();
 	

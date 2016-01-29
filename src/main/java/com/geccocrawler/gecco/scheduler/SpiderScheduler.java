@@ -2,9 +2,14 @@ package com.geccocrawler.gecco.scheduler;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.geccocrawler.gecco.request.HttpRequest;
 
 public class SpiderScheduler implements Scheduler {
+	
+	private static Log log = LogFactory.getLog(SpiderScheduler.class);
 	
 	private ConcurrentLinkedQueue<HttpRequest> queue;
 	
@@ -14,12 +19,21 @@ public class SpiderScheduler implements Scheduler {
 
 	@Override
 	public HttpRequest out() {
-		return queue.poll();
+		HttpRequest request = queue.poll();
+		if(request != null) {
+			if(log.isDebugEnabled()) {
+				log.debug("OUT:"+request.getUrl()+"("+request.getHeaders().get("Referer")+")");
+			}
+		}
+		return request;
 	}
 
 	@Override
 	public void into(HttpRequest request) {
 		queue.offer(request);
+		if(log.isDebugEnabled()) {
+			log.debug("INTO:"+request.getUrl()+"("+request.getHeaders().get("Referer")+")");
+		}
 	}
 
 }

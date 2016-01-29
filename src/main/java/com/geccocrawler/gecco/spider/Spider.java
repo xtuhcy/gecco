@@ -83,11 +83,12 @@ public class Spider implements Runnable {
 						}
 					}
 				} else if(response.getStatus() == 302 || response.getStatus() == 301){
-					spiderScheduler.into(request.subRequest(response.getContent()));
+					HttpRequest sub = request.subRequest(response.getContent());
+					spiderScheduler.into(sub);
 				}
 			} else {
 				//如果没有抓取到任何信息，重新加入请求队列？？重试次数
-				spiderScheduler.into(request);
+				//spiderScheduler.into(request);
 			}
 			int interval = engine.getInterval();
 			if(interval > 0) {
