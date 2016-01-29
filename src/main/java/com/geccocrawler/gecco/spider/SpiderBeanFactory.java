@@ -91,7 +91,6 @@ public class SpiderBeanFactory {
 				Class<? extends SpiderBean> spider = entrys.getValue();
 				return spider;
 			}
-			//System.out.println("3333333333333");
 		}
 		return null;
 		
@@ -116,9 +115,9 @@ public class SpiderBeanFactory {
 		return context;
 	}
 	
-	private void downloadContext(SpiderBeanContext context, String spiderName) {
-		context.setBeforeDownload(downloaderAOPFactory.getBefore(spiderName));
-		context.setAfterDownload(downloaderAOPFactory.getAfter(spiderName));
+	private void downloadContext(SpiderBeanContext context, String geccoName) {
+		context.setBeforeDownload(downloaderAOPFactory.getBefore(geccoName));
+		context.setAfterDownload(downloaderAOPFactory.getAfter(geccoName));
 	}
 	
 	private void renderContext(SpiderBeanContext context, Class<?> spiderBeanClass) {

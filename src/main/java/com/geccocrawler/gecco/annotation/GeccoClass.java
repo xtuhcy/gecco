@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Inherited
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SpiderName {
+public @interface GeccoClass {
 
-	String value();
+	Class value();
 }

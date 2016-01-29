@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.reflections.Reflections;
 
-import com.geccocrawler.gecco.annotation.SpiderName;
+import com.geccocrawler.gecco.annotation.GeccoClass;
 
 public class DownloaderAOPFactory {
 	
@@ -17,11 +17,11 @@ public class DownloaderAOPFactory {
 	public DownloaderAOPFactory(Reflections reflections) {
 		 this.beforeDownloads = new HashMap<String, BeforeDownload>();
 		 this.afterDownloads = new HashMap<String, AfterDownload>();
-		 Set<Class<?>> classes = reflections.getTypesAnnotatedWith(SpiderName.class);
+		 Set<Class<?>> classes = reflections.getTypesAnnotatedWith(GeccoClass.class);
 		for(Class<?> aopClass : classes) {
-			SpiderName spiderName = (SpiderName)aopClass.getAnnotation(SpiderName.class);
+			GeccoClass geccoClass = (GeccoClass)aopClass.getAnnotation(GeccoClass.class);
 			try {
-				String name = spiderName.value();
+				String name = geccoClass.value().getName();
 				Object o = aopClass.newInstance();
 				if(o instanceof BeforeDownload) {
 					beforeDownloads.put(name, (BeforeDownload)o);

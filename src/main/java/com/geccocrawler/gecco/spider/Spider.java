@@ -114,7 +114,7 @@ public class Spider implements Runnable {
 				return null;
 			}
 			if(after != null) {
-				after.process(response);
+				after.process(request, response);
 			}
 			return response;
 		} catch(Exception ex) {
