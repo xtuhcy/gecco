@@ -132,6 +132,9 @@ public class SpiderBeanFactory {
 		if(pipelineNames != null && pipelineNames.length > 0) {
 			List<Pipeline> pipelines = new ArrayList<Pipeline>();
 			for(String pipelineName : pipelineNames) {
+				if(StringUtils.isEmpty(pipelineName)) {
+					continue;
+				}
 				Pipeline pipeline = pipelineFactory.getPipeline(pipelineName);
 				if(pipeline != null) {
 					pipelines.add(pipeline);
