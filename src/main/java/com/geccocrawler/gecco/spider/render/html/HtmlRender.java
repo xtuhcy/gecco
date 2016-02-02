@@ -20,16 +20,20 @@ public class HtmlRender extends AbstractRender {
 	
 	private AjaxFieldRender ajaxFieldRender;
 	
+	private JSVarFieldRender jsVarFieldRender;
+	
 	public HtmlRender(CustomFieldRenderFactory customFieldRenderFactory) {
 		super(customFieldRenderFactory);
 		this.htmlFieldRender = new HtmlFieldRender();
 		this.ajaxFieldRender = new AjaxFieldRender();
+		this.jsVarFieldRender = new JSVarFieldRender();
 	}
 
 	@Override
 	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) {
 		htmlFieldRender.render(request, response, beanMap, bean);
-		ajaxFieldRender.render(request, response, beanMap, bean);		
+		ajaxFieldRender.render(request, response, beanMap, bean);
+		jsVarFieldRender.render(request, response, beanMap, bean);
 	}
 
 }

@@ -10,7 +10,7 @@ public class JDad implements JsonBean {
 
 	private static final long serialVersionUID = 2250225801616402995L;
 
-	@JSONPath("$.ads[0].ad") 
+	@JSONPath("$.ads[0].ad")
 	private String ad;
 
 	@JSONPath("$.ads")

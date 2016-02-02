@@ -41,5 +41,5 @@ public class JsonFieldRender implements FieldRender {
 		}
 		beanMap.putAll(fieldMap);
 	}
-
+	
 }

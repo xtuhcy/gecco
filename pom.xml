@@ -51,6 +51,11 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.4</version>
 		</dependency>
+		<dependency>
+			<groupId>org.mozilla</groupId>
+			<artifactId>rhino</artifactId>
+			<version>1.7.6</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<pluginManagement>
