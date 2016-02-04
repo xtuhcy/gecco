@@ -57,13 +57,14 @@ public class UrlMatcher {
 	
 	public static Map<String, String> match(String url, String regex) {
 		String regexSrc = StringUtils.replace(regex, "?", "\\?");
+		//regexSrc = StringUtils.replace(regexSrc, "/", "\\/");
 		String regex1 = "\\{(.*?)\\}";
 		StringBuffer sb = new StringBuffer();
 		Pattern pattern = Pattern.compile(regex1);
 		Matcher matcher = pattern.matcher(regexSrc);
 		List<String> names = new ArrayList<String>();
 		while(matcher.find()) {
-			matcher.appendReplacement(sb, "(.*)");
+			matcher.appendReplacement(sb, "([^/]*)");
 			String name = matcher.group(1);
 			names.add(name);
 		}
@@ -73,12 +74,14 @@ public class UrlMatcher {
 			if(log.isDebugEnabled()) {
 				log.debug(regex2);
 			}
+			regex2 = "^"+regex2;
 			Pattern pattern2 = Pattern.compile(regex2);
 			Matcher matcher2 = pattern2.matcher(url);
-			if(matcher2.find()) {
+			if(matcher2.matches()) {
 				Map<String, String> params = new HashMap<String, String>(names.size());
 				for(int i = 1; i <= matcher2.groupCount(); i++) {
 					String value = matcher2.group(i);
+					boolean x = matcher2.requireEnd();
 					try {
 						value = URLDecoder.decode(value, "UTF-8");
 					} catch (UnsupportedEncodingException e) {
@@ -99,10 +102,8 @@ public class UrlMatcher {
 	}
 	
 	public static void main(String[] args) {
-		String regex = "http://list.jd.com/list.html?cat={cat}&delivery={delivery}&page={page}&stock={stock}&JL=4_7_0";
-		String url = "http://list.jd.com/list.html?cat={cat}&delivery=1&page=1&stock=1&JL=[cat]";
-		//System.out.println(match(url, regex));
-		System.out.println(replaceParams(url, "cat", "aaaaaaaaaaa"));
-		System.out.println(replaceFields(url, "cat", "aaaaaaaaaaa"));
+		String regex = "http://temai.tuniu.com/weihuo/{catalog}/{srcId}/";
+		String url = "http://temai.tuniu.com/weihuo/tours/s4-p1/";
+		System.out.println(match(url, regex));
 	}
 }
