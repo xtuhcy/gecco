@@ -32,6 +32,10 @@ public class Proxys {
 			if(lines.size() > 0) {
 				proxys = new ArrayList<HttpHost>(lines.size());
 				for(String line : lines) {
+					line = line.trim();
+					if(line.startsWith("#")) {
+						continue;
+					}
 					String[] hostPort = line.split(":");
 					if(hostPort.length == 2) {
 						String host = hostPort[0];

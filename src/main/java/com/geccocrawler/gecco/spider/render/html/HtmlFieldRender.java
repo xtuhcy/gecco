@@ -37,14 +37,14 @@ public class HtmlFieldRender implements FieldRender {
 		try {
 			beanMap.putAll(fieldMap);
 		} catch(Exception ex) {
-			System.out.println(fieldMap.toString());
-			ex.printStackTrace();
+			log.error(ex.getMessage()+":"+fieldMap.toString());
 		}
 	}
 	
 	private Object injectHtmlField(HttpRequest request, HttpResponse response, Field field, Class<? extends SpiderBean> clazz) {
 		HtmlField htmlField = field.getAnnotation(HtmlField.class);
-		HtmlParser parser = new HtmlParser(request.getUrl(), response.getContent());
+		String content = response.getContent();
+		HtmlParser parser = new HtmlParser(request.getUrl(), content);
 		parser.setLogClass(clazz);
 		String cssPath = htmlField.cssPath();
 		Class<?> type = field.getType();//类属性的类
@@ -60,7 +60,7 @@ public class HtmlFieldRender implements FieldRender {
 				try {
 					return parser.$basicList(cssPath, field);
 				} catch(Exception ex) {
-					log.error("field [" + field.getName() + "] render error");
+					log.error("field [" + field.getName() + "] render error : " + content);
 					return null;
 				}
 			}
@@ -73,7 +73,7 @@ public class HtmlFieldRender implements FieldRender {
 				try {
 					return parser.$basic(cssPath, field);
 				} catch(Exception ex) {
-					log.error("field [" + field.getName() + "] render error");
+					log.error("field [" + field.getName() + "] render error : " + content);
 					return null;
 				}
 			}
