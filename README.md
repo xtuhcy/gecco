@@ -7,6 +7,8 @@
 	5、支持下载时UserAgent随机选取
 	6、支持下载代理服务器随机选取
 	7、支持结合Spring开发业务逻辑
+##用户手册
+	https://xtuhcy.gitbooks.io/geccocrawler/content/index.html
 ####初衷
 >现在开发应用已经离不开爬虫，网络信息浩如烟海，对互联网的信息加以利用是如今所有应用程序都必须要掌握的技术。了解过现在的一些爬虫软件，python语言编写的爬虫框架[scrapy](https://github.com/scrapy/scrapy)得到了较为广泛的应用。gecco的设计和架构受到了scrapy一些启发，结合java语言的特点，形成了如下软件框架。易用是gecco框架首要目标，只要有一些java开发基础，会写jquery的选择器，就能轻松配置爬虫。
 ##结构图

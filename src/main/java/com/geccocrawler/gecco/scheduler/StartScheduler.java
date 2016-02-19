@@ -4,6 +4,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.geccocrawler.gecco.request.HttpRequest;
 
+/**
+ * 阻塞队列
+ * 
+ * @author huchengyi
+ *
+ */
 public class StartScheduler implements Scheduler {
 	
 	private LinkedBlockingQueue<HttpRequest> startQueue;

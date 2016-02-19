@@ -7,6 +7,12 @@ import org.apache.commons.logging.LogFactory;
 
 import com.geccocrawler.gecco.request.HttpRequest;
 
+/**
+ * 线程安全的非阻塞FIFO队列
+ * 
+ * @author huchengyi
+ *
+ */
 public class SpiderScheduler implements Scheduler {
 	
 	private static Log log = LogFactory.getLog(SpiderScheduler.class);
