@@ -131,7 +131,6 @@ SpiderBeanContext包括需要该SpiderBean的渲染类（目前支持HTML、JSON
 >定义一个SpiderBean必须有的注解，告诉爬虫引擎什么样的url转换成该java bean，使用什么渲染器渲染，java bean渲染完成后传递给哪些管道过滤器继续处理
 
 - matchUrl：摒弃正则表达式的匹配方式，采用更容易理解的{value}方式，如：https://github.com/{user}/{project}。user和project变量将会在request中获取。
-- render：bean渲染类型，计划支持html、json、xml、rss
 - pipelines：bean渲染完成后，后续的管道过滤器
 
 ###@Request
