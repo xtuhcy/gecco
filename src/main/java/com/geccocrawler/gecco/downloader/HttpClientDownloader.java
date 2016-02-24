@@ -19,6 +19,7 @@ import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -28,6 +29,7 @@ import org.apache.http.util.EntityUtils;
 import com.geccocrawler.gecco.request.HttpPostRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
+import com.geccocrawler.gecco.utils.UrlUtils;
 
 /**
  * userAgent更换
@@ -94,12 +96,14 @@ public class HttpClientDownloader implements Downloader {
 		reqObj.setConfig(builder.build());
 		//request and response
 		try {
-			org.apache.http.HttpResponse response = httpClient.execute(reqObj);
+			 HttpClientContext context = HttpClientContext.create();  
+			org.apache.http.HttpResponse response = httpClient.execute(reqObj, context);
 			int status = response.getStatusLine().getStatusCode();
 			HttpResponse resp = new HttpResponse();
 			resp.setStatus(status);
 			if(status == 302 || status == 301) {
-				resp.setContent(response.getFirstHeader("Location").getValue());
+				String redirectUrl = response.getFirstHeader("Location").getValue();
+				resp.setContent(UrlUtils.relative2Absolute(request.getUrl(), redirectUrl));
 			} else if(status == 200) {
 				HttpEntity responseEntity = response.getEntity();
 				resp.setRaw(responseEntity.getContent());

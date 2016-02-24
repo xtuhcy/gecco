@@ -28,7 +28,7 @@ public class SpiderScheduler implements Scheduler {
 		HttpRequest request = queue.poll();
 		if(request != null) {
 			if(log.isDebugEnabled()) {
-				log.debug("OUT:"+request.getUrl()+"("+request.getHeaders().get("Referer")+")");
+				log.debug("OUT:"+request.getUrl()+"(Referer:"+request.getHeaders().get("Referer")+")");
 			}
 		}
 		return request;
@@ -38,7 +38,7 @@ public class SpiderScheduler implements Scheduler {
 	public void into(HttpRequest request) {
 		queue.offer(request);
 		if(log.isDebugEnabled()) {
-			log.debug("INTO:"+request.getUrl()+"("+request.getHeaders().get("Referer")+")");
+			log.debug("INTO:"+request.getUrl()+"(Referer:"+request.getHeaders().get("Referer")+")");
 		}
 	}
 

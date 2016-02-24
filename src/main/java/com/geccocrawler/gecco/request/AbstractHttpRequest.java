@@ -158,9 +158,7 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 
 	public static void main(String[] args) {
 		HttpRequest request = new HttpGetRequest("aaa");
-		for(int i = 0; i < 10; i++) {
-			System.out.println(request.subRequest(""+i).getHeaders().get("Referer"));
-		}
+		
 	}
 	
 }
