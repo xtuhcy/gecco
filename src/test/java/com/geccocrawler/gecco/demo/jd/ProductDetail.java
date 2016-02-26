@@ -12,20 +12,35 @@ public class ProductDetail implements HtmlBean {
 
 	private static final long serialVersionUID = -377053120283382723L;
 
+	/**
+	 * 商品代码
+	 */
 	@RequestParameter
 	private String code;
 	
-	@Ajax(url="http://p.3.cn/prices/mgets?skuIds=J_{code}")
-	private JDPrice price;
-	
+	/**
+	 * 标题
+	 */
 	@Text
 	@HtmlField(cssPath="#name > h1")
 	private String title;
 	
+	/**
+	 * ajax获取商品价格
+	 */
+	@Ajax(url="http://p.3.cn/prices/get?skuIds=J_[code]")
+	private JDPrice price;
+
+	/**
+	 * 商品的推广语
+	 */
 	@Ajax(url="http://cd.jd.com/promotion/v2?skuId={code}&area=1_2805_2855_0&cat=737%2C794%2C798")
 	private JDad jdAd;
 	
-	@HtmlField(cssPath="detail-content")
+	/*
+	 * 商品规格参数
+	 */
+	@HtmlField(cssPath="#product-detail-2")
 	private String detail;
 	
 	public JDPrice getPrice() {

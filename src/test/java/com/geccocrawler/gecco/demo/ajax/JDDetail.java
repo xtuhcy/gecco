@@ -28,7 +28,7 @@ public class JDDetail implements HtmlBean {
 	@Ajax(url="http://cd.jd.com/promotion/v2?skuId={code}&area=1_2805_2855_0&cat=737%2C794%2C798")
 	private JDad jdAd;
 	
-	@HtmlField(cssPath="detail-content")
+	@HtmlField(cssPath="#product-detail-2")
 	private String detail;
 	
 	public JDPrice getPrice() {

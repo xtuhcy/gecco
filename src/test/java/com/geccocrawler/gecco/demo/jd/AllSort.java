@@ -51,13 +51,14 @@ public class AllSort implements HtmlBean {
 	}
 
 	public static void main(String[] args) {
-		HttpGetRequest start = new HttpGetRequest("http://list.jd.com/list.html?cat=9987,653,659&delivery=1&page=1&JL=4_10_0&go=0");
+		HttpGetRequest start = new HttpGetRequest("http://www.jd.com/allSort.aspx");
 		start.setCharset("GBK");
 		GeccoEngine.create()
 		.classpath("com.geccocrawler.gecco.demo.jd")
 		//开始抓取的页面地址
 		//.start("http://www.jd.com/allSort.aspx")
 		//.start("http://list.jd.com/list.html?cat=9987,653,659&delivery=1&page=1&JL=4_10_0&go=0")
+		//.start("http://item.jd.com/1861098.html")
 		.start(start)
 		//开启几个爬虫线程
 		.thread(1)
