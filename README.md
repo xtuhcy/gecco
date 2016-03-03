@@ -49,6 +49,7 @@ SpiderBeanContext包括需要该SpiderBean的渲染类（目前支持HTML、JSON
 		@RequestParameter("project")
 		private String project;
 		
+		@Text(own=false)
 		@HtmlField(cssPath=".repository-meta-content")
 		private String title;
 		

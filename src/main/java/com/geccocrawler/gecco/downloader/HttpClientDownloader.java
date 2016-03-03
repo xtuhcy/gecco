@@ -5,8 +5,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,7 +36,7 @@ import com.geccocrawler.gecco.utils.UrlUtils;
  * @author huchengyi
  *
  */
-public class HttpClientDownloader implements Downloader {
+public class HttpClientDownloader extends AbstractDownloader {
 	
 	private static Log log = LogFactory.getLog(HttpClientDownloader.class);
 	
@@ -89,6 +87,7 @@ public class HttpClientDownloader implements Downloader {
 		.setSocketTimeout(((Long)timeout).intValue())
 		.setConnectionRequestTimeout(((Long)timeout).intValue())
 		.setRedirectsEnabled(false);
+		//proxy
 		HttpHost proxy = Proxys.getProxy();
 		if(proxy != null) {
 			builder.setProxy(proxy);
@@ -109,7 +108,7 @@ public class HttpClientDownloader implements Downloader {
 				resp.setRaw(responseEntity.getContent());
 				String contentType = responseEntity.getContentType().getValue();
 				resp.setContentType(contentType);
-				String charset = getCharset(request, contentType);
+				String charset = getCharset(request.getCharset(), contentType);
 				resp.setCharset(charset);
 				String content = EntityUtils.toString(responseEntity, charset);
 				/*Header ceHeader = responseEntity.getContentEncoding();
@@ -130,33 +129,6 @@ public class HttpClientDownloader implements Downloader {
 		}
 	}
 	
-	private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*\"?([^\\s;\"]*)");
-
-	public String getCharsetFromContentType(String contentType) {
-		if (contentType == null)
-			return null;
-
-		Matcher m = charsetPattern.matcher(contentType);
-		if (m.find()) {
-			return m.group(1).trim().toUpperCase();
-		}
-		return null;
-	}
-	
-	private String getCharset(HttpRequest request, String contentType) {
-		//先取contentType的字符集
-		String charset = getCharsetFromContentType(contentType);
-		if(charset == null) {
-			//再取request指定的字符集
-			charset = request.getCharset();
-		}
-		if(charset == null) {
-			//默认采用utf-8
-			charset = "UTF-8";
-		}
-		return charset;
-	}
-
 	@Override
 	public void timeout(long timeout) {
 		this.timeout = timeout;

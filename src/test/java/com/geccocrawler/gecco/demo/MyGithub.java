@@ -28,7 +28,7 @@ public class MyGithub implements HtmlBean {
 	@HtmlField(cssPath=".repository-meta-content")
 	private String title;
 	
-	@Text
+	@Text(own=false)
 	@HtmlField(cssPath=".pagehead-actions li:nth-child(2) .social-count")
 	private int star;
 	
