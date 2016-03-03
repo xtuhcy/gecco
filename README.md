@@ -243,11 +243,12 @@ SpiderBeanContext包括需要该SpiderBean的渲染类（目前支持HTML、JSON
 >七、支持htmlunit下载
 
 - 利用htmlunit可以完成ajax请求和javascript的dom操作，不再需要手动配置ajax。但是htmlunit的抓取效率会低很多，因为要下载并且执行所用js代码。
-- 使用方法
 
-	GeccoEngine.create().downloader(new HtmlUnitDownloder())...
+使用方法
 	
-- 下载
+	GeccoEngine.create().downloader(new HtmlUnitDownloder())...
+
+下载
 
 	<dependency>
 	    <groupId>com.geccocrawler</groupId>
