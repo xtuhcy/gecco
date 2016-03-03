@@ -31,7 +31,7 @@ SpiderBeanContext包括需要该SpiderBean的渲染类（目前支持HTML、JSON
 	<dependency>
 	    <groupId>com.geccocrawler</groupId>
 	    <artifactId>gecco</artifactId>
-	    <version>1.0.4</version>
+	    <version>1.0.5</version>
 	</dependency>
 
 ##QuikStart
@@ -212,7 +212,7 @@ SpiderBeanContext包括需要该SpiderBean的渲染类（目前支持HTML、JSON
 	<dependency>
 	    <groupId>com.geccocrawler</groupId>
 	    <artifactId>gecco-spring</artifactId>
-	    <version>1.0.4</version>
+	    <version>1.0.5</version>
 	</dependency>
 
 >四、通过redis支持分布式抓取
@@ -224,7 +224,7 @@ SpiderBeanContext包括需要该SpiderBean的渲染类（目前支持HTML、JSON
 	<dependency>
 	    <groupId>com.geccocrawler</groupId>
 	    <artifactId>gecco-redis</artifactId>
-	    <version>1.0.4</version>
+	    <version>1.0.5</version>
 	</dependency>
 
 >五、支持多UserAgent随机选择
@@ -238,3 +238,18 @@ SpiderBeanContext包括需要该SpiderBean的渲染类（目前支持HTML、JSON
 - 模拟用户行为，就需要多ip下载，Gecco支持多代理随机选择下载
 - 在classpath下放置proxys文件，每行表示一个代理服务器如：127.0.0.1:8888，爬虫每次下载都会从该文件随机选择一个proxy作为代理服务器。
 - Gecco默认不开启代理模式，如果需要自定义请在自己的项目的classpath根目录放置proxys文件
+
+>七、支持htmlunit下载
+
+- 利用htmlunit可以完成ajax请求和javascript的dom操作，不再需要手动配置ajax。但是htmlunit的抓取效率会低很多，因为要下载并且执行所用js代码。
+- 使用方法
+
+	GeccoEngine.create().downloader(new HtmlUnitDownloder())...
+	
+- 下载
+
+	<dependency>
+	    <groupId>com.geccocrawler</groupId>
+	    <artifactId>gecco-htmlunit</artifactId>
+	    <version>1.0.5</version>
+	</dependency>
