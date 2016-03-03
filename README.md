@@ -7,6 +7,7 @@
 	5、支持下载时UserAgent随机选取
 	6、支持下载代理服务器随机选取
 	7、支持结合Spring开发业务逻辑
+	8、支持htmlunit扩展
 ##用户手册
 	https://xtuhcy.gitbooks.io/geccocrawler/content/index.html
 ####初衷
