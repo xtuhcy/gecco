@@ -1,6 +1,9 @@
 package com.geccocrawler.gecco.downloader;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +25,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
+import org.apache.http.util.CharArrayBuffer;
 
 import com.geccocrawler.gecco.request.HttpPostRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
@@ -36,6 +39,7 @@ import com.geccocrawler.gecco.utils.UrlUtils;
  * @author huchengyi
  *
  */
+//@Monitor(mbean=MonitorInterceptor.class, method="download")
 public class HttpClientDownloader extends AbstractDownloader {
 	
 	private static Log log = LogFactory.getLog(HttpClientDownloader.class);
@@ -110,7 +114,8 @@ public class HttpClientDownloader extends AbstractDownloader {
 				resp.setContentType(contentType);
 				String charset = getCharset(request.getCharset(), contentType);
 				resp.setCharset(charset);
-				String content = EntityUtils.toString(responseEntity, charset);
+				//String content = EntityUtils.toString(responseEntity, charset);
+				String content = getContent(responseEntity, charset);
 				/*Header ceHeader = responseEntity.getContentEncoding();
 				if(ceHeader != null && ceHeader.getValue().equalsIgnoreCase("gzip")) {
 					content = EntityUtils.toString(new GzipDecompressingEntity(responseEntity), charset);
@@ -122,7 +127,7 @@ public class HttpClientDownloader extends AbstractDownloader {
 				throw new DownloaderException("ERROR : " + status);
 			}
 			return resp;
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new DownloaderException(e);
 		} finally {
 			reqObj.releaseConnection();
@@ -142,5 +147,23 @@ public class HttpClientDownloader extends AbstractDownloader {
 			httpClient = null;
 		}
 	}
-
+	
+	public String getContent(HttpEntity entity, String charset) throws IOException {
+        InputStream instream = entity.getContent();
+        if (instream == null) {
+            return null;
+        }
+        int i = (int)entity.getContentLength();
+        if (i < 0) {
+            i = 4096;
+        }
+        Reader reader = new InputStreamReader(instream, charset);
+        CharArrayBuffer buffer = new CharArrayBuffer(i);
+        char[] tmp = new char[1024];
+        int l;
+        while((l = reader.read(tmp)) != -1) {
+            buffer.append(tmp, 0, l);
+        }
+        return buffer.toString();
+    }
 }

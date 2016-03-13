@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import com.geccocrawler.gecco.GeccoEngine;
 import com.geccocrawler.gecco.downloader.AfterDownload;
 import com.geccocrawler.gecco.downloader.BeforeDownload;
+import com.geccocrawler.gecco.downloader.DownloaderException;
 import com.geccocrawler.gecco.pipeline.Pipeline;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
@@ -65,30 +66,41 @@ public class Spider implements Runnable {
 			//bean config：beforeDownloader,afterDownloader,render,pipelines
 			SpiderBeanContext context = engine.getSpiderBeanFactory().getContext(currSpiderBeanClass);
 			//download
-			HttpResponse response = download(context.getBeforeDownload(), context.getAfterDownload(), request);
-			if(response != null) {
-				if(response.getStatus() == 200) {
-					//render
-					Render render = context.getRender();
-					SpiderBean spiderBean = render.inject(currSpiderBeanClass, request, response);
-					//pipelines
-					List<Pipeline> pipelines = context.getPipelines();
-					if(pipelines != null) {
-						for(Pipeline pipeline : pipelines) {
-							try {
-								pipeline.process(spiderBean);
-							} catch(Exception ex) {
-								ex.printStackTrace();
+			HttpResponse response = null;
+			try {
+				response = download(context.getBeforeDownload(), context.getAfterDownload(), request);
+				if(response != null) {
+					if(response.getStatus() == 200) {
+						//render
+						Render render = context.getRender();
+						SpiderBean spiderBean = render.inject(currSpiderBeanClass, request, response);
+						//pipelines
+						List<Pipeline> pipelines = context.getPipelines();
+						if(pipelines != null) {
+							for(Pipeline pipeline : pipelines) {
+								try {
+									pipeline.process(spiderBean);
+								} catch(Exception ex) {
+									ex.printStackTrace();
+								}
 							}
 						}
+					} else if(response.getStatus() == 302 || response.getStatus() == 301){
+						HttpRequest sub = request.subRequest(response.getContent());
+						spiderScheduler.into(sub);
 					}
-				} else if(response.getStatus() == 302 || response.getStatus() == 301){
-					HttpRequest sub = request.subRequest(response.getContent());
-					spiderScheduler.into(sub);
+				} else {
+					//如果没有抓取到任何信息，重新加入请求队列？？重试次数
+					//spiderScheduler.into(request);
 				}
-			} else {
-				//如果没有抓取到任何信息，重新加入请求队列？？重试次数
-				//spiderScheduler.into(request);
+			} finally {
+				if(response != null) {
+					try{
+						response.getRaw().close();
+					} catch(Exception ex) {
+						response.setRaw(null);
+					}
+				}
 			}
 			int interval = engine.getInterval();
 			if(interval > 0) {
@@ -111,6 +123,7 @@ public class Spider implements Runnable {
 			HttpResponse response = engine.getDownloader().download(request);
 			int status = response.getStatus();
 			if(status != 200 && status != 301 && status != 302) {
+				//500,404等错误
 				log.error("download error " + request.getUrl() + " : " + response.getStatus());
 				return null;
 			}
@@ -118,8 +131,8 @@ public class Spider implements Runnable {
 				after.process(request, response);
 			}
 			return response;
-		} catch(Exception ex) {
-			//下载失败，加入jmx监控
+		} catch(DownloaderException ex) {
+			//下载异常
 			log.error("download error " + request.getUrl() + " : " + ex.getMessage());
 			return null;
 		}
