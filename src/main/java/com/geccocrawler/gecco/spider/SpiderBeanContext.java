@@ -23,6 +23,8 @@ public class SpiderBeanContext {
 	
 	private Downloader downloader;
 	
+	private int timeout;
+	
 	private BeforeDownload beforeDownload;
 	
 	private AfterDownload afterDownload;
@@ -67,6 +69,14 @@ public class SpiderBeanContext {
 
 	public void setDownloader(Downloader downloader) {
 		this.downloader = downloader;
+	}
+
+	public int getTimeout() {
+		return timeout;
+	}
+
+	public void setTimeout(int timeout) {
+		this.timeout = timeout;
 	}
 
 }

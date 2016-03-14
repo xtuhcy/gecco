@@ -75,7 +75,7 @@ public class Spider implements Runnable {
 			//download
 			HttpResponse response = null;
 			try {
-				response = download(context.getDownloader(), context.getBeforeDownload(), context.getAfterDownload(), request);
+				response = download(context, request);
 				if(response != null) {
 					if(response.getStatus() == 200) {
 						//render
@@ -128,16 +128,27 @@ public class Spider implements Runnable {
 	 * @return
 	 */
 	private HttpResponse defaultDownload(HttpRequest request) {
-		Downloader downloader = engine.getSpiderBeanFactory().getDownloaderFactory().defaultDownloader();
-		return download(downloader, null, null, request);
+		return download(null, request);
 	}
 	
-	private HttpResponse download(Downloader currDownloader, BeforeDownload before, AfterDownload after, HttpRequest request) {
+	private HttpResponse download(SpiderBeanContext context, HttpRequest request) {
 		try {
+			Downloader currDownloader = null;
+			BeforeDownload before = null;
+			AfterDownload after = null;
+			int timeout = 1000;
+			if(context != null) {
+				currDownloader = context.getDownloader();
+				before = context.getBeforeDownload();
+				after = context.getAfterDownload();
+				timeout = context.getTimeout();
+			} else {
+				currDownloader = engine.getSpiderBeanFactory().getDownloaderFactory().defaultDownloader();
+			}
 			if(before != null) {
 				before.process(request);
 			}
-			HttpResponse response = currDownloader.download(request);
+			HttpResponse response = currDownloader.download(request, timeout);
 			int status = response.getStatus();
 			if(status != 200 && status != 301 && status != 302) {
 				//500,404等错误

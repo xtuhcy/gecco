@@ -43,8 +43,6 @@ public class GeccoEngine {
 	
 	private int interval;
 	
-	private int timeout;
-	
 	private GeccoEngine() {}
 	
 	public static GeccoEngine create() {
@@ -90,11 +88,6 @@ public class GeccoEngine {
 	
 	public GeccoEngine interval(int interval) {
 		this.interval = interval;
-		return this;
-	}
-	
-	public GeccoEngine timeout(int timeout) {
-		this.timeout = timeout;
 		return this;
 	}
 	

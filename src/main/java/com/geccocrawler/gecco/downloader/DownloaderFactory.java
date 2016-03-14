@@ -26,8 +26,9 @@ public class DownloaderFactory {
 			try {
 				Object o = downloaderClass.newInstance();
 				if(o instanceof Downloader) {
+					Downloader downloaderInstance = (Downloader)o;
 					String name = downloader.value();
-					downloaders.put(name, (Downloader)o);
+					downloaders.put(name, downloaderInstance);
 				}
 			} catch(Exception ex) {
 				ex.printStackTrace();

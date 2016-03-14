@@ -27,6 +27,13 @@ public @interface Gecco {
 	String downloader() default "";
 	
 	/**
+	 * 下载超时时间
+	 * 
+	 * @return
+	 */
+	int timeout() default 3000;
+	
+	/**
 	 * bean渲染完成后，后续的管道过滤器
 	 * 
 	 * @return 管道过滤器

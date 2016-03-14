@@ -11,5 +11,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Downloader {
 
+	/**
+	 * 下载器名称
+	 * 
+	 * @return
+	 */
 	String value();
+	
 }

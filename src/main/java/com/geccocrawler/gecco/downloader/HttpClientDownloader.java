@@ -58,7 +58,7 @@ public class HttpClientDownloader extends AbstractDownloader {
 	}
 
 	@Override
-	public HttpResponse download(HttpRequest request) throws DownloaderException {
+	public HttpResponse download(HttpRequest request, int timeout) throws DownloaderException {
 		if(log.isDebugEnabled()) {
 			log.debug("downloading..." + request.getUrl());
 		}
@@ -88,9 +88,9 @@ public class HttpClientDownloader extends AbstractDownloader {
 		}
 		//request config
 		RequestConfig.Builder builder = RequestConfig.custom()
-		.setConnectionRequestTimeout(((Long)timeout).intValue())
-		.setSocketTimeout(((Long)timeout).intValue())
-		.setConnectionRequestTimeout(((Long)timeout).intValue())
+		.setConnectionRequestTimeout(timeout)
+		.setSocketTimeout(timeout)
+		.setConnectionRequestTimeout(timeout)
 		.setRedirectsEnabled(false);
 		//proxy
 		HttpHost proxy = Proxys.getProxy();
@@ -131,11 +131,6 @@ public class HttpClientDownloader extends AbstractDownloader {
 		}
 	}
 	
-	@Override
-	public void timeout(long timeout) {
-		this.timeout = timeout;
-	}
-
 	@Override
 	public void shutdown() {
 		try {

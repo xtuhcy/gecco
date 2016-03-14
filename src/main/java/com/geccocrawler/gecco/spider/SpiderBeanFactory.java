@@ -132,6 +132,7 @@ public class SpiderBeanFactory {
 		Gecco gecco = spiderBeanClass.getAnnotation(Gecco.class);
 		String downloader = gecco.downloader();
 		context.setDownloader(downloaderFactory.getDownloader(downloader));
+		context.setTimeout(gecco.timeout());
 	}
 	
 	private void renderContext(SpiderBeanContext context, Class<?> spiderBeanClass) {
