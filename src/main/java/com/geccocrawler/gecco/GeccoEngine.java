@@ -8,8 +8,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.alibaba.fastjson.JSON;
-import com.geccocrawler.gecco.downloader.Downloader;
-import com.geccocrawler.gecco.downloader.HttpClientDownloader;
 import com.geccocrawler.gecco.pipeline.PipelineFactory;
 import com.geccocrawler.gecco.request.HttpGetRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
@@ -32,8 +30,6 @@ public class GeccoEngine {
 	private List<HttpRequest> startRequests = new ArrayList<HttpRequest>();
 	
 	private Scheduler scheduler;
-	
-	private Downloader downloader;
 	
 	public SpiderBeanFactory spiderBeanFactory;
 	
@@ -87,11 +83,6 @@ public class GeccoEngine {
 		return this;
 	}
 	
-	public GeccoEngine downloader(Downloader downloader) {
-		this.downloader = downloader;
-		return this;
-	}
-	
 	public GeccoEngine thread(int count) {
 		this.threadCount = count;
 		return this;
@@ -121,10 +112,6 @@ public class GeccoEngine {
 		if(scheduler == null) {
 			scheduler = new StartScheduler();
 		}
-		if(downloader == null) {
-			downloader = new HttpClientDownloader();
-			downloader.timeout(timeout);
-		}
 		if(spiderBeanFactory == null) {
 			if(StringUtils.isEmpty(classpath)) {
 				classpath = "";
@@ -148,10 +135,6 @@ public class GeccoEngine {
 
 	public Scheduler getScheduler() {
 		return scheduler;
-	}
-
-	public Downloader getDownloader() {
-		return downloader;
 	}
 
 	public SpiderBeanFactory getSpiderBeanFactory() {

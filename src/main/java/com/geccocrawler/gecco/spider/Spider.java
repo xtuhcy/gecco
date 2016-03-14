@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import com.geccocrawler.gecco.GeccoEngine;
 import com.geccocrawler.gecco.downloader.AfterDownload;
 import com.geccocrawler.gecco.downloader.BeforeDownload;
+import com.geccocrawler.gecco.downloader.Downloader;
 import com.geccocrawler.gecco.downloader.DownloaderException;
 import com.geccocrawler.gecco.pipeline.Pipeline;
 import com.geccocrawler.gecco.request.HttpRequest;
@@ -29,9 +30,12 @@ public class Spider implements Runnable {
 
 	public GeccoEngine engine;
 	
-	public Class<? extends SpiderBean> currSpiderBeanClass;
-	
 	public Scheduler spiderScheduler;
+	
+	/**
+	 * 当前待渲染的bean
+	 */
+	public Class<? extends SpiderBean> currSpiderBeanClass;
 	
 	public Spider(GeccoEngine engine) {
 		this.engine = engine;
@@ -39,9 +43,10 @@ public class Spider implements Runnable {
 	}
 	
 	public void run() {
-		//将engine放入线程本地变量，之后需要使用
+		//将spider放入线程本地变量，之后需要使用
 		SpiderThreadLocal.set(this);
 		while(true) {
+			//获取待抓取的url
 			boolean start = false;
 			HttpRequest request = spiderScheduler.out();
 			if(request == null) {
@@ -52,10 +57,12 @@ public class Spider implements Runnable {
 			if(log.isDebugEnabled()) {
 				log.debug("match url : " + request.getUrl());
 			}
+			//匹配SpiderBean
 			currSpiderBeanClass = engine.getSpiderBeanFactory().matchSpider(request);
+			//如果无法匹配但是是302跳转，需要放入抓取队列继续抓取
 			if(currSpiderBeanClass == null) {
 				log.error("cant't match url : " + request.getUrl());
-				HttpResponse response = download(null, null, request);
+				HttpResponse response = defaultDownload(request);
 				if(response != null) {
 					if(response.getStatus() == 302 || response.getStatus() == 301){
 						spiderScheduler.into(request.subRequest(response.getContent()));
@@ -63,12 +70,12 @@ public class Spider implements Runnable {
 				}
 				continue;
 			}
-			//bean config：beforeDownloader,afterDownloader,render,pipelines
-			SpiderBeanContext context = engine.getSpiderBeanFactory().getContext(currSpiderBeanClass);
+			//获取SpiderBean的上下文：downloader,beforeDownloader,afterDownloader,render,pipelines
+			SpiderBeanContext context = getSpiderBeanContext();
 			//download
 			HttpResponse response = null;
 			try {
-				response = download(context.getBeforeDownload(), context.getAfterDownload(), request);
+				response = download(context.getDownloader(), context.getBeforeDownload(), context.getAfterDownload(), request);
 				if(response != null) {
 					if(response.getStatus() == 200) {
 						//render
@@ -90,8 +97,7 @@ public class Spider implements Runnable {
 						spiderScheduler.into(sub);
 					}
 				} else {
-					//如果没有抓取到任何信息，重新加入请求队列？？重试次数
-					//spiderScheduler.into(request);
+					//下载异常
 				}
 			} finally {
 				if(response != null) {
@@ -115,12 +121,23 @@ public class Spider implements Runnable {
 		}
 	}
 	
-	private HttpResponse download(BeforeDownload before, AfterDownload after, HttpRequest request) {
+	/**
+	 * 默认下载
+	 * 
+	 * @param request
+	 * @return
+	 */
+	private HttpResponse defaultDownload(HttpRequest request) {
+		Downloader downloader = engine.getSpiderBeanFactory().getDownloaderFactory().defaultDownloader();
+		return download(downloader, null, null, request);
+	}
+	
+	private HttpResponse download(Downloader currDownloader, BeforeDownload before, AfterDownload after, HttpRequest request) {
 		try {
 			if(before != null) {
 				before.process(request);
 			}
-			HttpResponse response = engine.getDownloader().download(request);
+			HttpResponse response = currDownloader.download(request);
 			int status = response.getStatus();
 			if(status != 200 && status != 301 && status != 302) {
 				//500,404等错误
@@ -165,4 +182,7 @@ public class Spider implements Runnable {
 		this.spiderScheduler = spiderScheduler;
 	}
 
+	public SpiderBeanContext getSpiderBeanContext() {
+		return engine.getSpiderBeanFactory().getContext(currSpiderBeanClass);
+	}
 }

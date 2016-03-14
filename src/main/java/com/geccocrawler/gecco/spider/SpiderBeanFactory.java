@@ -11,6 +11,7 @@ import org.reflections.Reflections;
 
 import com.geccocrawler.gecco.annotation.Gecco;
 import com.geccocrawler.gecco.downloader.DownloaderAOPFactory;
+import com.geccocrawler.gecco.downloader.DownloaderFactory;
 import com.geccocrawler.gecco.pipeline.Pipeline;
 import com.geccocrawler.gecco.pipeline.DefaultPipelineFactory;
 import com.geccocrawler.gecco.pipeline.PipelineFactory;
@@ -31,9 +32,19 @@ import com.geccocrawler.gecco.utils.UrlMatcher;
  */
 public class SpiderBeanFactory {
 	
+	/**
+	 * 匹配的SpriderBean
+	 * matchUrl:SpiderBean
+	 */
 	private Map<String, Class<? extends SpiderBean>> spiderBeans;
 	
+	/**
+	 * 匹配的SpiderBean上下文
+	 * SpiderBeanClassName:SpiderBeanClass
+	 */
 	private Map<String, SpiderBeanContext> spiderBeanContexts;
+	
+	private DownloaderFactory downloaderFactory;
 	
 	private DownloaderAOPFactory downloaderAOPFactory;
 	
@@ -52,6 +63,7 @@ public class SpiderBeanFactory {
 		} else {
 			reflections = new Reflections("com.geccocrawler.gecco");
 		}
+		this.downloaderFactory = new DownloaderFactory(reflections);
 		this.downloaderAOPFactory = new DownloaderAOPFactory(reflections);
 		this.renderFactory = new RenderFactory(reflections);
 		if(pipelineFactory != null) {
@@ -102,22 +114,24 @@ public class SpiderBeanFactory {
 	
 	private SpiderBeanContext initContext(Class<?> spiderBeanClass) {
 		SpiderBeanContext context = new SpiderBeanContext();
-		
-		String spiderBeanName = spiderBeanClass.getName();
-		downloadContext(context, spiderBeanName);
-
+		//关联的after、before、downloader
+		downloadContext(context, spiderBeanClass);
+		//关联的render
 		renderContext(context, spiderBeanClass);
-		
+		//关联的pipelines
 		Gecco gecco = spiderBeanClass.getAnnotation(Gecco.class);
 		String[] pipelineNames = gecco.pipelines();
 		pipelineContext(context, pipelineNames);
-		
 		return context;
 	}
 	
-	private void downloadContext(SpiderBeanContext context, String geccoName) {
+	private void downloadContext(SpiderBeanContext context, Class<?> spiderBeanClass) {
+		String geccoName = spiderBeanClass.getName();
 		context.setBeforeDownload(downloaderAOPFactory.getBefore(geccoName));
 		context.setAfterDownload(downloaderAOPFactory.getAfter(geccoName));
+		Gecco gecco = spiderBeanClass.getAnnotation(Gecco.class);
+		String downloader = gecco.downloader();
+		context.setDownloader(downloaderFactory.getDownloader(downloader));
 	}
 	
 	private void renderContext(SpiderBeanContext context, Class<?> spiderBeanClass) {
@@ -154,6 +168,10 @@ public class SpiderBeanFactory {
 
 	public PipelineFactory getPipelineFactory() {
 		return pipelineFactory;
+	}
+
+	public DownloaderFactory getDownloaderFactory() {
+		return downloaderFactory;
 	}
 
 }

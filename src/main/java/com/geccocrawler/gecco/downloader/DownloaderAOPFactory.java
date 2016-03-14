@@ -15,9 +15,9 @@ public class DownloaderAOPFactory {
 	private Map<String, AfterDownload> afterDownloads;
 	
 	public DownloaderAOPFactory(Reflections reflections) {
-		 this.beforeDownloads = new HashMap<String, BeforeDownload>();
-		 this.afterDownloads = new HashMap<String, AfterDownload>();
-		 Set<Class<?>> classes = reflections.getTypesAnnotatedWith(GeccoClass.class);
+		this.beforeDownloads = new HashMap<String, BeforeDownload>();
+		this.afterDownloads = new HashMap<String, AfterDownload>();
+		Set<Class<?>> classes = reflections.getTypesAnnotatedWith(GeccoClass.class);
 		for(Class<?> aopClass : classes) {
 			GeccoClass geccoClass = (GeccoClass)aopClass.getAnnotation(GeccoClass.class);
 			try {

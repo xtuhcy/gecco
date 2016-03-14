@@ -20,6 +20,13 @@ public @interface Gecco {
 	String matchUrl();
 	
 	/**
+	 * url下载器，默认为httpClientDownloader
+	 * 
+	 * @return 下载器
+	 */
+	String downloader() default "";
+	
+	/**
 	 * bean渲染完成后，后续的管道过滤器
 	 * 
 	 * @return 管道过滤器

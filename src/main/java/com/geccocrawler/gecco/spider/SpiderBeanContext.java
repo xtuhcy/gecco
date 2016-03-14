@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.geccocrawler.gecco.downloader.AfterDownload;
 import com.geccocrawler.gecco.downloader.BeforeDownload;
+import com.geccocrawler.gecco.downloader.Downloader;
 import com.geccocrawler.gecco.pipeline.Pipeline;
 import com.geccocrawler.gecco.spider.render.Render;
 
@@ -19,6 +20,8 @@ import com.geccocrawler.gecco.spider.render.Render;
 public class SpiderBeanContext {
 	
 	private Render render;
+	
+	private Downloader downloader;
 	
 	private BeforeDownload beforeDownload;
 	
@@ -56,6 +59,14 @@ public class SpiderBeanContext {
 
 	public void setPipelines(List<Pipeline> pipelines) {
 		this.pipelines = pipelines;
+	}
+
+	public Downloader getDownloader() {
+		return downloader;
+	}
+
+	public void setDownloader(Downloader downloader) {
+		this.downloader = downloader;
 	}
 
 }

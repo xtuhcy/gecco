@@ -30,10 +30,19 @@ import com.geccocrawler.gecco.utils.ReflectUtils;
  */
 public abstract class AbstractRender implements Render {
 	
+	/**
+	 * request请求的注入
+	 */
 	private RequestFieldRender requestFieldRender;
 	
+	/**
+	 * request参数的注入
+	 */
 	private RequestParameterFieldRender requestParameterFieldRender;
 	
+	/**
+	 * 自定义注入
+	 */
 	private CustomFieldRenderFactory customFieldRenderFactory;
 	
 	public AbstractRender(CustomFieldRenderFactory customFieldRenderFactory) {
@@ -69,6 +78,9 @@ public abstract class AbstractRender implements Render {
 	
 	public abstract void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean);
 
+	/**
+	 * 需要继续抓取的请求
+	 */
 	@Override
 	public void requests(HttpRequest request, SpiderBean bean) {
 		BeanMap beanMap = BeanMap.create(bean);

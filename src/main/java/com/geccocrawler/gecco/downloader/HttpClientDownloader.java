@@ -40,6 +40,7 @@ import com.geccocrawler.gecco.utils.UrlUtils;
  *
  */
 //@Monitor(mbean=MonitorInterceptor.class, method="download")
+@com.geccocrawler.gecco.annotation.Downloader("httpClientDownloader")
 public class HttpClientDownloader extends AbstractDownloader {
 	
 	private static Log log = LogFactory.getLog(HttpClientDownloader.class);
@@ -116,18 +117,14 @@ public class HttpClientDownloader extends AbstractDownloader {
 				resp.setCharset(charset);
 				//String content = EntityUtils.toString(responseEntity, charset);
 				String content = getContent(responseEntity, charset);
-				/*Header ceHeader = responseEntity.getContentEncoding();
-				if(ceHeader != null && ceHeader.getValue().equalsIgnoreCase("gzip")) {
-					content = EntityUtils.toString(new GzipDecompressingEntity(responseEntity), charset);
-				} else {
-					content = EntityUtils.toString(responseEntity, charset);
-				}*/
 				resp.setContent(content);
 			} else {
+				//404，500等
 				throw new DownloaderException("ERROR : " + status);
 			}
 			return resp;
 		} catch (IOException e) {
+			//超时等
 			throw new DownloaderException(e);
 		} finally {
 			reqObj.releaseConnection();
