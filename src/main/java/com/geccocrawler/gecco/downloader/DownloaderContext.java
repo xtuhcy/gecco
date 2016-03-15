@@ -13,7 +13,7 @@ import com.geccocrawler.gecco.spider.SpiderThreadLocal;
  */
 public class DownloaderContext {
 	
-	public static HttpResponse download(HttpRequest request) throws DownloaderException {
+	public static HttpResponse download(HttpRequest request) throws DownloadException {
 		SpiderBeanContext context = SpiderThreadLocal.get().getSpiderBeanContext();
 		return context.getDownloader().download(request, context.getTimeout());
 	}

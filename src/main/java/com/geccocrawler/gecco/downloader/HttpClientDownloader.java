@@ -47,8 +47,6 @@ public class HttpClientDownloader extends AbstractDownloader {
 	
 	private CloseableHttpClient httpClient;
 	
-	private long timeout;
-	
 	public HttpClientDownloader() {
 		RequestConfig clientConfig = RequestConfig.custom().setRedirectsEnabled(false).build();
 		PoolingHttpClientConnectionManager syncConnectionManager = new PoolingHttpClientConnectionManager();
@@ -58,7 +56,7 @@ public class HttpClientDownloader extends AbstractDownloader {
 	}
 
 	@Override
-	public HttpResponse download(HttpRequest request, int timeout) throws DownloaderException {
+	public HttpResponse download(HttpRequest request, int timeout) throws DownloadException {
 		if(log.isDebugEnabled()) {
 			log.debug("downloading..." + request.getUrl());
 		}
@@ -120,12 +118,12 @@ public class HttpClientDownloader extends AbstractDownloader {
 				resp.setContent(content);
 			} else {
 				//404，500等
-				throw new DownloaderException("ERROR : " + status);
+				throw new DownloadServerException("" + status);
 			}
 			return resp;
 		} catch (IOException e) {
 			//超时等
-			throw new DownloaderException(e);
+			throw new DownloadException(e);
 		} finally {
 			reqObj.releaseConnection();
 		}

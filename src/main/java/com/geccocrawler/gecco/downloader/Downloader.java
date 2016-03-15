@@ -11,7 +11,7 @@ import com.geccocrawler.gecco.response.HttpResponse;
  */
 public interface Downloader {
 	
-	public HttpResponse download(HttpRequest request, int timeout) throws DownloaderException;
+	public HttpResponse download(HttpRequest request, int timeout) throws DownloadException;
 	
 	public void shutdown();
 }

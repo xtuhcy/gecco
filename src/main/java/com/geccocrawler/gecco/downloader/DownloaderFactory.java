@@ -12,7 +12,7 @@ import org.reflections.Reflections;
  * @author huchengyi
  *
  */
-public class DownloaderFactory {
+public abstract class DownloaderFactory {
 	
 	public static final String DEFAULT_DWONLODER = "httpClientDownloader";
 	
@@ -24,7 +24,7 @@ public class DownloaderFactory {
 		for(Class<?> downloaderClass : classes) {
 			com.geccocrawler.gecco.annotation.Downloader downloader = (com.geccocrawler.gecco.annotation.Downloader)downloaderClass.getAnnotation(com.geccocrawler.gecco.annotation.Downloader.class);
 			try {
-				Object o = downloaderClass.newInstance();
+				Object o = createDownloader(downloaderClass);
 				if(o instanceof Downloader) {
 					Downloader downloaderInstance = (Downloader)o;
 					String name = downloader.value();
@@ -48,4 +48,5 @@ public class DownloaderFactory {
 		return downloaders.get(DEFAULT_DWONLODER);
 	}
 
+	protected abstract Object createDownloader(Class<?> downloaderClass) throws Exception;
 }

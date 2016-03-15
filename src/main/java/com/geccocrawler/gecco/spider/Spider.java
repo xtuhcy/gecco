@@ -9,7 +9,7 @@ import com.geccocrawler.gecco.GeccoEngine;
 import com.geccocrawler.gecco.downloader.AfterDownload;
 import com.geccocrawler.gecco.downloader.BeforeDownload;
 import com.geccocrawler.gecco.downloader.Downloader;
-import com.geccocrawler.gecco.downloader.DownloaderException;
+import com.geccocrawler.gecco.downloader.DownloadException;
 import com.geccocrawler.gecco.pipeline.Pipeline;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
@@ -68,43 +68,43 @@ public class Spider implements Runnable {
 						spiderScheduler.into(request.subRequest(response.getContent()));
 					}
 				}
-				continue;
-			}
-			//获取SpiderBean的上下文：downloader,beforeDownloader,afterDownloader,render,pipelines
-			SpiderBeanContext context = getSpiderBeanContext();
-			//download
-			HttpResponse response = null;
-			try {
-				response = download(context, request);
-				if(response != null) {
-					if(response.getStatus() == 200) {
-						//render
-						Render render = context.getRender();
-						SpiderBean spiderBean = render.inject(currSpiderBeanClass, request, response);
-						//pipelines
-						List<Pipeline> pipelines = context.getPipelines();
-						if(pipelines != null) {
-							for(Pipeline pipeline : pipelines) {
-								try {
-									pipeline.process(spiderBean);
-								} catch(Exception ex) {
-									ex.printStackTrace();
+			} else {
+				//获取SpiderBean的上下文：downloader,beforeDownloader,afterDownloader,render,pipelines
+				SpiderBeanContext context = getSpiderBeanContext();
+				//download
+				HttpResponse response = null;
+				try {
+					response = download(context, request);
+					if(response != null) {
+						if(response.getStatus() == 200) {
+							//render
+							Render render = context.getRender();
+							SpiderBean spiderBean = render.inject(currSpiderBeanClass, request, response);
+							//pipelines
+							List<Pipeline> pipelines = context.getPipelines();
+							if(pipelines != null) {
+								for(Pipeline pipeline : pipelines) {
+									try {
+										pipeline.process(spiderBean);
+									} catch(Exception ex) {
+										ex.printStackTrace();
+									}
 								}
 							}
+						} else if(response.getStatus() == 302 || response.getStatus() == 301){
+							HttpRequest sub = request.subRequest(response.getContent());
+							spiderScheduler.into(sub);
 						}
-					} else if(response.getStatus() == 302 || response.getStatus() == 301){
-						HttpRequest sub = request.subRequest(response.getContent());
-						spiderScheduler.into(sub);
+					} else {
+						//下载异常
 					}
-				} else {
-					//下载异常
-				}
-			} finally {
-				if(response != null) {
-					try{
-						response.getRaw().close();
-					} catch(Exception ex) {
-						response.setRaw(null);
+				} finally {
+					if(response != null) {
+						try{
+							response.getRaw().close();
+						} catch(Exception ex) {
+							response.setRaw(null);
+						}
 					}
 				}
 			}
@@ -159,7 +159,7 @@ public class Spider implements Runnable {
 				after.process(request, response);
 			}
 			return response;
-		} catch(DownloaderException ex) {
+		} catch(DownloadException ex) {
 			//下载异常
 			log.error("download error " + request.getUrl() + " : " + ex.getMessage());
 			return null;

@@ -10,8 +10,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
 
 import com.geccocrawler.gecco.annotation.Gecco;
+import com.geccocrawler.gecco.downloader.DefaultDownloaderFactory;
 import com.geccocrawler.gecco.downloader.DownloaderAOPFactory;
 import com.geccocrawler.gecco.downloader.DownloaderFactory;
+import com.geccocrawler.gecco.downloader.MonitorDownloaderFactory;
 import com.geccocrawler.gecco.pipeline.Pipeline;
 import com.geccocrawler.gecco.pipeline.DefaultPipelineFactory;
 import com.geccocrawler.gecco.pipeline.PipelineFactory;
@@ -63,7 +65,7 @@ public class SpiderBeanFactory {
 		} else {
 			reflections = new Reflections("com.geccocrawler.gecco");
 		}
-		this.downloaderFactory = new DownloaderFactory(reflections);
+		this.downloaderFactory = new DefaultDownloaderFactory(reflections);
 		this.downloaderAOPFactory = new DownloaderAOPFactory(reflections);
 		this.renderFactory = new RenderFactory(reflections);
 		if(pipelineFactory != null) {
