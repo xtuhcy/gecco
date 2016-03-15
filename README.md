@@ -32,7 +32,7 @@ SpiderBeanContext包括需要该SpiderBean的渲染类（目前支持HTML、JSON
 	<dependency>
 	    <groupId>com.geccocrawler</groupId>
 	    <artifactId>gecco</artifactId>
-	    <version>1.0.5</version>
+	    <version>1.0.6</version>
 	</dependency>
 
 ##QuikStart
@@ -213,7 +213,7 @@ SpiderBeanContext包括需要该SpiderBean的渲染类（目前支持HTML、JSON
 	<dependency>
 	    <groupId>com.geccocrawler</groupId>
 	    <artifactId>gecco-spring</artifactId>
-	    <version>1.0.5</version>
+	    <version>1.0.6</version>
 	</dependency>
 
 >四、通过redis支持分布式抓取
@@ -225,7 +225,7 @@ SpiderBeanContext包括需要该SpiderBean的渲染类（目前支持HTML、JSON
 	<dependency>
 	    <groupId>com.geccocrawler</groupId>
 	    <artifactId>gecco-redis</artifactId>
-	    <version>1.0.5</version>
+	    <version>1.0.6</version>
 	</dependency>
 
 >五、支持多UserAgent随机选择
@@ -253,5 +253,5 @@ SpiderBeanContext包括需要该SpiderBean的渲染类（目前支持HTML、JSON
 	<dependency>
 	    <groupId>com.geccocrawler</groupId>
 	    <artifactId>gecco-htmlunit</artifactId>
-	    <version>1.0.5</version>
+	    <version>1.0.6</version>
 	</dependency>
