@@ -3,11 +3,14 @@ package com.geccocrawler.gecco;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.alibaba.fastjson.JSON;
+import com.geccocrawler.gecco.monitor.GeccoJmx;
+import com.geccocrawler.gecco.monitor.GeccoMonitor;
 import com.geccocrawler.gecco.pipeline.PipelineFactory;
 import com.geccocrawler.gecco.request.HttpGetRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
@@ -26,6 +29,8 @@ import com.google.common.io.Files;
  *
  */
 public class GeccoEngine {
+	
+	private Date startTime;
 	
 	private List<HttpRequest> startRequests = new ArrayList<HttpRequest>();
 	
@@ -124,6 +129,11 @@ public class GeccoEngine {
 			Thread thread = new Thread(spider, "Spider-"+i);
 			thread.start();
 		}
+		startTime = new Date();
+		//监控爬虫基本信息
+		GeccoMonitor.monitor(this);
+		//启动导出jmx信息
+		GeccoJmx.export();
 	}
 
 	public Scheduler getScheduler() {
@@ -136,6 +146,22 @@ public class GeccoEngine {
 
 	public int getInterval() {
 		return interval;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public List<HttpRequest> getStartRequests() {
+		return startRequests;
+	}
+
+	public List<Spider> getSpiders() {
+		return spiders;
+	}
+
+	public int getThreadCount() {
+		return threadCount;
 	}
 	
 }

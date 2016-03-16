@@ -39,7 +39,6 @@ import com.geccocrawler.gecco.utils.UrlUtils;
  * @author huchengyi
  *
  */
-//@Monitor(mbean=MonitorInterceptor.class, method="download")
 @com.geccocrawler.gecco.annotation.Downloader("httpClientDownloader")
 public class HttpClientDownloader extends AbstractDownloader {
 	
