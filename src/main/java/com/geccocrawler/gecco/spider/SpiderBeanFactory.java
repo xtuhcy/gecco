@@ -17,6 +17,7 @@ import com.geccocrawler.gecco.pipeline.Pipeline;
 import com.geccocrawler.gecco.pipeline.DefaultPipelineFactory;
 import com.geccocrawler.gecco.pipeline.PipelineFactory;
 import com.geccocrawler.gecco.request.HttpRequest;
+import com.geccocrawler.gecco.spider.render.MonitorRenderFactory;
 import com.geccocrawler.gecco.spider.render.RenderFactory;
 import com.geccocrawler.gecco.spider.render.RenderType;
 import com.geccocrawler.gecco.utils.ReflectUtils;
@@ -53,12 +54,13 @@ public class SpiderBeanFactory {
 	
 	private PipelineFactory pipelineFactory;
 	
+	private Reflections reflections;
+	
 	public SpiderBeanFactory(String classPath) {
 		this(classPath, null);
 	}
 	
 	public SpiderBeanFactory(String classPath, PipelineFactory pipelineFactory) {
-		Reflections reflections = null;
 		if(StringUtils.isNotEmpty(classPath)) {
 			reflections = new Reflections("com.geccocrawler.gecco", classPath);
 		} else {
@@ -66,7 +68,7 @@ public class SpiderBeanFactory {
 		}
 		this.downloaderFactory = new MonitorDownloaderFactory(reflections);
 		this.downloaderAOPFactory = new DownloaderAOPFactory(reflections);
-		this.renderFactory = new RenderFactory(reflections);
+		this.renderFactory = new MonitorRenderFactory(reflections);
 		if(pipelineFactory != null) {
 			this.pipelineFactory = pipelineFactory;
 		} else {
@@ -176,4 +178,8 @@ public class SpiderBeanFactory {
 		return downloaderFactory;
 	}
 
+	public Reflections getReflections() {
+		return reflections;
+	}
+	
 }

@@ -12,7 +12,7 @@ import com.geccocrawler.gecco.spider.SpiderBean;
  */
 public interface Render {
 
-	public SpiderBean inject(Class<? extends SpiderBean> clazz, HttpRequest request, HttpResponse response);
+	public SpiderBean inject(Class<? extends SpiderBean> clazz, HttpRequest request, HttpResponse response) throws RenderException;
 	
 	public void requests(HttpRequest request, SpiderBean bean);
 }

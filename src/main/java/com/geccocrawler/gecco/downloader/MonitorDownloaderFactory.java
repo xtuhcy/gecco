@@ -14,14 +14,13 @@ import com.geccocrawler.gecco.monitor.DownloadMointorIntercetor;
  */
 public class MonitorDownloaderFactory extends DownloaderFactory {
 	
-	private static Enhancer enhancer = new Enhancer();
-	
 	public MonitorDownloaderFactory(Reflections reflections) {
 		super(reflections);
 	}
 
 	@Override
 	protected Object createDownloader(Class<?> downloaderClass)	throws Exception {
+		Enhancer enhancer = new Enhancer();
 		enhancer.setSuperclass(downloaderClass);
 		enhancer.setCallback(new DownloadMointorIntercetor());
 		Object o = enhancer.create();

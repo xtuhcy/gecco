@@ -16,12 +16,12 @@ import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.spider.JsonBean;
 import com.geccocrawler.gecco.spider.SpiderBean;
 import com.geccocrawler.gecco.spider.render.FieldRender;
+import com.geccocrawler.gecco.spider.render.FieldRenderException;
 import com.geccocrawler.gecco.spider.render.Render;
 import com.geccocrawler.gecco.spider.render.RenderContext;
 import com.geccocrawler.gecco.spider.render.RenderType;
 import com.geccocrawler.gecco.utils.ReflectUtils;
 import com.geccocrawler.gecco.utils.UrlMatcher;
-import com.google.common.base.Preconditions;
 
 /**
  * 渲染@Ajax属性
@@ -32,7 +32,7 @@ import com.google.common.base.Preconditions;
 public class AjaxFieldRender implements FieldRender {
 
 	@Override
-	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) {
+	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) throws FieldRenderException {
 		Map<String, Object> fieldMap = new HashMap<String, Object>();
 		Set<Field> ajaxFields = ReflectionUtils.getAllFields(bean.getClass(), ReflectionUtils.withAnnotation(Ajax.class));
 		for(Field ajaxField : ajaxFields) {
@@ -42,22 +42,24 @@ public class AjaxFieldRender implements FieldRender {
 		beanMap.putAll(fieldMap);
 	}
 	
-	private Object injectAjaxField(HttpRequest request, BeanMap beanMap, Field field) {
+	private Object injectAjaxField(HttpRequest request, BeanMap beanMap, Field field) throws FieldRenderException {
 		Class clazz = field.getType();
 		//ajax的属性类型必须是spiderBean
-		Preconditions.checkArgument(ReflectUtils.haveSuperType(clazz, JsonBean.class), field.getName() + " type must be JsonBean,request is " + request.getUrl());
-		Ajax ajax = field.getAnnotation(Ajax.class);
-		String url = ajax.url();
-		url = UrlMatcher.replaceParams(url, request.getParameters());
-		url = UrlMatcher.replaceFields(url, beanMap);
-		HttpRequest subRequest = request.subRequest(url);
-		try {
-			HttpResponse subReponse = DownloaderContext.download(subRequest);
-			Render jsonRender = RenderContext.getRender(RenderType.JSON);
-			return jsonRender.inject(clazz, subRequest, subReponse);
-		} catch(Exception ex) {
-			ex.printStackTrace();
+		if(ReflectUtils.haveSuperType(clazz, JsonBean.class)) {
+			Ajax ajax = field.getAnnotation(Ajax.class);
+			String url = ajax.url();
+			url = UrlMatcher.replaceParams(url, request.getParameters());
+			url = UrlMatcher.replaceFields(url, beanMap);
+			HttpRequest subRequest = request.subRequest(url);
+			try {
+				HttpResponse subReponse = DownloaderContext.download(subRequest);
+				Render jsonRender = RenderContext.getRender(RenderType.JSON);
+				return jsonRender.inject(clazz, subRequest, subReponse);
+			} catch(Exception ex) {
+				throw new FieldRenderException(field, request.getUrl(), ex);
+			}
+		} else {
+			throw new FieldRenderException(field, request.getUrl());
 		}
-		return null;
 	}
 }

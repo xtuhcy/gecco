@@ -25,6 +25,7 @@ import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.spider.SpiderBean;
 import com.geccocrawler.gecco.spider.conversion.Conversion;
 import com.geccocrawler.gecco.spider.render.FieldRender;
+import com.geccocrawler.gecco.spider.render.FieldRenderException;
 
 /**
  * <LI>java.lang.Boolean objects</LI> 
@@ -43,7 +44,7 @@ public class JSVarFieldRender implements FieldRender {
 	private static Log log = LogFactory.getLog(JSVarFieldRender.class);
 	
 	@Override
-	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) {
+	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) throws FieldRenderException {
 		Context cx = Context.enter();
 		ScriptableObject scope = cx.initSafeStandardObjects();
 		String windowScript = "var window = {};var document = {};";

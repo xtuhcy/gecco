@@ -8,6 +8,6 @@ import com.geccocrawler.gecco.spider.SpiderBean;
 
 public interface FieldRender {
 	
-	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean);
+	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) throws FieldRenderException;
 
 }

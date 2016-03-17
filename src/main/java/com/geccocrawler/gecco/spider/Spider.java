@@ -15,7 +15,9 @@ import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.scheduler.Scheduler;
 import com.geccocrawler.gecco.scheduler.SpiderScheduler;
+import com.geccocrawler.gecco.spider.render.FieldRenderException;
 import com.geccocrawler.gecco.spider.render.Render;
+import com.geccocrawler.gecco.spider.render.RenderException;
 
 /**
  * 一个爬虫引擎可以包含多个爬虫，每个爬虫可以认为是一个单独线程，爬虫会从Scheduler中获取需要待抓取的请求。
@@ -59,65 +61,77 @@ public class Spider implements Runnable {
 			}
 			//匹配SpiderBean
 			currSpiderBeanClass = engine.getSpiderBeanFactory().matchSpider(request);
-			//如果无法匹配但是是302跳转，需要放入抓取队列继续抓取
-			if(currSpiderBeanClass == null) {
-				log.error("cant't match url : " + request.getUrl());
-				HttpResponse response = defaultDownload(request);
-				if(response != null) {
+			//download
+			HttpResponse response = null;
+			try {
+				if(currSpiderBeanClass == null) {//如果无法匹配但是是302跳转，需要放入抓取队列继续抓取
+					response = defaultDownload(request);
 					if(response.getStatus() == 302 || response.getStatus() == 301){
+						spiderScheduler.into(request.subRequest(response.getContent()));
+					} else {
+						log.error("cant't match url : " + request.getUrl());
+					}
+				} else {
+					//获取SpiderBean的上下文：downloader,beforeDownloader,afterDownloader,render,pipelines
+					SpiderBeanContext context = getSpiderBeanContext();
+					response = download(context, request);
+					if(response.getStatus() == 200) {
+						//render
+						Render render = context.getRender();
+						SpiderBean spiderBean = render.inject(currSpiderBeanClass, request, response);
+						//pipelines
+						pipelines(spiderBean, context);
+					} else if(response.getStatus() == 302 || response.getStatus() == 301){
 						spiderScheduler.into(request.subRequest(response.getContent()));
 					}
 				}
-			} else {
-				//获取SpiderBean的上下文：downloader,beforeDownloader,afterDownloader,render,pipelines
-				SpiderBeanContext context = getSpiderBeanContext();
-				//download
-				HttpResponse response = null;
-				try {
-					response = download(context, request);
-					if(response != null) {
-						if(response.getStatus() == 200) {
-							//render
-							Render render = context.getRender();
-							SpiderBean spiderBean = render.inject(currSpiderBeanClass, request, response);
-							//pipelines
-							List<Pipeline> pipelines = context.getPipelines();
-							if(pipelines != null) {
-								for(Pipeline pipeline : pipelines) {
-									try {
-										pipeline.process(spiderBean);
-									} catch(Exception ex) {
-										ex.printStackTrace();
-									}
-								}
-							}
-						} else if(response.getStatus() == 302 || response.getStatus() == 301){
-							HttpRequest sub = request.subRequest(response.getContent());
-							spiderScheduler.into(sub);
-						}
-					} else {
-						//下载异常
-					}
-				} finally {
-					if(response != null) {
-						try{
-							response.getRaw().close();
-						} catch(Exception ex) {
-							response.setRaw(null);
-						}
+			} catch(RenderException rex) {
+				FieldRenderException frex = (FieldRenderException)rex.getCause();
+				if(frex != null) {
+					log.error(request.getUrl() + " RENDER ERROR : " + rex.getSpiderBeanClass().getName() + "(" + frex.getField().getName()+")");
+				} else {
+					log.error(request.getUrl() + " RENDER ERROR : " + rex.getSpiderBeanClass().getName());
+				}
+			} catch(DownloadException dex) {
+				log.error(request.getUrl() + " DOWNLOAD ERROR :" + dex.getMessage());
+			} finally {
+				if(response != null) {
+					try{
+						response.getRaw().close();
+					} catch(Exception ex) {
+						response.setRaw(null);
 					}
 				}
 			}
-			int interval = engine.getInterval();
-			if(interval > 0) {
-				try {
-					Thread.sleep(randomInterval(interval));
-				} catch (InterruptedException e) {}
-			}
+			//抓取间隔
+			interval();
+			//开始地址放入队尾重新抓取
 			if(start) {
 				//如果是一个开始抓取请求，再返回开始队列中
 				engine.getScheduler().into(request);
 			}
+		}
+	}
+	
+	private void pipelines(SpiderBean spiderBean, SpiderBeanContext context) {
+		List<Pipeline> pipelines = context.getPipelines();
+		if(pipelines != null) {
+			for(Pipeline pipeline : pipelines) {
+				try {
+					pipeline.process(spiderBean);
+				} catch(Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	private void interval() {
+		int interval = engine.getInterval();
+		if(interval > 0) {
+			try {
+				Thread.sleep(randomInterval(interval));
+			} catch (InterruptedException e) {}
 		}
 	}
 	
@@ -127,12 +141,12 @@ public class Spider implements Runnable {
 	 * @param request
 	 * @return
 	 */
-	private HttpResponse defaultDownload(HttpRequest request) {
-		return download(null, request);
+	private HttpResponse defaultDownload(HttpRequest request) throws DownloadException {
+		HttpResponse response = download(null, request);
+		return response;
 	}
 	
-	private HttpResponse download(SpiderBeanContext context, HttpRequest request) {
-		try {
+	private HttpResponse download(SpiderBeanContext context, HttpRequest request) throws DownloadException {
 			Downloader currDownloader = null;
 			BeforeDownload before = null;
 			AfterDownload after = null;
@@ -149,21 +163,10 @@ public class Spider implements Runnable {
 				before.process(request);
 			}
 			HttpResponse response = currDownloader.download(request, timeout);
-			int status = response.getStatus();
-			if(status != 200 && status != 301 && status != 302) {
-				//500,404等错误
-				log.error("download error " + request.getUrl() + " : " + response.getStatus());
-				return null;
-			}
 			if(after != null) {
 				after.process(request, response);
 			}
 			return response;
-		} catch(DownloadException ex) {
-			//下载异常
-			log.error("download error " + request.getUrl() + " : " + ex.getMessage());
-			return null;
-		}
 	}
 
 	/**

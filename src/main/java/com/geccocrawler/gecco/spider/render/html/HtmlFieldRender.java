@@ -9,8 +9,6 @@ import java.util.Set;
 
 import net.sf.cglib.beans.BeanMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.reflections.ReflectionUtils;
 
 import com.geccocrawler.gecco.annotation.HtmlField;
@@ -18,30 +16,28 @@ import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.spider.SpiderBean;
 import com.geccocrawler.gecco.spider.render.FieldRender;
+import com.geccocrawler.gecco.spider.render.FieldRenderException;
+import com.geccocrawler.gecco.spider.render.RenderException;
 import com.geccocrawler.gecco.utils.ReflectUtils;
 
 public class HtmlFieldRender implements FieldRender {
 
-	private static Log log = LogFactory.getLog(HtmlFieldRender.class);
-	
 	@Override
-	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) {
+	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) throws FieldRenderException {
 		Map<String, Object> fieldMap = new HashMap<String, Object>();
 		Set<Field> htmlFields = ReflectionUtils.getAllFields(bean.getClass(), ReflectionUtils.withAnnotation(HtmlField.class));
 		for(Field htmlField : htmlFields) {
-			Object value = injectHtmlField(request, response, htmlField, bean.getClass());
-			if(value != null) {
+			try {
+				Object value = injectHtmlField(request, response, htmlField, bean.getClass());
 				fieldMap.put(htmlField.getName(), value);
+			} catch(RenderException ex) {
+				throw new FieldRenderException(htmlField, ex);
 			}
 		}
-		try {
-			beanMap.putAll(fieldMap);
-		} catch(Exception ex) {
-			log.error(ex.getMessage()+":"+fieldMap.toString());
-		}
+		beanMap.putAll(fieldMap);
 	}
 	
-	private Object injectHtmlField(HttpRequest request, HttpResponse response, Field field, Class<? extends SpiderBean> clazz) {
+	private Object injectHtmlField(HttpRequest request, HttpResponse response, Field field, Class<? extends SpiderBean> clazz) throws RenderException, FieldRenderException {
 		HtmlField htmlField = field.getAnnotation(HtmlField.class);
 		String content = response.getContent();
 		HtmlParser parser = new HtmlParser(request.getUrl(), content);
@@ -60,8 +56,7 @@ public class HtmlFieldRender implements FieldRender {
 				try {
 					return parser.$basicList(cssPath, field);
 				} catch(Exception ex) {
-					log.error("field [" + field.getName() + "] render error : " + content);
-					return null;
+					throw new FieldRenderException(field, content, ex);
 				}
 			}
 		} else {
@@ -73,8 +68,7 @@ public class HtmlFieldRender implements FieldRender {
 				try {
 					return parser.$basic(cssPath, field);
 				} catch(Exception ex) {
-					log.error("field [" + field.getName() + "] render error : " + content);
-					return null;
+					throw new FieldRenderException(field, content, ex);
 				}
 			}
 		}

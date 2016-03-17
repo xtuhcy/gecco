@@ -45,20 +45,19 @@ public abstract class AbstractRender implements Render {
 	 */
 	private CustomFieldRenderFactory customFieldRenderFactory;
 	
-	public AbstractRender(CustomFieldRenderFactory customFieldRenderFactory) {
+	public AbstractRender() {
 		this.requestFieldRender = new RequestFieldRender();
 		this.requestParameterFieldRender = new RequestParameterFieldRender();
-		this.customFieldRenderFactory = customFieldRenderFactory;
 	}
 	
 	@Override
-	public SpiderBean inject(Class<? extends SpiderBean> clazz, HttpRequest request, HttpResponse response) {
+	public SpiderBean inject(Class<? extends SpiderBean> clazz, HttpRequest request, HttpResponse response) throws RenderException {
 		try {
 			SpiderBean bean = clazz.newInstance();
 			BeanMap beanMap = BeanMap.create(bean);
 			requestFieldRender.render(request, response, beanMap, bean);
 			requestParameterFieldRender.render(request, response, beanMap, bean);
-			render(request, response, beanMap, bean);
+			fieldRender(request, response, beanMap, bean);
 			Set<Field> customFields = ReflectionUtils.getAllFields(bean.getClass(), ReflectionUtils.withAnnotation(FieldRenderName.class));
 			for(Field customField : customFields) {
 				FieldRenderName fieldRender = customField.getAnnotation(FieldRenderName.class);
@@ -70,13 +69,14 @@ public abstract class AbstractRender implements Render {
 			}
 			requests(request, bean);
 			return bean;
+		} catch(FieldRenderException ex) {
+			throw new RenderException(clazz, ex);
 		} catch(Exception ex) {
-			ex.printStackTrace();
-			return null;
+			throw new RenderException(clazz);
 		}
 	}
 	
-	public abstract void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean);
+	public abstract void fieldRender(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) throws FieldRenderException;
 
 	/**
 	 * 需要继续抓取的请求
@@ -108,6 +108,10 @@ public abstract class AbstractRender implements Render {
 				}
 			}
 		}
+	}
+
+	public void setCustomFieldRenderFactory(CustomFieldRenderFactory customFieldRenderFactory) {
+		this.customFieldRenderFactory = customFieldRenderFactory;
 	}
 	
 }
