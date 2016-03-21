@@ -112,8 +112,6 @@ public class MyGithub implements HtmlBean {
 		.classpath("com.geccocrawler.gecco.demo")
 		//开始抓取的页面地址
 		.start("https://github.com/xtuhcy/gecco")
-		.start("https1://github.com/xtuhcy/gecco")
-		.start("https://github.com/xtuhcy/gecco111")
 		//开启几个爬虫线程,线程数量最好不要大于start request数量
 		.thread(1)
 		//单个爬虫每次抓取完一个请求后的间隔时间
