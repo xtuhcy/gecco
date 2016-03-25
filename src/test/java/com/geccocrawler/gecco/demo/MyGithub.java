@@ -10,7 +10,7 @@ import com.geccocrawler.gecco.annotation.Text;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.spider.HtmlBean;
 
-@Gecco(matchUrl="https://github.com/{user}/{project}", pipelines="consolePipeline", downloader="httpClientDownloader", timeout=1000)
+@Gecco(matchUrl="https://github.com/{user}/{project}", pipelines="consolePipeline", timeout=1000)
 public class MyGithub implements HtmlBean {
 
 	private static final long serialVersionUID = -7127412585200687225L;

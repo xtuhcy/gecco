@@ -1,6 +1,7 @@
 package com.geccocrawler.gecco;
 
 import java.io.File;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +21,7 @@ import com.geccocrawler.gecco.scheduler.StartScheduler;
 import com.geccocrawler.gecco.spider.Spider;
 import com.geccocrawler.gecco.spider.SpiderBeanFactory;
 import com.google.common.io.Files;
+import com.google.common.io.Resources;
 
 /**
  * 爬虫引擎，每个爬虫引擎最好独立进程，在分布式爬虫场景下，可以单独分配一台爬虫服务器。引擎包括Scheduler、Downloader、Spider、
@@ -54,19 +56,6 @@ public class GeccoEngine {
 		return new GeccoEngine();
 	}
 
-	public GeccoEngine start(File file) {
-		try {
-			String json = Files.toString(file, Charset.forName("UTF-8"));
-			List<StartRequestList> list = JSON.parseArray(json, StartRequestList.class);
-			for(StartRequestList start : list) {
-				start(start.toRequest());
-			}
-		} catch(Exception ex) {
-			ex.printStackTrace();
-		}
-		return this;
-	}
-	
 	public GeccoEngine start(String url) {
 		return start(new HttpGetRequest(url));
 	}
@@ -119,6 +108,7 @@ public class GeccoEngine {
 		if(threadCount <= 0) {
 			threadCount = 1;
 		}
+		startsJson();
 		for(HttpRequest startRequest : startRequests) {
 			scheduler.into(startRequest);
 		}
@@ -134,6 +124,23 @@ public class GeccoEngine {
 		GeccoMonitor.monitor(this);
 		//启动导出jmx信息
 		GeccoJmx.export();
+	}
+	
+	private GeccoEngine startsJson() {
+		try {
+			URL url = Resources.getResource("starts.json");
+			File file = new File(url.getPath());
+			if(file.exists()) {
+				String json = Files.toString(file, Charset.forName("UTF-8"));
+				List<StartRequestList> list = JSON.parseArray(json, StartRequestList.class);
+				for(StartRequestList start : list) {
+					start(start.toRequest());
+				}
+			}
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		return this;
 	}
 
 	public Scheduler getScheduler() {
