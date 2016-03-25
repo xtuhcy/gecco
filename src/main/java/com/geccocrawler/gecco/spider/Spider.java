@@ -94,6 +94,8 @@ public class Spider implements Runnable {
 				}
 			} catch(DownloadException dex) {
 				log.error(request.getUrl() + " DOWNLOAD ERROR :" + dex.getMessage());
+			} catch(Exception ex) {
+				log.error(request.getUrl(), ex);
 			} finally {
 				if(response != null) {
 					try{
@@ -117,11 +119,7 @@ public class Spider implements Runnable {
 		List<Pipeline> pipelines = context.getPipelines();
 		if(pipelines != null) {
 			for(Pipeline pipeline : pipelines) {
-				try {
-					pipeline.process(spiderBean);
-				} catch(Exception ex) {
-					ex.printStackTrace();
-				}
+				pipeline.process(spiderBean);
 			}
 		}
 	}
