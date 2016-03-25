@@ -26,7 +26,7 @@ Gecco is a easy to use lightweight web crawler developed with java language.Gecc
 	<dependency>
 	    <groupId>com.geccocrawler</groupId>
 	    <artifactId>gecco</artifactId>
-	    <version>x.x.x</version>
+	    <version>1.0.7</version>
 	</dependency>
 
 ###Dependent project

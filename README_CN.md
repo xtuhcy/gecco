@@ -41,7 +41,7 @@ Gecco是一款用java语言开发的轻量化的易用的网络爬虫。Gecco整
 	<dependency>
 	    <groupId>com.geccocrawler</groupId>
 	    <artifactId>gecco</artifactId>
-	    <version>x.x.x</version>
+	    <version>1.0.7</version>
 	</dependency>
 
 ###依赖项目
