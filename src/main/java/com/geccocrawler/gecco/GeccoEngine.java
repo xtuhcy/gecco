@@ -137,9 +137,7 @@ public class GeccoEngine {
 					start(start.toRequest());
 				}
 			}
-		} catch(Exception ex) {
-			ex.printStackTrace();
-		}
+		} catch(Exception ex) {}
 		return this;
 	}
 
