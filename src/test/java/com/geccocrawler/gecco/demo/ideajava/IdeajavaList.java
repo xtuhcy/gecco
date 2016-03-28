@@ -30,7 +30,7 @@ public class IdeajavaList implements HtmlBean {
 		.start("http://www.ideajava.org/articleIndex")
 		//开启几个爬虫线程,线程数量最好不要大于start request数量
 		.thread(1)
-		//单个爬虫每次抓取完一个请求后的间隔时间
+		//单个爬虫每次抓取完一个请求后的间隔时间,如不需要循环调用可以不用设置
 		.interval(2000)
 		.run();
 	}

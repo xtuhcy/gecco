@@ -34,6 +34,8 @@ public class Spider implements Runnable {
 	
 	public Scheduler spiderScheduler;
 	
+	private boolean polling = true;
+	
 	/**
 	 * 当前待渲染的bean
 	 */
@@ -47,7 +49,7 @@ public class Spider implements Runnable {
 	public void run() {
 		//将spider放入线程本地变量，之后需要使用
 		SpiderThreadLocal.set(this);
-		while(true) {
+		while(polling) {
 			//获取待抓取的url
 			boolean start = false;
 			HttpRequest request = spiderScheduler.out();
@@ -125,11 +127,15 @@ public class Spider implements Runnable {
 	}
 	
 	private void interval() {
-		int interval = engine.getInterval();
-		if(interval > 0) {
-			try {
-				Thread.sleep(randomInterval(interval));
-			} catch (InterruptedException e) {}
+		Integer interval = engine.getInterval();
+		if(interval != null){
+			if(interval > 0) {
+				try {
+					Thread.sleep(randomInterval(interval));
+				} catch (InterruptedException e) {}
+			}
+		} else {
+			polling = false;
 		}
 	}
 	
