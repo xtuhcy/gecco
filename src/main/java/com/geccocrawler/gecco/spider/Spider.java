@@ -101,11 +101,7 @@ public class Spider implements Runnable {
 				log.error(request.getUrl(), ex);
 			} finally {
 				if(response != null) {
-					try{
-						response.getRaw().close();
-					} catch(Exception ex) {
-						response.setRaw(null);
-					}
+					response.close();
 				}
 			}
 			//抓取间隔

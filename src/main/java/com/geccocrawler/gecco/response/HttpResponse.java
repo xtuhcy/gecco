@@ -74,4 +74,13 @@ public class HttpResponse {
 		this.charset = charset;
 	}
 
+	public void close() {
+		if(raw != null) {
+			try{
+				raw.close();
+			} catch(Exception ex) {
+				raw = null;
+			}
+		}
+	}
 }
