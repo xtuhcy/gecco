@@ -54,6 +54,9 @@ public class Spider implements Runnable {
 			if(request == null) {
 				//startScheduler
 				request = engine.getScheduler().out();
+				if(request == null) {
+					break;
+				}
 				start = true;
 			}
 			if(log.isDebugEnabled()) {
@@ -108,7 +111,7 @@ public class Spider implements Runnable {
 			//抓取间隔
 			interval();
 			//开始地址放入队尾重新抓取
-			if(start) {
+			if(start && engine.isLoop()) {
 				//如果是一个开始抓取请求，再返回开始队列中
 				engine.getScheduler().into(request);
 			}

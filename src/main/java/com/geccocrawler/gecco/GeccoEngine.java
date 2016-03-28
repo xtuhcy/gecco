@@ -16,6 +16,7 @@ import com.geccocrawler.gecco.pipeline.PipelineFactory;
 import com.geccocrawler.gecco.request.HttpGetRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.request.StartRequestList;
+import com.geccocrawler.gecco.scheduler.NoLoopStartScheduler;
 import com.geccocrawler.gecco.scheduler.Scheduler;
 import com.geccocrawler.gecco.scheduler.StartScheduler;
 import com.geccocrawler.gecco.spider.Spider;
@@ -49,6 +50,8 @@ public class GeccoEngine {
 	private int threadCount;
 	
 	private int interval;
+	
+	private boolean loop = true;
 	
 	private GeccoEngine() {}
 	
@@ -85,6 +88,11 @@ public class GeccoEngine {
 		return this;
 	}
 	
+	public GeccoEngine loop(boolean loop) {
+		this.loop = loop;
+		return this;
+	}
+	
 	public GeccoEngine classpath(String classpath) {
 		this.classpath = classpath;
 		return this;
@@ -97,7 +105,11 @@ public class GeccoEngine {
 	
 	public void run() {
 		if(scheduler == null) {
-			scheduler = new StartScheduler();
+			if(loop) {
+				scheduler = new StartScheduler();
+			} else {
+				scheduler = new NoLoopStartScheduler();
+			}
 		}
 		if(spiderBeanFactory == null) {
 			if(StringUtils.isEmpty(classpath)) {
@@ -167,6 +179,10 @@ public class GeccoEngine {
 
 	public int getThreadCount() {
 		return threadCount;
+	}
+
+	public boolean isLoop() {
+		return loop;
 	}
 	
 }
