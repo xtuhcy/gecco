@@ -51,7 +51,9 @@ public class GeccoEngine {
 	
 	private int interval;
 	
-	private boolean loop = true;
+	private boolean loop;
+	
+	private boolean mobile;
 	
 	private GeccoEngine() {}
 	
@@ -90,6 +92,11 @@ public class GeccoEngine {
 	
 	public GeccoEngine loop(boolean loop) {
 		this.loop = loop;
+		return this;
+	}
+	
+	public GeccoEngine mobile(boolean mobile) {
+		this.mobile = mobile;
 		return this;
 	}
 	
@@ -184,5 +191,14 @@ public class GeccoEngine {
 	public boolean isLoop() {
 		return loop;
 	}
+
+	public boolean isMobile() {
+		return mobile;
+	}
 	
+	public void close() {
+		if(spiderBeanFactory != null) {
+			spiderBeanFactory.getDownloaderFactory().closeAll();
+		}
+	}
 }
