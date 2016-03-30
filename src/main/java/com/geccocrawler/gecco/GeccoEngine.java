@@ -49,7 +49,7 @@ public class GeccoEngine {
 	
 	private int threadCount;
 	
-	private int interval;
+	private Integer interval;
 	
 	private boolean loop;
 	
@@ -168,7 +168,7 @@ public class GeccoEngine {
 		return spiderBeanFactory;
 	}
 
-	public int getInterval() {
+	public Integer getInterval() {
 		return interval;
 	}
 
