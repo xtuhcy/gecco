@@ -136,7 +136,11 @@ httpclient，jsoup，fastjson，reflections，cglib，rhino，log4j，jmxutils�
             .thread(1)
             //单个爬虫每次抓取完一个请求后的间隔时间
             .interval(2000)
-			//开始运行
+            //循环抓取
+            .loop(true)
+            //使用pc端userAgent
+            .mobile(false)
+			  //开始运行
             .run();
         }
     }

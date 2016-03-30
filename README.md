@@ -117,6 +117,8 @@ httpclient，jsoup，fastjson，reflections，cglib，rhino，log4j，jmxutils�
             .start("https://github.com/xtuhcy/gecco")
             .thread(1)
             .interval(2000)
+            .loop(true)
+            .mobile(false)
             .run();
         }
     }
