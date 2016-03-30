@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.geccocrawler</groupId>
 	<artifactId>gecco</artifactId>
-	<version>1.0.7</version>
+	<version>1.0.8</version>
 
 	<name>Gecco</name>
 	<description>Easy to use lightweight web crawler</description>

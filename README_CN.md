@@ -44,8 +44,10 @@ Gecco是一款用java语言开发的轻量化的易用的网络爬虫。Gecco整
 	<dependency>
 	    <groupId>com.geccocrawler</groupId>
 	    <artifactId>gecco</artifactId>
-	    <version>1.0.7</version>
+	    <version>x.x.x</version>
 	</dependency>
+	
+![maven](https://img.shields.io/maven-central/v/com.geccocrawler/gecco.svg?style=flat-square)
 
 ###依赖项目
 httpclient，jsoup，fastjson，reflections，cglib，rhino，log4j，jmxutils，commons-lang3
@@ -140,7 +142,7 @@ httpclient，jsoup，fastjson，reflections，cglib，rhino，log4j，jmxutils�
             .loop(true)
             //使用pc端userAgent
             .mobile(false)
-			  //开始运行
+			//开始运行
             .run();
         }
     }
