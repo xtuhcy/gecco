@@ -30,12 +30,12 @@ import org.apache.http.util.CharArrayBuffer;
 import com.geccocrawler.gecco.request.HttpPostRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
+import com.geccocrawler.gecco.spider.SpiderThreadLocal;
 import com.geccocrawler.gecco.utils.UrlUtils;
 
 /**
- * userAgent更换
- * proxy更换
- * 
+ * 利用httpclient下载
+ *  
  * @author huchengyi
  *
  */
@@ -79,7 +79,8 @@ public class HttpClientDownloader extends AbstractDownloader {
 			reqObj = new HttpGet(request.getUrl());
 		}
 		//header
-		reqObj.addHeader("User-Agent", UserAgent.getUserAgent());
+		boolean isMobile = SpiderThreadLocal.get().getEngine().isMobile();
+		reqObj.addHeader("User-Agent", UserAgent.getUserAgent(isMobile));
 		for(Map.Entry<String, String> entry : request.getHeaders().entrySet()) {
 			reqObj.addHeader(entry.getKey(), entry.getValue());
 		}
