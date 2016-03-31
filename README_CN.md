@@ -57,28 +57,28 @@ httpclient，jsoup，fastjson，reflections，cglib，rhino，log4j，jmxutils�
     public class MyGithub implements HtmlBean {
 
         private static final long serialVersionUID = -7127412585200687225L;
-    	//url中的{user}值
+    	
         @RequestParameter("user")
-        private String user;
-    	//url中的{project}值
+        private String user;//url中的{user}值
+    	
         @RequestParameter("project")
-        private String project;
-    	//抽取页面中的title
+        private String project;//url中的{project}值
+    	
         @Text
         @HtmlField(cssPath=".repository-meta-content")
-        private String title;
-    	//抽取页面中的star
+        private String title;//抽取页面中的title
+    	
         @Text
         @HtmlField(cssPath=".pagehead-actions li:nth-child(2) .social-count")
-        private int star;
-    	//抽取页面中的fork
+        private int star;//抽取页面中的star
+    	
         @Text
         @HtmlField(cssPath=".pagehead-actions li:nth-child(3) .social-count")
-        private int fork;
-    	//抽取页面中的readme
+        private int fork;//抽取页面中的fork
+    	
         @Html
         @HtmlField(cssPath=".entry-content")
-        private String readme;
+        private String readme;//抽取页面中的readme
     
         public String getReadme() {
             return readme;
