@@ -41,111 +41,116 @@ Gecco是一款用java语言开发的轻量化的易用的网络爬虫。Gecco整
 ##下载
 ###通过Maven下载
 
-	<dependency>
-	    <groupId>com.geccocrawler</groupId>
-	    <artifactId>gecco</artifactId>
-	    <version>x.x.x</version>
-	</dependency>
-	
+```xml
+<dependency>
+    <groupId>com.geccocrawler</groupId>
+    <artifactId>gecco</artifactId>
+    <version>x.x.x</version>
+</dependency>
+``` 
+    
 ![maven](https://img.shields.io/maven-central/v/com.geccocrawler/gecco.svg?style=flat-square)
 
 ###依赖项目
 httpclient，jsoup，fastjson，reflections，cglib，rhino，log4j，jmxutils，commons-lang3
 
 ##快速开始
-	@Gecco(matchUrl="https://github.com/{user}/{project}", pipelines="consolePipeline")
-    public class MyGithub implements HtmlBean {
+  
+```java  
+@Gecco(matchUrl="https://github.com/{user}/{project}", pipelines="consolePipeline")
+public class MyGithub implements HtmlBean {
 
-        private static final long serialVersionUID = -7127412585200687225L;
-    	
-        @RequestParameter("user")
-        private String user;//url中的{user}值
-    	
-        @RequestParameter("project")
-        private String project;//url中的{project}值
-    	
-        @Text
-        @HtmlField(cssPath=".repository-meta-content")
-        private String title;//抽取页面中的title
-    	
-        @Text
-        @HtmlField(cssPath=".pagehead-actions li:nth-child(2) .social-count")
-        private int star;//抽取页面中的star
-    	
-        @Text
-        @HtmlField(cssPath=".pagehead-actions li:nth-child(3) .social-count")
-        private int fork;//抽取页面中的fork
-    	
-        @Html
-        @HtmlField(cssPath=".entry-content")
-        private String readme;//抽取页面中的readme
+    private static final long serialVersionUID = -7127412585200687225L;
     
-        public String getReadme() {
-            return readme;
-        }
+    @RequestParameter("user")
+    private String user;//url中的{user}值
     
-        public void setReadme(String readme) {
-            this.readme = readme;
-        }
+    @RequestParameter("project")
+    private String project;//url中的{project}值
     
-        public String getUser() {
-            return user;
-        }
+    @Text
+    @HtmlField(cssPath=".repository-meta-content")
+    private String title;//抽取页面中的title
     
-        public void setUser(String user) {
-            this.user = user;
-        }
+    @Text
+    @HtmlField(cssPath=".pagehead-actions li:nth-child(2) .social-count")
+    private int star;//抽取页面中的star
     
-        public String getProject() {
-            return project;
-        }
+    @Text
+    @HtmlField(cssPath=".pagehead-actions li:nth-child(3) .social-count")
+    private int fork;//抽取页面中的fork
     
-        public void setProject(String project) {
-            this.project = project;
-        }
-    
-        public String getTitle() {
-            return title;
-        }
-    
-        public void setTitle(String title) {
-            this.title = title;
-        }
-    
-        public int getStar() {
-            return star;
-        }
-    
-        public void setStar(int star) {
-            this.star = star;
-        }
-    
-        public int getFork() {
-            return fork;
-        }
-    
-        public void setFork(int fork) {
-            this.fork = fork;
-        }
-        
-        public static void main(String[] args) {
-            GeccoEngine.create()
-            //工程的包路径
-            .classpath("com.geccocrawler.gecco.demo")
-            //开始抓取的页面地址
-            .start("https://github.com/xtuhcy/gecco")
-            //开启几个爬虫线程
-            .thread(1)
-            //单个爬虫每次抓取完一个请求后的间隔时间
-            .interval(2000)
-            //循环抓取
-            .loop(true)
-            //使用pc端userAgent
-            .mobile(false)
-			//开始运行
-            .run();
-        }
+    @Html
+    @HtmlField(cssPath=".entry-content")
+    private String readme;//抽取页面中的readme
+
+    public String getReadme() {
+        return readme;
     }
+
+    public void setReadme(String readme) {
+        this.readme = readme;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getProject() {
+        return project;
+    }
+
+    public void setProject(String project) {
+        this.project = project;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getStar() {
+        return star;
+    }
+
+    public void setStar(int star) {
+        this.star = star;
+    }
+
+    public int getFork() {
+        return fork;
+    }
+
+    public void setFork(int fork) {
+        this.fork = fork;
+    }
+    
+    public static void main(String[] args) {
+        GeccoEngine.create()
+        //工程的包路径
+        .classpath("com.geccocrawler.gecco.demo")
+        //开始抓取的页面地址
+        .start("https://github.com/xtuhcy/gecco")
+        //开启几个爬虫线程
+        .thread(1)
+        //单个爬虫每次抓取完一个请求后的间隔时间
+        .interval(2000)
+        //循环抓取
+        .loop(true)
+        //使用pc端userAgent
+        .mobile(false)
+        //开始运行
+        .run();
+    }
+}
+```
 
 ##完整演示
 [教您使用java爬虫gecco抓取JD全部商品信息（一）](http://my.oschina.net/u/2336761/blog/620158)
