@@ -55,6 +55,8 @@ public class Spider implements Runnable {
 				//startScheduler
 				request = engine.getScheduler().out();
 				if(request == null) {
+					//告知engine线程执行结束
+					engine.notifyComplemet();
 					break;
 				}
 				start = true;

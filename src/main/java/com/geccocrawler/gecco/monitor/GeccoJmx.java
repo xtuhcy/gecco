@@ -20,11 +20,16 @@ public class GeccoJmx {
 			String name = mbean.value();
 	    	try {
 				exporter.export("com.geccocrawler.gecco:name="+name, mbeanClass.newInstance());
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		
+	}
+	
+	public static void unexport() {
+		exporter.unexportAllAndReportMissing();
 	}
 
 }

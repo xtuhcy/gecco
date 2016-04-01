@@ -1,13 +1,17 @@
 package com.geccocrawler.gecco;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.geccocrawler.gecco.monitor.GeccoJmx;
@@ -33,6 +37,8 @@ import com.google.common.io.Resources;
  */
 public class GeccoEngine {
 	
+	private static Log log = LogFactory.getLog(GeccoEngine.class);
+	
 	private Date startTime;
 	
 	private List<HttpRequest> startRequests = new ArrayList<HttpRequest>();
@@ -48,6 +54,8 @@ public class GeccoEngine {
 	private String classpath;
 	
 	private int threadCount;
+	
+	private CountDownLatch cdl;
 	
 	private int interval;
 	
@@ -127,6 +135,7 @@ public class GeccoEngine {
 		if(threadCount <= 0) {
 			threadCount = 1;
 		}
+		this.cdl = new CountDownLatch(threadCount);
 		startsJson();
 		for(HttpRequest startRequest : startRequests) {
 			scheduler.into(startRequest);
@@ -143,6 +152,8 @@ public class GeccoEngine {
 		GeccoMonitor.monitor(this);
 		//启动导出jmx信息
 		GeccoJmx.export();
+		//非循环模式等待线程执行完毕后关闭
+		closeUnitlComplete();
 	}
 	
 	private GeccoEngine startsJson() {
@@ -156,7 +167,11 @@ public class GeccoEngine {
 					start(start.toRequest());
 				}
 			}
-		} catch(Exception ex) {}
+		} catch(IllegalArgumentException ex) {
+			log.info("starts.json not found");
+		} catch(IOException ioex) {
+			log.error(ioex);
+		}
 		return this;
 	}
 
@@ -196,9 +211,21 @@ public class GeccoEngine {
 		return mobile;
 	}
 	
-	public void close() {
-		if(spiderBeanFactory != null) {
-			spiderBeanFactory.getDownloaderFactory().closeAll();
+	public void notifyComplemet() {
+		this.cdl.countDown();
+	}
+	
+	public void closeUnitlComplete() {
+		if(!loop) {
+			try {
+				cdl.await();
+			} catch (InterruptedException e) {
+				log.error(e);
+			}
+			if(spiderBeanFactory != null) {
+				spiderBeanFactory.getDownloaderFactory().closeAll();
+			}
+			GeccoJmx.unexport();
 		}
 	}
 }
