@@ -26,11 +26,13 @@ Gecco is a easy to use lightweight web crawler developed with java language.Gecc
 ##Download
 ###Download via Maven
 
-	<dependency>
-	    <groupId>com.geccocrawler</groupId>
-	    <artifactId>gecco</artifactId>
-	    <version>x.x.x</version>
-	</dependency>
+```xml
+<dependency>
+    <groupId>com.geccocrawler</groupId>
+    <artifactId>gecco</artifactId>
+    <version>x.x.x</version>
+</dependency>
+```
 
 ![maven](https://img.shields.io/maven-central/v/com.geccocrawler/gecco.svg?style=flat-square)
 
@@ -38,92 +40,95 @@ Gecco is a easy to use lightweight web crawler developed with java language.Gecc
 httpclient，jsoup，fastjson，reflections，cglib，rhino，log4j，jmxutils，commons-lang3
 
 ##Quick start
-	@Gecco(matchUrl="https://github.com/{user}/{project}", pipelines="consolePipeline")
-    public class MyGithub implements HtmlBean {
 
-        private static final long serialVersionUID = -7127412585200687225L;
+```java
+@Gecco(matchUrl="https://github.com/{user}/{project}", pipelines="consolePipeline")
+public class MyGithub implements HtmlBean {
 
-        @RequestParameter("user")
-        private String user;
+    private static final long serialVersionUID = -7127412585200687225L;
 
-        @RequestParameter("project")
-        private String project;
+    @RequestParameter("user")
+    private String user;
 
-        @Text
-        @HtmlField(cssPath=".repository-meta-content")
-        private String title;
+    @RequestParameter("project")
+    private String project;
 
-        @Text
-        @HtmlField(cssPath=".pagehead-actions li:nth-child(2) .social-count")
-        private int star;
+    @Text
+    @HtmlField(cssPath=".repository-meta-content")
+    private String title;
 
-        @Text
-        @HtmlField(cssPath=".pagehead-actions li:nth-child(3) .social-count")
-        private int fork;
+    @Text
+    @HtmlField(cssPath=".pagehead-actions li:nth-child(2) .social-count")
+    private int star;
 
-        @Html
-        @HtmlField(cssPath=".entry-content")
-        private String readme;
-    
-        public String getReadme() {
-            return readme;
-        }
-    
-        public void setReadme(String readme) {
-            this.readme = readme;
-        }
-    
-        public String getUser() {
-            return user;
-        }
-    
-        public void setUser(String user) {
-            this.user = user;
-        }
-    
-        public String getProject() {
-            return project;
-        }
-    
-        public void setProject(String project) {
-            this.project = project;
-        }
-    
-        public String getTitle() {
-            return title;
-        }
-    
-        public void setTitle(String title) {
-            this.title = title;
-        }
-    
-        public int getStar() {
-            return star;
-        }
-    
-        public void setStar(int star) {
-            this.star = star;
-        }
-    
-        public int getFork() {
-            return fork;
-        }
-    
-        public void setFork(int fork) {
-            this.fork = fork;
-        }
-        
-        public static void main(String[] args) {
-            GeccoEngine.create()
-            .classpath("com.geccocrawler.gecco.demo")
-            .start("https://github.com/xtuhcy/gecco")
-            .thread(1)
-            .interval(2000)
-            .loop(true)
-            .mobile(false)
-            .run();
-        }
+    @Text
+    @HtmlField(cssPath=".pagehead-actions li:nth-child(3) .social-count")
+    private int fork;
+
+    @Html
+    @HtmlField(cssPath=".entry-content")
+    private String readme;
+
+    public String getReadme() {
+        return readme;
     }
+
+    public void setReadme(String readme) {
+        this.readme = readme;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getProject() {
+        return project;
+    }
+
+    public void setProject(String project) {
+        this.project = project;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getStar() {
+        return star;
+    }
+
+    public void setStar(int star) {
+        this.star = star;
+    }
+
+    public int getFork() {
+        return fork;
+    }
+
+    public void setFork(int fork) {
+        this.fork = fork;
+    }
+    
+    public static void main(String[] args) {
+        GeccoEngine.create()
+        .classpath("com.geccocrawler.gecco.demo")
+        .start("https://github.com/xtuhcy/gecco")
+        .thread(1)
+        .interval(2000)
+        .loop(true)
+        .mobile(false)
+        .run();
+    }
+}
+```
 
 ##Demo
 [教您使用java爬虫gecco抓取JD全部商品信息（一）](http://my.oschina.net/u/2336761/blog/620158)
