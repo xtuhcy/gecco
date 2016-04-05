@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpHost;
 
 import com.google.common.base.Charsets;
@@ -22,6 +24,8 @@ import com.google.common.io.Resources;
  *
  */
 public class Proxys {
+	
+	private static Log log = LogFactory.getLog(Proxys.class);
 	
 	private static List<HttpHost> proxys = null;
 	static{
@@ -44,7 +48,9 @@ public class Proxys {
 					}
 				}
 			}
-		} catch(Exception ex) {}
+		} catch(Exception ex) {
+			log.info("proxys not load");
+		}
 	}
 	
 	public static HttpHost getProxy() {

@@ -226,6 +226,7 @@ public class GeccoEngine {
 				spiderBeanFactory.getDownloaderFactory().closeAll();
 			}
 			GeccoJmx.unexport();
+			log.info("close gecco!");
 		}
 	}
 }

@@ -3,11 +3,12 @@ package com.geccocrawler.gecco.demo.jd;
 import com.geccocrawler.gecco.annotation.Ajax;
 import com.geccocrawler.gecco.annotation.Gecco;
 import com.geccocrawler.gecco.annotation.HtmlField;
+import com.geccocrawler.gecco.annotation.Image;
 import com.geccocrawler.gecco.annotation.RequestParameter;
 import com.geccocrawler.gecco.annotation.Text;
 import com.geccocrawler.gecco.spider.HtmlBean;
 
-@Gecco(matchUrl="http://item.jd.com/{code}.html", pipelines="consolePipeline")
+//@Gecco(matchUrl="http://item.jd.com/{code}.html", pipelines="consolePipeline")
 public class ProductDetail implements HtmlBean {
 
 	private static final long serialVersionUID = -377053120283382723L;
@@ -28,7 +29,7 @@ public class ProductDetail implements HtmlBean {
 	/**
 	 * ajax获取商品价格
 	 */
-	@Ajax(url="http://p.3.cn/prices/get?skuIds=J_[code]")
+	@Ajax(url="http://p.3.cn/prices/get?type=1&pdtk=&pdbp=0&skuid=J_{code}")
 	private JDPrice price;
 
 	/**
@@ -42,6 +43,10 @@ public class ProductDetail implements HtmlBean {
 	 */
 	@HtmlField(cssPath="#product-detail-2")
 	private String detail;
+	
+	@Image(download="d:/gecco/jd/img")
+	@HtmlField(cssPath="#spec-n1 img")
+	private String image;
 	
 	public JDPrice getPrice() {
 		return price;
@@ -82,4 +87,13 @@ public class ProductDetail implements HtmlBean {
 	public void setCode(String code) {
 		this.code = code;
 	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+	
 }

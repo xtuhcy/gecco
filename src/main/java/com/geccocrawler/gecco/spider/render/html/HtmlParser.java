@@ -24,6 +24,7 @@ import com.geccocrawler.gecco.spider.render.Render;
 import com.geccocrawler.gecco.spider.render.RenderContext;
 import com.geccocrawler.gecco.spider.render.RenderException;
 import com.geccocrawler.gecco.spider.render.RenderType;
+import com.geccocrawler.gecco.utils.DownloadImage;
 
 public class HtmlParser {
 	
@@ -55,7 +56,9 @@ public class HtmlParser {
 			return Conversion.getValue(field.getType(), value);
 		} else if(field.isAnnotationPresent(Image.class)) {//@Image
 			Image image = field.getAnnotation(Image.class);
-			return $image(selector, image.value());
+			String imageSrc = $image(selector, image.value());
+			DownloadImage.download(image.download(), imageSrc);
+			return imageSrc;
 		} else if(field.isAnnotationPresent(Href.class)) {//@Href
 			Href href = field.getAnnotation(Href.class);
 			String url = $href(selector, href.value());
@@ -78,7 +81,9 @@ public class HtmlParser {
 				list.add(Conversion.getValue(field.getType(), $text(el, text.own())));
 			} else if(field.isAnnotationPresent(Image.class)) {//@Image
 				Image image = field.getAnnotation(Image.class);
-				list.add($image(el, image.value()));
+				String imageSrc = $image(el, image.value());
+				DownloadImage.download(image.download(), imageSrc);
+				list.add(imageSrc);
 			} else if(field.isAnnotationPresent(Href.class)) {//@Href
 				Href href = field.getAnnotation(Href.class);
 				String url = $href(el, href.value());
