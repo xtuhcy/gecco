@@ -8,7 +8,7 @@ import com.geccocrawler.gecco.annotation.RequestParameter;
 import com.geccocrawler.gecco.annotation.Text;
 import com.geccocrawler.gecco.spider.HtmlBean;
 
-//@Gecco(matchUrl="http://item.jd.com/{code}.html", pipelines="consolePipeline")
+@Gecco(matchUrl="http://item.jd.com/{code}.html", pipelines="consolePipeline")
 public class ProductDetail implements HtmlBean {
 
 	private static final long serialVersionUID = -377053120283382723L;
