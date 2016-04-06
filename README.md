@@ -141,6 +141,8 @@ public class MyGithub implements HtmlBean {
 
 [爬虫的监控](http://my.oschina.net/u/2336761/blog/644330)
 
+[一个完整的例子，分页处理，结合spring，mysql入库](http://git.oschina.net/xiaomaoguai/gecco-demo)
+
 ##Contact and communication
 
 - blog：http://my.oschina.net/u/2336761/blog
