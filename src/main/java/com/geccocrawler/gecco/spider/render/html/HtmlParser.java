@@ -120,6 +120,9 @@ public class HtmlParser {
 
 	public Elements $(String selector) {
 		Elements elements = document.select(selector);
+		if(log.isDebugEnabled()) {
+			log.debug("["+selector+"]--->["+elements+"]");
+		}
 		return elements;
 	}
 	

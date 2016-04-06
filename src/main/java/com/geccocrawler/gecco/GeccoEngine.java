@@ -12,6 +12,9 @@ import java.util.concurrent.CountDownLatch;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import com.alibaba.fastjson.JSON;
 import com.geccocrawler.gecco.monitor.GeccoJmx;
@@ -63,6 +66,8 @@ public class GeccoEngine {
 	
 	private boolean mobile;
 	
+	private boolean debug;
+	
 	private GeccoEngine() {}
 	
 	public static GeccoEngine create() {
@@ -108,6 +113,11 @@ public class GeccoEngine {
 		return this;
 	}
 	
+	public GeccoEngine debug(boolean debug) {
+		this.debug = debug;
+		return this;
+	}
+	
 	public GeccoEngine classpath(String classpath) {
 		this.classpath = classpath;
 		return this;
@@ -119,6 +129,10 @@ public class GeccoEngine {
 	}
 	
 	public void run() {
+		if(debug) {
+			Logger log = LogManager.getLogger("com.geccocrawler.gecco.spider.render");
+			log.setLevel(Level.DEBUG);
+		}
 		if(scheduler == null) {
 			if(loop) {
 				scheduler = new StartScheduler();
