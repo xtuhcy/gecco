@@ -70,9 +70,9 @@ public abstract class AbstractRender implements Render {
 			requests(request, bean);
 			return bean;
 		} catch(FieldRenderException ex) {
-			throw new RenderException(clazz, ex);
+			throw new RenderException(ex.getMessage(), clazz, ex);
 		} catch(Exception ex) {
-			throw new RenderException(clazz);
+			throw new RenderException(ex.getMessage(), clazz);
 		}
 	}
 	

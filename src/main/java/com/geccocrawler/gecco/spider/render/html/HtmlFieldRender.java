@@ -31,7 +31,7 @@ public class HtmlFieldRender implements FieldRender {
 				Object value = injectHtmlField(request, response, htmlField, bean.getClass());
 				fieldMap.put(htmlField.getName(), value);
 			} catch(RenderException ex) {
-				throw new FieldRenderException(htmlField, ex);
+				throw new FieldRenderException(htmlField, ex.getMessage(), ex);
 			}
 		}
 		beanMap.putAll(fieldMap);

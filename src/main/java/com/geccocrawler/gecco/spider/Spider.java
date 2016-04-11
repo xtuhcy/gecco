@@ -91,6 +91,9 @@ public class Spider implements Runnable {
 					}
 				}
 			} catch(RenderException rex) {
+				if(engine.isDebug()) {
+					log.error(rex);
+				}
 				FieldRenderException frex = (FieldRenderException)rex.getCause();
 				if(frex != null) {
 					log.error(request.getUrl() + " RENDER ERROR : " + rex.getSpiderBeanClass().getName() + "(" + frex.getField().getName()+")");
@@ -98,8 +101,14 @@ public class Spider implements Runnable {
 					log.error(request.getUrl() + " RENDER ERROR : " + rex.getSpiderBeanClass().getName());
 				}
 			} catch(DownloadException dex) {
+				if(engine.isDebug()) {
+					log.error(dex);
+				}
 				log.error(request.getUrl() + " DOWNLOAD ERROR :" + dex.getMessage());
 			} catch(Exception ex) {
+				if(engine.isDebug()) {
+					log.error(ex);
+				}
 				log.error(request.getUrl(), ex);
 			} finally {
 				if(response != null) {

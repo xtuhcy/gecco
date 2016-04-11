@@ -40,7 +40,7 @@ public class MyGithub implements HtmlBean {
 	@HtmlField(cssPath="ul.numbers-summary > li:nth-child(4) > a")
 	private String contributors;
 	
-	//@HtmlField(cssPath=".entry-content")
+	@HtmlField(cssPath=".entry-content")
 	private String readme;
 
 	public HttpRequest getRequest() {
@@ -114,13 +114,14 @@ public class MyGithub implements HtmlBean {
 		.start("https://github.com/xtuhcy/gecco")
 		.start("https://github.com/xtuhcy/gecco-spring")
 		//开启几个爬虫线程,线程数量最好不要大于start request数量
-		.thread(1)
+		.thread(2)
 		//单个爬虫每次抓取完一个请求后的间隔时间
 		.interval(2000)
 		//循环抓取
-		.loop(false)
+		.loop(true)
 		//采用pc端userAgent
 		.mobile(false)
+		//是否开启debug模式，跟踪页面元素抽取
 		.debug(true)
 		.run();
 	}

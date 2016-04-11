@@ -8,11 +8,6 @@ public class FieldRenderException extends Exception {
 
 	private Field field;
 	
-	public FieldRenderException(Field field, Throwable cause) {
-		super(cause);
-		this.field = field;
-	}
-	
 	public FieldRenderException(Field field, String message) {
 		super(message);
 		this.field = field;

@@ -225,6 +225,10 @@ public class GeccoEngine {
 		return mobile;
 	}
 	
+	public boolean isDebug() {
+		return debug;
+	}
+
 	public void notifyComplemet() {
 		this.cdl.countDown();
 	}

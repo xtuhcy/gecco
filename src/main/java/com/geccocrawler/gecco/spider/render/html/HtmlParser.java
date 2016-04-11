@@ -19,6 +19,7 @@ import com.geccocrawler.gecco.annotation.Text;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.spider.SpiderBean;
+import com.geccocrawler.gecco.spider.SpiderThreadLocal;
 import com.geccocrawler.gecco.spider.conversion.Conversion;
 import com.geccocrawler.gecco.spider.render.Render;
 import com.geccocrawler.gecco.spider.render.RenderContext;
@@ -57,7 +58,10 @@ public class HtmlParser {
 		} else if(field.isAnnotationPresent(Image.class)) {//@Image
 			Image image = field.getAnnotation(Image.class);
 			String imageSrc = $image(selector, image.value());
-			DownloadImage.download(image.download(), imageSrc);
+			String localPath = DownloadImage.download(image.download(), imageSrc);
+			if(StringUtils.isNotEmpty(localPath)) {
+				return localPath;
+			}
 			return imageSrc;
 		} else if(field.isAnnotationPresent(Href.class)) {//@Href
 			Href href = field.getAnnotation(Href.class);
@@ -82,7 +86,10 @@ public class HtmlParser {
 			} else if(field.isAnnotationPresent(Image.class)) {//@Image
 				Image image = field.getAnnotation(Image.class);
 				String imageSrc = $image(el, image.value());
-				DownloadImage.download(image.download(), imageSrc);
+				String localPath = DownloadImage.download(image.download(), imageSrc);
+				if(StringUtils.isNotEmpty(localPath)) {
+					list.add(localPath);
+				}
 				list.add(imageSrc);
 			} else if(field.isAnnotationPresent(Href.class)) {//@Href
 				Href href = field.getAnnotation(Href.class);
@@ -120,8 +127,11 @@ public class HtmlParser {
 
 	public Elements $(String selector) {
 		Elements elements = document.select(selector);
-		if(log.isDebugEnabled()) {
-			log.debug("["+selector+"]--->["+elements+"]");
+		if(SpiderThreadLocal.get().getEngine().isDebug()) {
+			if(!selector.equalsIgnoreCase("script")) {
+				//log.debug("["+selector+"]--->["+elements+"]");
+				System.out.println("["+selector+"]--->["+elements+"]");
+			}
 		}
 		return elements;
 	}
