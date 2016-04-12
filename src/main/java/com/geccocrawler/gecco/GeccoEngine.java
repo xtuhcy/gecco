@@ -144,7 +144,8 @@ public class GeccoEngine extends Thread {
 		}
 		if(spiderBeanFactory == null) {
 			if(StringUtils.isEmpty(classpath)) {
-				classpath = "";
+				//classpath不为空
+				throw new IllegalArgumentException("classpath cannot be empty");
 			}
 			spiderBeanFactory = new SpiderBeanFactory(classpath, pipelineFactory);
 		}
@@ -153,6 +154,10 @@ public class GeccoEngine extends Thread {
 		}
 		this.cdl = new CountDownLatch(threadCount);
 		startsJson();
+		if(startRequests.isEmpty()) {
+			//startRequests不为空
+			throw new IllegalArgumentException("startRequests cannot be empty");
+		}
 		for(HttpRequest startRequest : startRequests) {
 			scheduler.into(startRequest);
 		}
@@ -167,7 +172,7 @@ public class GeccoEngine extends Thread {
 		//监控爬虫基本信息
 		GeccoMonitor.monitor(this);
 		//启动导出jmx信息
-		GeccoJmx.export();
+		GeccoJmx.export(classpath);
 		//非循环模式等待线程执行完毕后关闭
 		closeUnitlComplete();
 	}
