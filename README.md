@@ -6,7 +6,7 @@ Gecco is a easy to use lightweight web crawler developed with java language.Gecc
 
 * [中文说明](https://github.com/xtuhcy/gecco/blob/master/README_CN.md)
 
-* [中文参考手册](https://xtuhcy.gitbooks.io/geccocrawler/content/index.html)
+* [中文参考手册](http://101.200.193.106/)，域名还在备案中
 
 ##Main features
 
