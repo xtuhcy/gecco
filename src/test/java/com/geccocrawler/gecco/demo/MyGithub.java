@@ -116,14 +116,15 @@ public class MyGithub implements HtmlBean {
 		//开启几个爬虫线程,线程数量最好不要大于start request数量
 		.thread(2)
 		//单个爬虫每次抓取完一个请求后的间隔时间
-		.interval(2000)
+		.interval(20000)
 		//循环抓取
 		.loop(true)
 		//采用pc端userAgent
 		.mobile(false)
 		//是否开启debug模式，跟踪页面元素抽取
 		.debug(true)
-		.run();
+		//非阻塞方式运行
+		.start();
 	}
 
 }

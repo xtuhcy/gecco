@@ -125,7 +125,7 @@ public class MyGithub implements HtmlBean {
         .interval(2000)
         .loop(true)
         .mobile(false)
-        .run();
+        .start();
     }
 }
 ```

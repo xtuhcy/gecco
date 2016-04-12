@@ -38,7 +38,7 @@ import com.google.common.io.Resources;
  * @author huchengyi
  *
  */
-public class GeccoEngine {
+public class GeccoEngine extends Thread {
 	
 	private static Log log = LogFactory.getLog(GeccoEngine.class);
 	
@@ -71,7 +71,9 @@ public class GeccoEngine {
 	private GeccoEngine() {}
 	
 	public static GeccoEngine create() {
-		return new GeccoEngine();
+		GeccoEngine geccoEngine = new GeccoEngine();
+		geccoEngine.setName("GeccoEngine");
+		return geccoEngine;
 	}
 
 	public GeccoEngine start(String url) {

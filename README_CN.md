@@ -146,8 +146,8 @@ public class MyGithub implements HtmlBean {
         .loop(true)
         //使用pc端userAgent
         .mobile(false)
-        //开始运行
-        .run();
+        //非阻塞方式运行
+        .start();
     }
 }
 ```
