@@ -2,6 +2,7 @@ package com.geccocrawler.gecco.request;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -34,7 +35,26 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 		this();
 		this.setUrl(url);
 	}
+	
+	@Override
+	public void clearHeader() {
+		Iterator<Map.Entry<String, String>> it = this.headers.entrySet().iterator();  
+        while(it.hasNext()){
+        	it.next();
+        	it.remove();
+        }
+	}
 
+	@Override
+	public void clearCookie() {
+		Iterator<Map.Entry<String, String>> it = this.cookies.entrySet().iterator();  
+        while(it.hasNext()){  
+        	it.next();
+        	it.remove();
+        }
+	}
+
+	@Override
 	public void addCookie(String name, String value) {
 		cookies.put(name, value);
 	}
@@ -151,4 +171,15 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 		return request;
 	}
 
+	public static void main(String[] args) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("1", "2");
+		Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();  
+        while(it.hasNext()){
+        	it.next();
+        	//System.out.println(m);
+        	it.remove();
+        }
+        System.out.println(map);
+	}
 }

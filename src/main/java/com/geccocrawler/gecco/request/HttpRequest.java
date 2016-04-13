@@ -19,6 +19,8 @@ public interface HttpRequest extends Cloneable {
 	public void addHeader(String name, String value);
 	
 	public Map<String, String> getHeaders();
+	
+	public void clearHeader();
 
 	public void refer(String refer);
 	
@@ -29,6 +31,10 @@ public interface HttpRequest extends Cloneable {
 	public HttpRequest subRequest(String url);
 	
 	public Map<String, String> getCookies();
+	
+	public void addCookie(String name, String value);
+	
+	public void clearCookie();
 
 	public int getPriority();
 	

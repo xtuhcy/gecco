@@ -15,7 +15,7 @@ public class UrlUtils {
 		if(relativePath == null) {
 			return null;
 		}
-		relativePath = relativePath.toLowerCase();
+		//relativePath = relativePath.toLowerCase();
 		if(relativePath.startsWith("http")) {
 			return relativePath;
 		}
