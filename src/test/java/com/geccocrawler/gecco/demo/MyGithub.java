@@ -122,7 +122,7 @@ public class MyGithub implements HtmlBean {
 		//采用pc端userAgent
 		.mobile(false)
 		//是否开启debug模式，跟踪页面元素抽取
-		.debug(true)
+		.debug(false)
 		//非阻塞方式运行
 		.start();
 	}
