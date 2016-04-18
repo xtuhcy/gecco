@@ -93,6 +93,8 @@ public class Spider implements Runnable {
 			} catch(RenderException rex) {
 				if(engine.isDebug()) {
 					log.error(rex);
+				} else {
+					log.error(rex.getMessage());
 				}
 				FieldRenderException frex = (FieldRenderException)rex.getCause();
 				if(frex != null) {

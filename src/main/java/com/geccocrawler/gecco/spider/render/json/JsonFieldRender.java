@@ -29,11 +29,14 @@ public class JsonFieldRender implements FieldRender {
 			JSONPath JSONPath = field.getAnnotation(JSONPath.class);
 			String jsonPath = JSONPath.value();
 			Object src = com.alibaba.fastjson.JSONPath.eval(json, jsonPath);
+			if(src == null) {
+				throw new FieldRenderException(field, jsonPath + " not found in : " + json);
+			}
 			try {
 				Object value = Conversion.getValue(field.getType(), src);
 				fieldMap.put(field.getName(), value);
 			} catch(Exception ex) {
-				throw new FieldRenderException(field, src.toString(), ex);
+				throw new FieldRenderException(field, "Conversion error : " + src, ex);
 			}
 		}
 		beanMap.putAll(fieldMap);
