@@ -66,7 +66,7 @@ public class Proxys {
 			return null;
 		}
 		Proxy proxy = proxyQueue.poll();
-		System.out.println(proxy);
+		log.debug("use proxy : " + proxy);
 		if(proxy == null) {
 			return null;
 		}
