@@ -153,11 +153,20 @@ public class HttpClientDownloader extends AbstractDownloader {
 				resp.setContent(content);
 			} else {
 				//404，500等
+				if(proxy != null) {
+					Proxys.failure(proxy.toHostString());
+				}
 				throw new DownloadServerException("" + status);
+			}
+			if(proxy != null) {
+				Proxys.success(proxy.toHostString());
 			}
 			return resp;
 		} catch (IOException e) {
 			//超时等
+			if(proxy != null) {
+				Proxys.failure(proxy.toHostString());
+			}
 			throw new DownloadException(e);
 		} finally {
 			reqObj.releaseConnection();

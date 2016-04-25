@@ -39,7 +39,7 @@ public class JsonFieldRender implements FieldRender {
 				Object value = injectJsonField(request, field, json);
 				fieldMap.put(field.getName(), value);
 			} catch(Exception ex) {
-				throw new FieldRenderException(field, "error : " + json, ex);
+				throw new FieldRenderException(field, ex.getMessage(), ex);
 			}
 			/*JSONPath JSONPath = field.getAnnotation(JSONPath.class);
 			String jsonPath = JSONPath.value();
@@ -66,27 +66,39 @@ public class JsonFieldRender implements FieldRender {
 		if(isList) {
 			Type genericType = field.getGenericType();//获得包含泛型的类型
 			Class genericClass = ReflectUtils.getGenericClass(genericType, 0);//泛型类
-			//List<Object>
-			List<SpiderBean> list = new ArrayList<SpiderBean>();
-			JSONArray ja = (JSONArray)src;
-			for(Object jo : ja) {
-				HttpResponse subResponse = HttpResponse.createSimple(jo.toString());
-				Render render = RenderContext.getRender(RenderType.JSON);
-				SpiderBean subBean = render.inject(genericClass, request, subResponse);
-				list.add(subBean);
+			if(ReflectUtils.haveSuperType(genericClass, SpiderBean.class)) {
+				//List<spiderBean>
+				return spiderBeanRender(src, genericClass, request);
+			} else {
+				//List<Object>
+				return objectRender(src, field, jsonPath, json);
 			}
-			return list;
 		} else {
 			//Object
-			if(src == null) {
-				throw new FieldRenderException(field, jsonPath + " not found in : " + json);
-			}
-			try {
-				return Conversion.getValue(field.getType(), src);
-			} catch(Exception ex) {
-				throw new FieldRenderException(field, "Conversion error : " + src, ex);
-			}
+			return objectRender(src, field, jsonPath, json);
 		}
 	}
 	
+	private List<SpiderBean> spiderBeanRender(Object src, Class genericClass, HttpRequest request) throws RenderException {
+		List<SpiderBean> list = new ArrayList<SpiderBean>();
+		JSONArray ja = (JSONArray)src;
+		for(Object jo : ja) {
+			HttpResponse subResponse = HttpResponse.createSimple(jo.toString());
+			Render render = RenderContext.getRender(RenderType.JSON);
+			SpiderBean subBean = render.inject(genericClass, request, subResponse);
+			list.add(subBean);
+		}
+		return list;
+	}
+	
+	private Object objectRender(Object src, Field field, String jsonPath, Object json) throws FieldRenderException {
+		if(src == null) {
+			throw new FieldRenderException(field, jsonPath + " not found in : " + json);
+		}
+		try {
+			return Conversion.getValue(field.getType(), src);
+		} catch(Exception ex) {
+			throw new FieldRenderException(field, "Conversion error : " + src, ex);
+		}
+	}
 }
