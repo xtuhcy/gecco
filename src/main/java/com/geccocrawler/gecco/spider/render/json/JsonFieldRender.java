@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.reflections.ReflectionUtils;
 
 import net.sf.cglib.beans.BeanMap;
@@ -33,7 +34,10 @@ public class JsonFieldRender implements FieldRender {
 	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) throws FieldRenderException {
 		Map<String, Object> fieldMap = new HashMap<String, Object>();
 		Set<Field> jsonPathFields = ReflectionUtils.getAllFields(bean.getClass(), ReflectionUtils.withAnnotation(JSONPath.class));
-		Object json = JSON.parse(response.getContent());
+		String jsonStr = response.getContent();
+		jsonStr = StringUtils.substringBetween(jsonStr, "(", ")");
+		jsonStr = StringUtils.trim(jsonStr);
+		Object json = JSON.parse(jsonStr);
 		for(Field field : jsonPathFields) {
 			try {
 				Object value = injectJsonField(request, field, json);

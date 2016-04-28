@@ -16,6 +16,14 @@ import com.geccocrawler.gecco.spider.SpiderBean;
  */
 public interface CustomFieldRender {
 	
+	/**
+	 * 
+	 * @param request HttpRequest
+	 * @param response HttpResponse
+	 * @param beanMap 将Field放入SpiderBean
+	 * @param bean 已经注入后的SpiderBean
+	 * @param field 需要注入的Field
+	 */
 	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean, Field field);
 
 }
