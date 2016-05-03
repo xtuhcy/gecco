@@ -92,7 +92,7 @@ public class Spider implements Runnable {
 				}
 			} catch(RenderException rex) {
 				if(engine.isDebug()) {
-					log.error(rex);
+					rex.printStackTrace();
 				} else {
 					log.error(rex.getMessage());
 				}
