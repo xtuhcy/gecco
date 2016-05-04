@@ -3,6 +3,8 @@ package com.geccocrawler.gecco.spider.render.html;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -10,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 
 import com.geccocrawler.gecco.annotation.Attr;
@@ -39,7 +42,11 @@ public class HtmlParser {
 		long beginTime = System.currentTimeMillis();
 		log = LogFactory.getLog(HtmlParser.class);
 		this.baseUri = baseUri;
-		this.document = Jsoup.parse(content, baseUri);
+		if(isTable(content)) {
+			this.document = Jsoup.parse(content, baseUri, Parser.xmlParser());
+		} else {
+			this.document = Jsoup.parse(content, baseUri);
+		}
 		long endTime = System.currentTimeMillis();
 		if(log.isTraceEnabled()) {
 			log.trace("init html parser : " + (endTime - beginTime) + "ms");
@@ -108,6 +115,7 @@ public class HtmlParser {
 	
 	public SpiderBean $bean(String selector, HttpRequest request, Class<? extends SpiderBean> clazz) throws RenderException {
 		String subHtml = $html(selector);
+		//table
 		HttpResponse subResponse = HttpResponse.createSimple(subHtml);
 		Render render = RenderContext.getRender(RenderType.HTML);
 		return render.inject(clazz, request, subResponse);
@@ -117,6 +125,7 @@ public class HtmlParser {
 		List<SpiderBean> list = new ArrayList<SpiderBean>();
 		List<String> els = $list(selector);
 		for(String el : els) {
+			//table
 			HttpResponse subResponse = HttpResponse.createSimple(el);
 			Render render = RenderContext.getRender(RenderType.HTML);
 			SpiderBean subBean = render.inject(clazz, request, subResponse);
@@ -186,11 +195,17 @@ public class HtmlParser {
 	}
 	
 	public String $attr(Element element, String attr) {
+		if(element == null) {
+			return null;
+		}
 		return element.attr(attr);
 	}
 	
 	public String $attr(String selector, String attr) {
 		Element element = $element(selector);
+		if(element == null) {
+			return null;
+		}
 		return element.attr(attr);
 	}
 	
@@ -254,4 +269,15 @@ public class HtmlParser {
 		log = LogFactory.getLog(spiderBeanClass);
 	}
 	
+	private boolean isTable(String content) {
+		if(!StringUtils.contains(content, "</html>")) {
+			String rege = "<\\s*(tr|td|th)[\\s\\S]+";
+			Pattern pattern = Pattern.compile(rege);
+			Matcher matcher = pattern.matcher(content);
+			if(matcher.matches()) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

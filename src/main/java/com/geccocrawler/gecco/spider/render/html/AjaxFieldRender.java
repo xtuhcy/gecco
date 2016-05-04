@@ -60,8 +60,8 @@ public class AjaxFieldRender implements FieldRender {
 			if (ReflectUtils.haveSuperType(clazz, JsonBean.class)) {
 				type = RenderType.JSON;
 			}
-			Render jsonRender = RenderContext.getRender(type);
-			return jsonRender.inject(clazz, subRequest, subReponse);
+			Render render = RenderContext.getRender(type);
+			return render.inject(clazz, subRequest, subReponse);
 		} catch (Exception ex) {
 			throw new FieldRenderException(field, ex.getMessage(), ex);
 		}
