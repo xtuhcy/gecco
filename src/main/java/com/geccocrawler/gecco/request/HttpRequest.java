@@ -36,7 +36,7 @@ public interface HttpRequest extends Cloneable {
 	
 	public void clearCookie();
 
-	public int getPriority();
+	public long getPriority();
 	
-	public void setPriority(int prio);
+	public void setPriority(long prio);
 }
