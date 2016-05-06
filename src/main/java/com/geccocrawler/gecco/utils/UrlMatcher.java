@@ -65,6 +65,7 @@ public class UrlMatcher {
 		List<String> names = new ArrayList<String>();
 		while(matcher.find()) {
 			matcher.appendReplacement(sb, "([^/]*)");
+			//matcher.appendReplacement(sb, "(.*)");
 			String name = matcher.group(1);
 			names.add(name);
 		}
@@ -81,7 +82,7 @@ public class UrlMatcher {
 				Map<String, String> params = new HashMap<String, String>(names.size());
 				for(int i = 1; i <= matcher2.groupCount(); i++) {
 					String value = matcher2.group(i);
-					boolean x = matcher2.requireEnd();
+					//boolean x = matcher2.requireEnd();
 					try {
 						value = URLDecoder.decode(value, "UTF-8");
 					} catch (UnsupportedEncodingException e) {
@@ -102,8 +103,16 @@ public class UrlMatcher {
 	}
 	
 	public static void main(String[] args) {
-		String regex = "http://temai.tuniu.com/weihuo/{catalog}/{srcId}/";
+		//http://temai.tuniu.com/{catalog}/{srcId}
+		//http://temai.tuniu.com/weihuo/{catalog}/s4-p{currPage}/
+		//http://temai.tuniu.com/weihuo/tours/s4-p1/
+		//http://temai.tuniu.com/tours/212055673
+		//String regex = "http://temai.tuniu.com/weihuo/{catalog}/s4-p{currPage}/";
 		String url = "http://temai.tuniu.com/weihuo/tours/s4-p1/";
+		String regex = "http://temai.tuniu.com/{catalog}/{srcId}";
+		//String url = "http://temai.tuniu.com/tours/212055673";
+		/*String regex = "http://{project}";
+		String url = "http://www.stats-hlheb.gov.cn/index.htm";*/
 		System.out.println(match(url, regex));
 	}
 }

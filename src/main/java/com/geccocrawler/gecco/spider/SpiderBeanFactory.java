@@ -98,17 +98,24 @@ public class SpiderBeanFactory {
 	
 	public Class<? extends SpiderBean> matchSpider(HttpRequest request) {
 		String url = request.getUrl();
+		Class<? extends SpiderBean> commonSpider = null;//通用爬虫
 		for(Map.Entry<String, Class<? extends SpiderBean>> entrys : spiderBeans.entrySet()) {
+			Class<? extends SpiderBean> spider = entrys.getValue();
 			String urlPattern = entrys.getKey();
 			Map<String, String> params = UrlMatcher.match(url, urlPattern);
 			if(params != null) {
 				request.setParameters(params);
-				Class<? extends SpiderBean> spider = entrys.getValue();
 				return spider;
+			} else {
+				if(urlPattern.equals("*")) {
+					commonSpider = spider;
+				}
 			}
 		}
+		if(commonSpider != null) {//如果包含通用爬虫，返回通用爬虫
+			return commonSpider;
+		}
 		return null;
-		
 	}
 	
 	public SpiderBeanContext getContext(Class<? extends SpiderBean> spider) {
