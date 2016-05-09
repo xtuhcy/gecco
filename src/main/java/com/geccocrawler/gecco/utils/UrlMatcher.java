@@ -108,11 +108,9 @@ public class UrlMatcher {
 		//http://temai.tuniu.com/weihuo/tours/s4-p1/
 		//http://temai.tuniu.com/tours/212055673
 		//String regex = "http://temai.tuniu.com/weihuo/{catalog}/s4-p{currPage}/";
-		String url = "http://temai.tuniu.com/weihuo/tours/s4-p1/";
-		String regex = "http://temai.tuniu.com/{catalog}/{srcId}";
+		//String url = "http://temai.tuniu.com/weihuo/tours/s4-p1/";
+		//String regex = "http://temai.tuniu.com/{catalog}/{srcId}";
 		//String url = "http://temai.tuniu.com/tours/212055673";
-		/*String regex = "http://{project}";
-		String url = "http://www.stats-hlheb.gov.cn/index.htm";*/
-		System.out.println(match(url, regex));
+		//System.out.println(match(url, regex));
 	}
 }
