@@ -31,7 +31,7 @@ public class HtmlFieldRender implements FieldRender {
 				Object value = injectHtmlField(request, response, htmlField, bean.getClass());
 				fieldMap.put(htmlField.getName(), value);
 			} catch(RenderException ex) {
-				throw new FieldRenderException(htmlField, ex);
+				throw new FieldRenderException(htmlField, ex.getMessage(), ex);
 			}
 		}
 		beanMap.putAll(fieldMap);
@@ -41,7 +41,7 @@ public class HtmlFieldRender implements FieldRender {
 		HtmlField htmlField = field.getAnnotation(HtmlField.class);
 		String content = response.getContent();
 		HtmlParser parser = new HtmlParser(request.getUrl(), content);
-		parser.setLogClass(clazz);
+		//parser.setLogClass(clazz);
 		String cssPath = htmlField.cssPath();
 		Class<?> type = field.getType();//类属性的类
 		boolean isList = ReflectUtils.haveSuperType(type, List.class);//是List类型

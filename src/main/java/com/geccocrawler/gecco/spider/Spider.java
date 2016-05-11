@@ -14,7 +14,7 @@ import com.geccocrawler.gecco.pipeline.Pipeline;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.scheduler.Scheduler;
-import com.geccocrawler.gecco.scheduler.SpiderScheduler;
+import com.geccocrawler.gecco.scheduler.UniqueSpiderScheduler;
 import com.geccocrawler.gecco.spider.render.FieldRenderException;
 import com.geccocrawler.gecco.spider.render.Render;
 import com.geccocrawler.gecco.spider.render.RenderException;
@@ -41,7 +41,7 @@ public class Spider implements Runnable {
 	
 	public Spider(GeccoEngine engine) {
 		this.engine = engine;
-		this.spiderScheduler = new SpiderScheduler();
+		this.spiderScheduler = new UniqueSpiderScheduler();
 	}
 	
 	public void run() {
@@ -55,6 +55,8 @@ public class Spider implements Runnable {
 				//startScheduler
 				request = engine.getScheduler().out();
 				if(request == null) {
+					//告知engine线程执行结束
+					engine.notifyComplemet();
 					break;
 				}
 				start = true;
@@ -89,6 +91,11 @@ public class Spider implements Runnable {
 					}
 				}
 			} catch(RenderException rex) {
+				if(engine.isDebug()) {
+					rex.printStackTrace();
+				} else {
+					log.error(rex.getMessage());
+				}
 				FieldRenderException frex = (FieldRenderException)rex.getCause();
 				if(frex != null) {
 					log.error(request.getUrl() + " RENDER ERROR : " + rex.getSpiderBeanClass().getName() + "(" + frex.getField().getName()+")");
@@ -96,8 +103,14 @@ public class Spider implements Runnable {
 					log.error(request.getUrl() + " RENDER ERROR : " + rex.getSpiderBeanClass().getName());
 				}
 			} catch(DownloadException dex) {
+				if(engine.isDebug()) {
+					log.error(dex);
+				}
 				log.error(request.getUrl() + " DOWNLOAD ERROR :" + dex.getMessage());
 			} catch(Exception ex) {
+				if(engine.isDebug()) {
+					log.error(ex);
+				}
 				log.error(request.getUrl(), ex);
 			} finally {
 				if(response != null) {

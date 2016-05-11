@@ -1,13 +1,20 @@
 package com.geccocrawler.gecco;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import com.alibaba.fastjson.JSON;
 import com.geccocrawler.gecco.monitor.GeccoJmx;
@@ -31,7 +38,9 @@ import com.google.common.io.Resources;
  * @author huchengyi
  *
  */
-public class GeccoEngine {
+public class GeccoEngine extends Thread {
+	
+	private static Log log = LogFactory.getLog(GeccoEngine.class);
 	
 	private Date startTime;
 	
@@ -49,14 +58,22 @@ public class GeccoEngine {
 	
 	private int threadCount;
 	
+	private CountDownLatch cdl;
+	
 	private int interval;
 	
-	private boolean loop = true;
+	private boolean loop;
+	
+	private boolean mobile;
+	
+	private boolean debug;
 	
 	private GeccoEngine() {}
 	
 	public static GeccoEngine create() {
-		return new GeccoEngine();
+		GeccoEngine geccoEngine = new GeccoEngine();
+		geccoEngine.setName("GeccoEngine");
+		return geccoEngine;
 	}
 
 	public GeccoEngine start(String url) {
@@ -93,6 +110,16 @@ public class GeccoEngine {
 		return this;
 	}
 	
+	public GeccoEngine mobile(boolean mobile) {
+		this.mobile = mobile;
+		return this;
+	}
+	
+	public GeccoEngine debug(boolean debug) {
+		this.debug = debug;
+		return this;
+	}
+	
 	public GeccoEngine classpath(String classpath) {
 		this.classpath = classpath;
 		return this;
@@ -104,6 +131,10 @@ public class GeccoEngine {
 	}
 	
 	public void run() {
+		if(debug) {
+			Logger log = LogManager.getLogger("com.geccocrawler.gecco.spider.render");
+			log.setLevel(Level.DEBUG);
+		}
 		if(scheduler == null) {
 			if(loop) {
 				scheduler = new StartScheduler();
@@ -113,14 +144,20 @@ public class GeccoEngine {
 		}
 		if(spiderBeanFactory == null) {
 			if(StringUtils.isEmpty(classpath)) {
-				classpath = "";
+				//classpath不为空
+				throw new IllegalArgumentException("classpath cannot be empty");
 			}
 			spiderBeanFactory = new SpiderBeanFactory(classpath, pipelineFactory);
 		}
 		if(threadCount <= 0) {
 			threadCount = 1;
 		}
+		this.cdl = new CountDownLatch(threadCount);
 		startsJson();
+		if(startRequests.isEmpty()) {
+			//startRequests不为空
+			throw new IllegalArgumentException("startRequests cannot be empty");
+		}
 		for(HttpRequest startRequest : startRequests) {
 			scheduler.into(startRequest);
 		}
@@ -135,7 +172,9 @@ public class GeccoEngine {
 		//监控爬虫基本信息
 		GeccoMonitor.monitor(this);
 		//启动导出jmx信息
-		GeccoJmx.export();
+		GeccoJmx.export(classpath);
+		//非循环模式等待线程执行完毕后关闭
+		closeUnitlComplete();
 	}
 	
 	private GeccoEngine startsJson() {
@@ -149,7 +188,11 @@ public class GeccoEngine {
 					start(start.toRequest());
 				}
 			}
-		} catch(Exception ex) {}
+		} catch(IllegalArgumentException ex) {
+			log.info("starts.json not found");
+		} catch(IOException ioex) {
+			log.error(ioex);
+		}
 		return this;
 	}
 
@@ -184,5 +227,31 @@ public class GeccoEngine {
 	public boolean isLoop() {
 		return loop;
 	}
+
+	public boolean isMobile() {
+		return mobile;
+	}
 	
+	public boolean isDebug() {
+		return debug;
+	}
+
+	public void notifyComplemet() {
+		this.cdl.countDown();
+	}
+	
+	public void closeUnitlComplete() {
+		if(!loop) {
+			try {
+				cdl.await();
+			} catch (InterruptedException e) {
+				log.error(e);
+			}
+			if(spiderBeanFactory != null) {
+				spiderBeanFactory.getDownloaderFactory().closeAll();
+			}
+			GeccoJmx.unexport();
+			log.info("close gecco!");
+		}
+	}
 }

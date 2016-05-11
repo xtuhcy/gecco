@@ -41,5 +41,4 @@ public class SpiderScheduler implements Scheduler {
 			log.debug("INTO:"+request.getUrl()+"(Referer:"+request.getHeaders().get("Referer")+")");
 		}
 	}
-
 }

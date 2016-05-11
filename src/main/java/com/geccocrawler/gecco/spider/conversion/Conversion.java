@@ -32,7 +32,7 @@ public class Conversion {
 	
 	public static Object getValue(Class<?> type, Object value) throws Exception {
 		TypeHandle th = TYPE_HANDLERS.get(type);
-		if(th != null) {
+		if(th != null && value != null) {
 			return th.getValue(value);
 		} 
 		return value;

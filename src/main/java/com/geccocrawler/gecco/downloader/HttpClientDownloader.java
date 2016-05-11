@@ -5,9 +5,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.net.ssl.SSLContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,21 +25,28 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.ssl.SSLContexts;
+import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.CharArrayBuffer;
 
 import com.geccocrawler.gecco.request.HttpPostRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
+import com.geccocrawler.gecco.spider.SpiderThreadLocal;
 import com.geccocrawler.gecco.utils.UrlUtils;
 
 /**
- * userAgent更换
- * proxy更换
- * 
+ * 利用httpclient下载
+ *  
  * @author huchengyi
  *
  */
@@ -47,11 +58,35 @@ public class HttpClientDownloader extends AbstractDownloader {
 	private CloseableHttpClient httpClient;
 	
 	public HttpClientDownloader() {
+		
+		Registry<ConnectionSocketFactory> socketFactoryRegistry = null;
+		try {
+			//构造一个信任所有ssl证书的httpclient
+			SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, new TrustStrategy() {
+				@Override
+				public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+					return true;
+				}
+			}).build();
+			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext);
+			socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+			           .register("http", PlainConnectionSocketFactory.getSocketFactory())  
+			           .register("https", sslsf)  
+			           .build();
+		} catch(Exception ex) {
+			socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+            .register("http", PlainConnectionSocketFactory.getSocketFactory())
+            .register("https", SSLConnectionSocketFactory.getSocketFactory())
+            .build();
+		}
 		RequestConfig clientConfig = RequestConfig.custom().setRedirectsEnabled(false).build();
-		PoolingHttpClientConnectionManager syncConnectionManager = new PoolingHttpClientConnectionManager();
+		PoolingHttpClientConnectionManager syncConnectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
 		syncConnectionManager.setMaxTotal(1000);
 		syncConnectionManager.setDefaultMaxPerRoute(50);
-		httpClient = HttpClientBuilder.create().setDefaultRequestConfig(clientConfig).setConnectionManager(syncConnectionManager).build();
+		httpClient = HttpClientBuilder.create()
+				.setDefaultRequestConfig(clientConfig)
+				.setConnectionManager(syncConnectionManager)
+				.build();
 	}
 
 	@Override
@@ -79,7 +114,8 @@ public class HttpClientDownloader extends AbstractDownloader {
 			reqObj = new HttpGet(request.getUrl());
 		}
 		//header
-		reqObj.addHeader("User-Agent", UserAgent.getUserAgent());
+		boolean isMobile = SpiderThreadLocal.get().getEngine().isMobile();
+		reqObj.addHeader("User-Agent", UserAgent.getUserAgent(isMobile));
 		for(Map.Entry<String, String> entry : request.getHeaders().entrySet()) {
 			reqObj.addHeader(entry.getKey(), entry.getValue());
 		}
@@ -117,11 +153,20 @@ public class HttpClientDownloader extends AbstractDownloader {
 				resp.setContent(content);
 			} else {
 				//404，500等
+				if(proxy != null) {
+					Proxys.failure(proxy.toHostString());
+				}
 				throw new DownloadServerException("" + status);
+			}
+			if(proxy != null) {
+				Proxys.success(proxy.toHostString());
 			}
 			return resp;
 		} catch (IOException e) {
 			//超时等
+			if(proxy != null) {
+				Proxys.failure(proxy.toHostString());
+			}
 			throw new DownloadException(e);
 		} finally {
 			reqObj.releaseConnection();

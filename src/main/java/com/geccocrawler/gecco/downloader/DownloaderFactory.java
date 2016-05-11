@@ -49,4 +49,10 @@ public abstract class DownloaderFactory {
 	}
 
 	protected abstract Object createDownloader(Class<?> downloaderClass) throws Exception;
+	
+	public void closeAll() {
+		for(Downloader downloader : downloaders.values()) {
+			downloader.shutdown();
+		}
+	}
 }

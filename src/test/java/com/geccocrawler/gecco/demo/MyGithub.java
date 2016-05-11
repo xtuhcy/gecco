@@ -24,7 +24,7 @@ public class MyGithub implements HtmlBean {
 	@RequestParameter("project")
 	private String project;
 	
-	@Text
+	@Text(own=false)
 	@HtmlField(cssPath=".repository-meta-content")
 	private String title;
 	
@@ -36,7 +36,7 @@ public class MyGithub implements HtmlBean {
 	@HtmlField(cssPath=".pagehead-actions li:nth-child(3) .social-count")
 	private int fork;
 
-	@Href(click=false)
+	@Href
 	@HtmlField(cssPath="ul.numbers-summary > li:nth-child(4) > a")
 	private String contributors;
 	
@@ -112,11 +112,19 @@ public class MyGithub implements HtmlBean {
 		.classpath("com.geccocrawler.gecco.demo")
 		//开始抓取的页面地址
 		.start("https://github.com/xtuhcy/gecco")
+		.start("https://github.com/xtuhcy/gecco-spring")
 		//开启几个爬虫线程,线程数量最好不要大于start request数量
-		.thread(1)
+		.thread(2)
 		//单个爬虫每次抓取完一个请求后的间隔时间
 		.interval(2000)
-		.run();
+		//循环抓取
+		.loop(true)
+		//采用pc端userAgent
+		.mobile(false)
+		//是否开启debug模式，跟踪页面元素抽取
+		.debug(false)
+		//非阻塞方式运行
+		.start();
 	}
 
 }

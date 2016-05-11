@@ -4,6 +4,7 @@ import com.geccocrawler.gecco.GeccoEngine;
 import com.geccocrawler.gecco.annotation.Ajax;
 import com.geccocrawler.gecco.annotation.Gecco;
 import com.geccocrawler.gecco.annotation.HtmlField;
+import com.geccocrawler.gecco.annotation.Image;
 import com.geccocrawler.gecco.annotation.RequestParameter;
 import com.geccocrawler.gecco.annotation.Text;
 import com.geccocrawler.gecco.request.HttpGetRequest;
@@ -18,7 +19,7 @@ public class JDDetail implements HtmlBean {
 	@RequestParameter
 	private String code;
 	
-	@Ajax(url="http://p.3.cn/prices/mgets?skuIds=J_{code}")
+	@Ajax(url="http://p.3.cn/prices/get?type=1&pdtk=&pdbp=0&skuid=J_{code}")
 	private JDPrice price;
 	
 	@Text
@@ -30,6 +31,10 @@ public class JDDetail implements HtmlBean {
 	
 	@HtmlField(cssPath="#product-detail-2")
 	private String detail;
+
+	@Image(download="d:/gecco/jd/img")
+	@HtmlField(cssPath="#spec-n1 img")
+	private String image;
 	
 	public JDPrice getPrice() {
 		return price;
@@ -71,17 +76,25 @@ public class JDDetail implements HtmlBean {
 		this.code = code;
 	}
 
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
 	public static void main(String[] args) throws Exception {
 		HttpRequest request = new HttpGetRequest("http://item.jd.com/1455427.html");
 		request.setCharset("GBK");
 		GeccoEngine.create()
-		.classpath("com.geccocrawler.gecco.demo")
+		.classpath("com.geccocrawler.gecco.demo.ajax")
 		//开始抓取的页面地址
 		.start(request)
 		//开启几个爬虫线程
 		.thread(1)
 		//单个爬虫每次抓取完一个请求后的间隔时间
 		.interval(2000)
-		.run();
+		.start();
 	}
 }

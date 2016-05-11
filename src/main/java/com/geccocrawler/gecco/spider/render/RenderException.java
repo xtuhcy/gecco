@@ -8,12 +8,13 @@ public class RenderException extends Exception {
 
 	private Class<? extends SpiderBean> spiderBeanClass;
 	
-	public RenderException(Class<? extends SpiderBean> spiderBeanClass) {
+	public RenderException(String message, Class<? extends SpiderBean> spiderBeanClass) {
+		super(message);
 		this.spiderBeanClass = spiderBeanClass;
 	}
 	
-	public RenderException(Class<? extends SpiderBean> spiderBeanClass, FieldRenderException cause) {
-		super(cause);
+	public RenderException(String message, Class<? extends SpiderBean> spiderBeanClass, FieldRenderException cause) {
+		super(message, cause);
 		this.spiderBeanClass = spiderBeanClass;
 	}
 

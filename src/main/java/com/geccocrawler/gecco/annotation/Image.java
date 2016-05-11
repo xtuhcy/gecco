@@ -25,10 +25,9 @@ public @interface Image {
 	String[] value() default "src";
 	
 	/**
-	 * 表示是否需要将图片下载到本地
+	 * 如果填写本地路径将会自动下载到本地
 	 * 
-	 * @return 是否下载到本地
+	 * @return 本地路径
 	 */
-	boolean download() default false;
-	
+	String download() default "";
 }

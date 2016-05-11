@@ -2,6 +2,7 @@ package com.geccocrawler.gecco.request;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,8 +13,6 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 	
 	private static final long serialVersionUID = -7284636094595149962L;
 
-	//private static BeanCopier copier = BeanCopier.create(AbstractHttpRequest.class, AbstractHttpRequest.class, false);
-	
 	private String url;
 	
 	private String charset;
@@ -24,7 +23,7 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 	
 	private Map<String, String> headers;
 	
-	private int priority;
+	private long priority;
 	
 	public AbstractHttpRequest() {
 		this.parameters = new HashMap<String, String>(1);
@@ -36,7 +35,26 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 		this();
 		this.setUrl(url);
 	}
+	
+	@Override
+	public void clearHeader() {
+		Iterator<Map.Entry<String, String>> it = this.headers.entrySet().iterator();  
+        while(it.hasNext()){
+        	it.next();
+        	it.remove();
+        }
+	}
 
+	@Override
+	public void clearCookie() {
+		Iterator<Map.Entry<String, String>> it = this.cookies.entrySet().iterator();  
+        while(it.hasNext()){  
+        	it.next();
+        	it.remove();
+        }
+	}
+
+	@Override
 	public void addCookie(String name, String value) {
 		cookies.put(name, value);
 	}
@@ -118,12 +136,12 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 	}
 
 	@Override
-	public int getPriority() {
+	public long getPriority() {
 		return priority;
 	}
 
 	@Override
-	public void setPriority(int prio) {
+	public void setPriority(long prio) {
 		this.priority = prio;
 	}
 
@@ -147,18 +165,32 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 	
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
-		//BeanCopier copier = BeanCopier.create(this.getClass(), this.getClass(), false);
-		//HttpRequest request = this.getClass().getConstructor().newInstance();
-		//copier.copy(this, request, null);
 		//通过json的序列号和反序列化实现对象的深度clone
 		String text = JSON.toJSONString(this); //序列化
 		HttpRequest request = JSON.parseObject(text, this.getClass()); //反序列化
 		return request;
 	}
 
-	public static void main(String[] args) {
-		HttpRequest request = new HttpGetRequest("aaa");
-		
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result	+ ((parameters == null) ? 0 : parameters.hashCode());
+		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		return result;
 	}
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AbstractHttpRequest other = (AbstractHttpRequest) obj;
+		String otherJson = JSON.toJSONString(other);
+		String thisJson = JSON.toJSONString(this);
+		return otherJson.equals(thisJson);
+	}
 }

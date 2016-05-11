@@ -17,7 +17,7 @@ public @interface Gecco {
 	 * 
 	 * @return url匹配规则
 	 */
-	String matchUrl();
+	String matchUrl() default "*";
 	
 	/**
 	 * url下载器，默认为httpClientDownloader
