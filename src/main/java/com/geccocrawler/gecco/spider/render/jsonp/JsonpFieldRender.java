@@ -1,4 +1,4 @@
-package com.geccocrawler.gecco.spider.render.json;
+package com.geccocrawler.gecco.spider.render.jsonp;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -8,14 +8,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sf.cglib.beans.BeanMap;
+
 import org.apache.commons.lang3.StringUtils;
 import org.reflections.ReflectionUtils;
-
-import net.sf.cglib.beans.BeanMap;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.geccocrawler.gecco.annotation.JSONPath;
+import com.geccocrawler.gecco.annotation.JsonpPath;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.spider.SpiderBean;
@@ -28,13 +29,14 @@ import com.geccocrawler.gecco.spider.render.RenderException;
 import com.geccocrawler.gecco.spider.render.RenderType;
 import com.geccocrawler.gecco.utils.ReflectUtils;
 
-public class JsonFieldRender implements FieldRender {
+public class JsonpFieldRender implements FieldRender {
 
 	@Override
 	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) throws FieldRenderException {
 		Map<String, Object> fieldMap = new HashMap<String, Object>();
-		Set<Field> jsonPathFields = ReflectionUtils.getAllFields(bean.getClass(), ReflectionUtils.withAnnotation(JSONPath.class));
+		Set<Field> jsonPathFields = ReflectionUtils.getAllFields(bean.getClass(), ReflectionUtils.withAnnotation(JsonpPath.class));
 		String jsonStr = response.getContent();
+		jsonStr = StringUtils.substringBetween(jsonStr, "(", ")");
 		jsonStr = StringUtils.trim(jsonStr);
 		Object json = JSON.parse(jsonStr);
 		for(Field field : jsonPathFields) {
@@ -44,6 +46,18 @@ public class JsonFieldRender implements FieldRender {
 			} catch(Exception ex) {
 				throw new FieldRenderException(field, ex.getMessage(), ex);
 			}
+			/*JSONPath JSONPath = field.getAnnotation(JSONPath.class);
+			String jsonPath = JSONPath.value();
+			Object src = com.alibaba.fastjson.JSONPath.eval(json, jsonPath);
+			if(src == null) {
+				throw new FieldRenderException(field, jsonPath + " not found in : " + json);
+			}
+			try {
+				Object value = Conversion.getValue(field.getType(), src);
+				fieldMap.put(field.getName(), value);
+			} catch(Exception ex) {
+				throw new FieldRenderException(field, "Conversion error : " + src, ex);
+			}*/
 		}
 		beanMap.putAll(fieldMap);
 	}
