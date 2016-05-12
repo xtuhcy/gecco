@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.reflections.Reflections;
 
 import com.geccocrawler.gecco.annotation.Gecco;
@@ -33,6 +35,8 @@ import com.geccocrawler.gecco.utils.UrlMatcher;
  *
  */
 public class SpiderBeanFactory {
+	
+	private static final Log LOG = LogFactory.getLog(SpiderBeanFactory.class);
 	
 	/**
 	 * 匹配的SpriderBean
@@ -87,6 +91,9 @@ public class SpiderBeanFactory {
 			try {
 				//SpiderBean spider = (SpiderBean)spiderBeanClass.newInstance();
 				//判断是不是SpiderBeanClass????
+				if (spiderBeans.containsKey(matchUrl)) {
+					LOG.warn("there are multil '" + matchUrl + "' ,first htmlBean will be Override。");
+				}
 				spiderBeans.put(matchUrl, (Class<? extends SpiderBean>)spiderBeanClass);
 				SpiderBeanContext context = initContext(spiderBeanClass);
 				spiderBeanContexts.put(spiderBeanClass.getName(), context);
