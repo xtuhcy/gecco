@@ -35,8 +35,10 @@ public class JsonFieldRender implements FieldRender {
 		Map<String, Object> fieldMap = new HashMap<String, Object>();
 		Set<Field> jsonPathFields = ReflectionUtils.getAllFields(bean.getClass(), ReflectionUtils.withAnnotation(JSONPath.class));
 		String jsonStr = response.getContent();
-		jsonStr = StringUtils.substringBetween(jsonStr, "(", ")");
-		jsonStr = StringUtils.trim(jsonStr);
+		jsonStr = jsonp2Json(jsonStr);
+		if(jsonStr == null) {
+			return ;
+		}
 		Object json = JSON.parse(jsonStr);
 		for(Field field : jsonPathFields) {
 			try {
@@ -104,5 +106,18 @@ public class JsonFieldRender implements FieldRender {
 		} catch(Exception ex) {
 			throw new FieldRenderException(field, "Conversion error : " + src, ex);
 		}
+	}
+	
+	private String jsonp2Json(String jsonp) {
+		if(jsonp == null) {
+			return null;
+		}
+		jsonp = StringUtils.trim(jsonp);
+		if(StringUtils.endsWith(jsonp, ")")) {
+			String jsonStr = StringUtils.substringBetween(jsonp, "(", ")");
+			jsonStr = StringUtils.trim(jsonStr);
+			return jsonStr;
+		}
+		return jsonp;
 	}
 }

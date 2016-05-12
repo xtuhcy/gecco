@@ -13,7 +13,16 @@ public class AllSortPipeline implements Pipeline<AllSort> {
 
 	@Override
 	public void process(AllSort allSort) {
-		List<Category> categorys = allSort.getMobile();
+		List<Category> mobiles = allSort.getMobile();
+		process(allSort, mobiles);
+		List<Category> domestics = allSort.getDomestic();
+		process(allSort, domestics);
+	}
+	
+	private void process(AllSort allSort, List<Category> categorys) {
+		if(categorys == null) {
+			return;
+		}
 		for(Category category : categorys) {
 			List<HrefBean> hrefs = category.getCategorys();
 			for(HrefBean href : hrefs) {
