@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.reflections.Reflections;
 
 import com.geccocrawler.gecco.annotation.Gecco;
@@ -28,38 +30,40 @@ import com.geccocrawler.gecco.utils.UrlMatcher;
  * 匹配相应的SpiderBean，同时生成该SpiderBean的上下文SpiderBeanContext.
  * SpiderBeanContext包括需要改SpiderBean的渲染类
  * （目前支持HTML、JSON两种Bean的渲染方式）、下载前处理类、下载后处理类以及渲染完成后对SpiderBean的后续处理Pipeline。
- * 
+ *
  * @author huchengyi
  *
  */
 public class SpiderBeanFactory {
-	
+
+	private static Log log = LogFactory.getLog(SpiderBeanFactory.class);
+
 	/**
 	 * 匹配的SpriderBean
 	 * matchUrl:SpiderBean
 	 */
 	private Map<String, Class<? extends SpiderBean>> spiderBeans;
-	
+
 	/**
 	 * 匹配的SpiderBean上下文
 	 * SpiderBeanClassName:SpiderBeanClass
 	 */
 	private Map<String, SpiderBeanContext> spiderBeanContexts;
-	
+
 	private DownloaderFactory downloaderFactory;
-	
+
 	private DownloaderAOPFactory downloaderAOPFactory;
-	
+
 	private RenderFactory renderFactory;
-	
+
 	private PipelineFactory pipelineFactory;
-	
+
 	private Reflections reflections;
-	
+
 	public SpiderBeanFactory(String classPath) {
 		this(classPath, null);
 	}
-	
+
 	public SpiderBeanFactory(String classPath, PipelineFactory pipelineFactory) {
 		if(StringUtils.isNotEmpty(classPath)) {
 			reflections = new Reflections("com.geccocrawler.gecco", classPath);
@@ -78,7 +82,7 @@ public class SpiderBeanFactory {
 		this.spiderBeanContexts = new HashMap<String, SpiderBeanContext>();
 		loadSpiderBean(reflections);
 	}
-	
+
 	private void loadSpiderBean(Reflections reflections) {
 		Set<Class<?>> spiderBeanClasses = reflections.getTypesAnnotatedWith(Gecco.class);
 		for(Class<?> spiderBeanClass : spiderBeanClasses) {
@@ -87,6 +91,9 @@ public class SpiderBeanFactory {
 			try {
 				//SpiderBean spider = (SpiderBean)spiderBeanClass.newInstance();
 				//判断是不是SpiderBeanClass????
+				if (spiderBeans.containsKey(matchUrl)) {
+					log.warn("there are multil '" + matchUrl + "' ,first htmlBean will be Override。");
+				}
 				spiderBeans.put(matchUrl, (Class<? extends SpiderBean>)spiderBeanClass);
 				SpiderBeanContext context = initContext(spiderBeanClass);
 				spiderBeanContexts.put(spiderBeanClass.getName(), context);
@@ -95,7 +102,7 @@ public class SpiderBeanFactory {
 			}
 		}
 	}
-	
+
 	public Class<? extends SpiderBean> matchSpider(HttpRequest request) {
 		String url = request.getUrl();
 		Class<? extends SpiderBean> commonSpider = null;//通用爬虫
@@ -117,11 +124,11 @@ public class SpiderBeanFactory {
 		}
 		return null;
 	}
-	
+
 	public SpiderBeanContext getContext(Class<? extends SpiderBean> spider) {
 		return spiderBeanContexts.get(spider.getName());
 	}
-	
+
 	private SpiderBeanContext initContext(Class<?> spiderBeanClass) {
 		SpiderBeanContext context = new SpiderBeanContext();
 		//关联的after、before、downloader
@@ -134,7 +141,7 @@ public class SpiderBeanFactory {
 		pipelineContext(context, pipelineNames);
 		return context;
 	}
-	
+
 	private void downloadContext(SpiderBeanContext context, Class<?> spiderBeanClass) {
 		String geccoName = spiderBeanClass.getName();
 		context.setBeforeDownload(downloaderAOPFactory.getBefore(geccoName));
@@ -144,7 +151,7 @@ public class SpiderBeanFactory {
 		context.setDownloader(downloaderFactory.getDownloader(downloader));
 		context.setTimeout(gecco.timeout());
 	}
-	
+
 	private void renderContext(SpiderBeanContext context, Class<?> spiderBeanClass) {
 		RenderType renderType = RenderType.HTML;
 		if(ReflectUtils.haveSuperType(spiderBeanClass, JsonBean.class)) {
@@ -152,7 +159,7 @@ public class SpiderBeanFactory {
 		}
 		context.setRender(renderFactory.getRender(renderType));
 	}
-	
+
 	private void pipelineContext(SpiderBeanContext context, String[] pipelineNames) {
 		if(pipelineNames != null && pipelineNames.length > 0) {
 			List<Pipeline> pipelines = new ArrayList<Pipeline>();
@@ -188,5 +195,5 @@ public class SpiderBeanFactory {
 	public Reflections getReflections() {
 		return reflections;
 	}
-	
+
 }
