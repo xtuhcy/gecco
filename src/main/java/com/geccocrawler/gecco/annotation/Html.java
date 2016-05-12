@@ -16,5 +16,16 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Html {
-
+	/**
+	 * 是否取外部Html，默认为false
+	 * 
+	 * <pre>
+	 *  true  - 取外部HTML内容
+	 *  false - 取内容HTML内容（默认）
+	 * </pre>
+	 * 
+	 * @author LiuJunGuang
+	 * @return
+	 */
+	public boolean isOuter() default false;
 }
