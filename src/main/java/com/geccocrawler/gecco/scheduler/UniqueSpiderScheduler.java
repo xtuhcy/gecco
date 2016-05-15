@@ -41,7 +41,11 @@ public class UniqueSpiderScheduler implements Scheduler {
 
 	@Override
 	public HttpRequest out() {
-		HttpRequest request = set.pollFirst().getHttpRequest();
+		SortHttpRequest sortHttpRequest = set.pollFirst();
+		if(sortHttpRequest == null) {
+			return null;
+		}
+		HttpRequest request = sortHttpRequest.getHttpRequest();
 		if(request != null && log.isDebugEnabled()) {
 			log.debug("OUT:"+request.getUrl()+"(Referer:"+request.getHeaders().get("Referer")+")");
 		}
@@ -53,6 +57,9 @@ public class UniqueSpiderScheduler implements Scheduler {
 		boolean success = set.add(new SortHttpRequest(System.nanoTime(), request));
 		if(success && log.isDebugEnabled()) {
 			log.debug("INTO:"+request.getUrl()+"(Referer:"+request.getHeaders().get("Referer")+")");
+		}
+		if(!success) {
+			log.error("not unique request : " + request.getUrl());
 		}
 	}
 	
