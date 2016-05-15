@@ -17,6 +17,8 @@ public class AllSortPipeline implements Pipeline<AllSort> {
 		process(allSort, mobiles);
 		List<Category> domestics = allSort.getDomestic();
 		process(allSort, domestics);
+		List<Category> bodys = allSort.getBaby();
+		process(allSort, bodys);
 	}
 	
 	private void process(AllSort allSort, List<Category> categorys) {
