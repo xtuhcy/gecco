@@ -113,7 +113,7 @@ public class JsonFieldRender implements FieldRender {
 			return null;
 		}
 		jsonp = StringUtils.trim(jsonp);
-		if(StringUtils.endsWith(jsonp, ")")) {
+		if(StringUtils.endsWith(jsonp, ")") || StringUtils.endsWith(jsonp, ");")) {
 			String jsonStr = StringUtils.substringBetween(jsonp, "(", ")");
 			jsonStr = StringUtils.trim(jsonStr);
 			return jsonStr;
