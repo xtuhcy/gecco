@@ -99,11 +99,11 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 
 	@Override
 	public Map<String, String> getHeaders() {
-		StringBuffer sb = new StringBuffer();
+		/*StringBuffer sb = new StringBuffer();
 		for(Map.Entry<String, String> entry : cookies.entrySet()) {
 			sb.append(entry.getKey()).append("=").append(entry.getValue()).append(";");
 		}
-		headers.put("Cookie", sb.toString());
+		headers.put("Cookie", sb.toString());*/
 		return headers;
 	}
 

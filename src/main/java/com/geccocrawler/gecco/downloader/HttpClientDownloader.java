@@ -18,6 +18,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpRequestRetryHandler;
+import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -30,10 +32,16 @@ import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.impl.execchain.RetryExec;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.CharArrayBuffer;
@@ -57,7 +65,12 @@ public class HttpClientDownloader extends AbstractDownloader {
 	
 	private CloseableHttpClient httpClient;
 	
+	private HttpClientContext cookieContext;
+	
 	public HttpClientDownloader() {
+		
+		cookieContext = HttpClientContext.create();
+		cookieContext.setCookieStore(new BasicCookieStore());
 		
 		Registry<ConnectionSocketFactory> socketFactoryRegistry = null;
 		try {
@@ -86,7 +99,15 @@ public class HttpClientDownloader extends AbstractDownloader {
 		httpClient = HttpClientBuilder.create()
 				.setDefaultRequestConfig(clientConfig)
 				.setConnectionManager(syncConnectionManager)
-				.build();
+				.setRetryHandler(new HttpRequestRetryHandler() {
+					@Override
+					public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
+						if(log.isDebugEnabled()) {
+							log.debug("retry : " + executionCount);
+						}
+						return (executionCount <= 3);
+					}
+				}).build();
 	}
 
 	@Override
@@ -133,8 +154,13 @@ public class HttpClientDownloader extends AbstractDownloader {
 		reqObj.setConfig(builder.build());
 		//request and response
 		try {
-			 HttpClientContext context = HttpClientContext.create();  
-			org.apache.http.HttpResponse response = httpClient.execute(reqObj, context);
+			for(Map.Entry<String, String> entry : request.getCookies().entrySet()) {
+				BasicClientCookie cookie = new BasicClientCookie(entry.getKey(), entry.getValue());
+				cookie.setPath("/");
+				cookie.setDomain(reqObj.getURI().getHost());
+				cookieContext.getCookieStore().addCookie(cookie);
+			}
+			org.apache.http.HttpResponse response = httpClient.execute(reqObj, cookieContext);
 			int status = response.getStatusLine().getStatusCode();
 			HttpResponse resp = new HttpResponse();
 			resp.setStatus(status);
