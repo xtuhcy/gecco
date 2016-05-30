@@ -70,7 +70,9 @@ public class GeccoEngine extends Thread {
 	
 	private int retry;
 	
-	private GeccoEngine() {}
+	private GeccoEngine() {
+		this.retry = 3;
+	}
 	
 	public static GeccoEngine create() {
 		GeccoEngine geccoEngine = new GeccoEngine();
