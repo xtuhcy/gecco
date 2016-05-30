@@ -79,12 +79,14 @@ public class JsonFieldRender implements FieldRender {
 				//List<Object>
 				return objectRender(src, field, jsonPath, json);
 			}
-		} else if(ReflectUtils.haveSuperType(type, SpiderBean.class)) {
-            //spiderBean
-            return spiderBeanRender(src, type, request);
-        } else {
-			//Object
-			return objectRender(src, field, jsonPath, json);
+		} else {
+        	if(ReflectUtils.haveSuperType(type, SpiderBean.class)) {
+                //spiderBean
+                return spiderBeanRender(src, type, request);
+        	} else {
+        		//Object
+        		return objectRender(src, field, jsonPath, json);
+        	}
 		}
 	}
 	
