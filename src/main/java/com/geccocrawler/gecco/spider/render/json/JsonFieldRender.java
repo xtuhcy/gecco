@@ -74,27 +74,35 @@ public class JsonFieldRender implements FieldRender {
 			Class genericClass = ReflectUtils.getGenericClass(genericType, 0);//泛型类
 			if(ReflectUtils.haveSuperType(genericClass, SpiderBean.class)) {
 				//List<spiderBean>
-				return spiderBeanRender(src, genericClass, request);
+				return spiderBeanListRender(src, genericClass, request);
 			} else {
 				//List<Object>
 				return objectRender(src, field, jsonPath, json);
 			}
-		} else {
+		} else if(ReflectUtils.haveSuperType(type, SpiderBean.class)) {
+            //spiderBean
+            return spiderBeanRender(src, type, request);
+        } else {
 			//Object
 			return objectRender(src, field, jsonPath, json);
 		}
 	}
 	
-	private List<SpiderBean> spiderBeanRender(Object src, Class genericClass, HttpRequest request) throws RenderException {
+	private List<SpiderBean> spiderBeanListRender(Object src, Class genericClass, HttpRequest request) throws RenderException {
 		List<SpiderBean> list = new ArrayList<SpiderBean>();
 		JSONArray ja = (JSONArray)src;
 		for(Object jo : ja) {
-			HttpResponse subResponse = HttpResponse.createSimple(jo.toString());
-			Render render = RenderContext.getRender(RenderType.JSON);
-			SpiderBean subBean = render.inject(genericClass, request, subResponse);
+			SpiderBean subBean = this.spiderBeanRender(jo, genericClass, request);
 			list.add(subBean);
 		}
 		return list;
+	}
+	
+	private SpiderBean spiderBeanRender(Object src, Class genericClass, HttpRequest request) throws RenderException {
+	    HttpResponse subResponse = HttpResponse.createSimple(src.toString());
+	    Render render = RenderContext.getRender(RenderType.JSON);
+	    SpiderBean subBean = render.inject(genericClass, request, subResponse);
+	    return subBean;
 	}
 	
 	private Object objectRender(Object src, Field field, String jsonPath, Object json) throws FieldRenderException {
