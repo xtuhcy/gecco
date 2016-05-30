@@ -15,11 +15,11 @@ import javax.net.ssl.SSLContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpRequestRetryHandler;
-import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -32,14 +32,11 @@ import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
-import org.apache.http.impl.execchain.RetryExec;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContexts;
@@ -102,10 +99,12 @@ public class HttpClientDownloader extends AbstractDownloader {
 				.setRetryHandler(new HttpRequestRetryHandler() {
 					@Override
 					public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
-						if(log.isDebugEnabled()) {
+						int retryCount = SpiderThreadLocal.get().getEngine().getRetry();
+						boolean retry = (executionCount <= retryCount);
+						if(log.isDebugEnabled() && retry) {
 							log.debug("retry : " + executionCount);
 						}
-						return (executionCount <= 3);
+						return retry;
 					}
 				}).build();
 	}
@@ -170,7 +169,11 @@ public class HttpClientDownloader extends AbstractDownloader {
 			} else if(status == 200) {
 				HttpEntity responseEntity = response.getEntity();
 				resp.setRaw(responseEntity.getContent());
-				String contentType = responseEntity.getContentType().getValue();
+				String contentType = null;
+				Header contentTypeHeader = responseEntity.getContentType();
+				if(contentTypeHeader != null) {
+					contentType = contentTypeHeader.getValue();
+				}
 				resp.setContentType(contentType);
 				String charset = getCharset(request.getCharset(), contentType);
 				resp.setCharset(charset);

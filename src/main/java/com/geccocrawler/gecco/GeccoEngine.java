@@ -68,6 +68,8 @@ public class GeccoEngine extends Thread {
 	
 	private boolean debug;
 	
+	private int retry;
+	
 	private GeccoEngine() {}
 	
 	public static GeccoEngine create() {
@@ -102,6 +104,11 @@ public class GeccoEngine extends Thread {
 	
 	public GeccoEngine interval(int interval) {
 		this.interval = interval;
+		return this;
+	}
+	
+	public GeccoEngine retry(int retry) {
+		this.retry = retry;
 		return this;
 	}
 	
@@ -218,6 +225,10 @@ public class GeccoEngine extends Thread {
 
 	public List<Spider> getSpiders() {
 		return spiders;
+	}
+
+	public int getRetry() {
+		return retry;
 	}
 
 	public int getThreadCount() {
