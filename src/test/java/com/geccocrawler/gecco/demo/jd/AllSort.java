@@ -63,19 +63,29 @@ public class AllSort implements HtmlBean {
 	}
 
 	public static void main(String[] args) {
+		//先获取分类列表
 		HttpGetRequest start = new HttpGetRequest("http://www.jd.com/allSort.aspx");
 		start.setCharset("GBK");
 		GeccoEngine.create()
 		.classpath("com.geccocrawler.gecco.demo.jd")
 		//开始抓取的页面地址
-		//.start("http://www.jd.com/allSort.aspx")
-		//.start("http://list.jd.com/list.html?cat=9987,653,659&delivery=1&page=1&JL=4_10_0&go=0")
-		//.start("http://item.jd.com/1861098.html")
 		.start(start)
 		//开启几个爬虫线程
 		.thread(1)
 		//单个爬虫每次抓取完一个请求后的间隔时间
 		.interval(2000)
 		.run();
+		
+		
+		//分类列表下的商品列表采用3线程抓取
+		GeccoEngine.create()
+		.classpath("com.geccocrawler.gecco.demo.jd")
+		//开始抓取的页面地址
+		.start(AllSortPipeline.sortRequests)
+		//开启几个爬虫线程
+		.thread(3)
+		//单个爬虫每次抓取完一个请求后的间隔时间
+		.interval(2000)
+		.start();
 	}
 }
