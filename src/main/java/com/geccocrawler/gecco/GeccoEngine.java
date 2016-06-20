@@ -48,9 +48,9 @@ public class GeccoEngine extends Thread {
 	
 	private Scheduler scheduler;
 	
-	public SpiderBeanFactory spiderBeanFactory;
+	private SpiderBeanFactory spiderBeanFactory;
 	
-	public PipelineFactory pipelineFactory;
+	private PipelineFactory pipelineFactory;
 	
 	private List<Spider> spiders;
 	
@@ -79,7 +79,7 @@ public class GeccoEngine extends Thread {
 		geccoEngine.setName("GeccoEngine");
 		return geccoEngine;
 	}
-
+	
 	public GeccoEngine start(String url) {
 		return start(new HttpGetRequest(url));
 	}
@@ -138,6 +138,12 @@ public class GeccoEngine extends Thread {
 		this.pipelineFactory = pipelineFactory;
 		return this;
 	}
+	
+	public GeccoEngine spiderBeanFactory(SpiderBeanFactory spiderBeanFactory) {
+		this.spiderBeanFactory = spiderBeanFactory;
+		return this;
+	}
+	
 	
 	public void run() {
 		if(debug) {

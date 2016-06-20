@@ -10,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.reflections.Reflections;
+import org.reflections.adapters.JavaReflectionAdapter;
+import org.reflections.util.ConfigurationBuilder;
 
 import com.geccocrawler.gecco.annotation.Gecco;
 import com.geccocrawler.gecco.downloader.DownloaderAOPFactory;
@@ -66,9 +68,11 @@ public class SpiderBeanFactory {
 	
 	public SpiderBeanFactory(String classPath, PipelineFactory pipelineFactory) {
 		if(StringUtils.isNotEmpty(classPath)) {
-			reflections = new Reflections("com.geccocrawler.gecco", classPath);
+			reflections = new Reflections(ConfigurationBuilder.build("com.geccocrawler.gecco", classPath).setMetadataAdapter(new JavaReflectionAdapter()));
+			//reflections = new Reflections("com.geccocrawler.gecco", classPath);
 		} else {
-			reflections = new Reflections("com.geccocrawler.gecco");
+			reflections = new Reflections(ConfigurationBuilder.build("com.geccocrawler.gecco").setMetadataAdapter(new JavaReflectionAdapter()));
+			//reflections = new Reflections("com.geccocrawler.gecco");
 		}
 		this.downloaderFactory = new MonitorDownloaderFactory(reflections);
 		this.downloaderAOPFactory = new DownloaderAOPFactory(reflections);
@@ -86,20 +90,24 @@ public class SpiderBeanFactory {
 	private void loadSpiderBean(Reflections reflections) {
 		Set<Class<?>> spiderBeanClasses = reflections.getTypesAnnotatedWith(Gecco.class);
 		for(Class<?> spiderBeanClass : spiderBeanClasses) {
-			Gecco gecco = (Gecco)spiderBeanClass.getAnnotation(Gecco.class);
-			String matchUrl = gecco.matchUrl();
-			try {
-				//SpiderBean spider = (SpiderBean)spiderBeanClass.newInstance();
-				//判断是不是SpiderBeanClass????
-				if (spiderBeans.containsKey(matchUrl)) {
-					LOG.warn("there are multil '" + matchUrl + "' ,first htmlBean will be Override。");
-				}
-				spiderBeans.put(matchUrl, (Class<? extends SpiderBean>)spiderBeanClass);
-				SpiderBeanContext context = initContext(spiderBeanClass);
-				spiderBeanContexts.put(spiderBeanClass.getName(), context);
-			} catch(Exception ex) {
-				ex.printStackTrace();
+			addSpiderBean(spiderBeanClass);
+		}
+	}
+	
+	public void addSpiderBean(Class<?> spiderBeanClass) {
+		Gecco gecco = (Gecco)spiderBeanClass.getAnnotation(Gecco.class);
+		String matchUrl = gecco.matchUrl();
+		try {
+			//SpiderBean spider = (SpiderBean)spiderBeanClass.newInstance();
+			//判断是不是SpiderBeanClass????
+			if (spiderBeans.containsKey(matchUrl)) {
+				LOG.warn("there are multil '" + matchUrl + "' ,first htmlBean will be Override。");
 			}
+			spiderBeans.put(matchUrl, (Class<? extends SpiderBean>)spiderBeanClass);
+			SpiderBeanContext context = initContext(spiderBeanClass);
+			spiderBeanContexts.put(spiderBeanClass.getName(), context);
+		} catch(Exception ex) {
+			ex.printStackTrace();
 		}
 	}
 	
