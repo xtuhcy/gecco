@@ -1,5 +1,8 @@
 package com.geccocrawler.gecco.downloader;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -168,7 +171,8 @@ public class HttpClientDownloader extends AbstractDownloader {
 				resp.setContent(UrlUtils.relative2Absolute(request.getUrl(), redirectUrl));
 			} else if(status == 200) {
 				HttpEntity responseEntity = response.getEntity();
-				resp.setRaw(responseEntity.getContent());
+				InputStream raw = this.getRaw(responseEntity);
+				resp.setRaw(raw);
 				String contentType = null;
 				Header contentTypeHeader = responseEntity.getContentType();
 				if(contentTypeHeader != null) {
@@ -178,7 +182,7 @@ public class HttpClientDownloader extends AbstractDownloader {
 				String charset = getCharset(request.getCharset(), contentType);
 				resp.setCharset(charset);
 				//String content = EntityUtils.toString(responseEntity, charset);
-				String content = getContent(responseEntity, charset);
+				String content = getContent(responseEntity, raw, charset);
 				resp.setContent(content);
 			} else {
 				//404，500等
@@ -211,11 +215,12 @@ public class HttpClientDownloader extends AbstractDownloader {
 		}
 	}
 	
-	public String getContent(HttpEntity entity, String charset) throws IOException {
-        InputStream instream = entity.getContent();
+	public String getContent(HttpEntity entity, InputStream instream, String charset) throws IOException {
+//        InputStream instream = entity.getContent();
         if (instream == null) {
             return null;
         }
+        instream.reset();
         int i = (int)entity.getContentLength();
         if (i < 0) {
             i = 4096;
@@ -229,4 +234,25 @@ public class HttpClientDownloader extends AbstractDownloader {
         }
         return buffer.toString();
     }
+	
+	public InputStream getRaw(HttpEntity entity){
+	    InputStream bis = null;
+	    ByteArrayOutputStream bos = new ByteArrayOutputStream(); 
+	    BufferedInputStream br;
+        try {
+            br = new BufferedInputStream(entity.getContent());
+            byte[] b = new byte[1024]; 
+            for (int c = 0; (c = br.read(b)) != -1;) { 
+                bos.write(b, 0, c); 
+            }
+            b = null; 
+            br.close(); 
+            bis = new ByteArrayInputStream(bos.toByteArray());
+        } catch (UnsupportedOperationException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } 
+        return bis;
+	}
 }
