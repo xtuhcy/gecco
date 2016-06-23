@@ -22,6 +22,7 @@ import com.geccocrawler.gecco.annotation.Image;
 import com.geccocrawler.gecco.annotation.Text;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
+import com.geccocrawler.gecco.spider.JsonBean;
 import com.geccocrawler.gecco.spider.SpiderBean;
 import com.geccocrawler.gecco.spider.SpiderThreadLocal;
 import com.geccocrawler.gecco.spider.conversion.Conversion;
@@ -30,6 +31,7 @@ import com.geccocrawler.gecco.spider.render.RenderContext;
 import com.geccocrawler.gecco.spider.render.RenderException;
 import com.geccocrawler.gecco.spider.render.RenderType;
 import com.geccocrawler.gecco.utils.DownloadImage;
+import com.geccocrawler.gecco.utils.ReflectUtils;
 
 public class HtmlParser {
 
@@ -120,13 +122,21 @@ public class HtmlParser {
 		return list;
 	}
 
-	public SpiderBean $bean(String selector, HttpRequest request, Class<? extends SpiderBean> clazz)
-			throws RenderException {
-		String subHtml = $html(selector);
-		// table
-		HttpResponse subResponse = HttpResponse.createSimple(subHtml);
-		Render render = RenderContext.getRender(RenderType.HTML);
-		return render.inject(clazz, request, subResponse);
+	@SuppressWarnings("unchecked")
+    public SpiderBean $bean(String selector, HttpRequest request, Field field)
+			throws Exception {
+	    Render render;
+	    String subHtml;
+	    Class<? extends SpiderBean> type = (Class<? extends SpiderBean>) field.getType();
+	    if(ReflectUtils.haveSuperType(type, JsonBean.class)) {
+	        subHtml = this.$basic(selector, field).toString();
+            render = RenderContext.getRender(RenderType.JSON);
+	    } else {
+	        subHtml = $html(selector);
+            render = RenderContext.getRender(RenderType.HTML);
+	    }
+        HttpResponse subResponse = HttpResponse.createSimple(subHtml);
+	    return render.inject(type, request, subResponse);
 	}
 
 	public List<SpiderBean> $beanList(String selector, HttpRequest request, Class<? extends SpiderBean> clazz)

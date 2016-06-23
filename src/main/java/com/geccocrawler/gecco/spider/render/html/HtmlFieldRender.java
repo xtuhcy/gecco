@@ -22,7 +22,8 @@ import com.geccocrawler.gecco.utils.ReflectUtils;
 
 public class HtmlFieldRender implements FieldRender {
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) throws FieldRenderException {
 		Map<String, Object> fieldMap = new HashMap<String, Object>();
 		Set<Field> htmlFields = ReflectionUtils.getAllFields(bean.getClass(), ReflectionUtils.withAnnotation(HtmlField.class));
@@ -37,7 +38,8 @@ public class HtmlFieldRender implements FieldRender {
 		beanMap.putAll(fieldMap);
 	}
 	
-	private Object injectHtmlField(HttpRequest request, HttpResponse response, Field field, Class<? extends SpiderBean> clazz) throws RenderException, FieldRenderException {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+    private Object injectHtmlField(HttpRequest request, HttpResponse response, Field field, Class<? extends SpiderBean> clazz) throws RenderException, FieldRenderException {
 		HtmlField htmlField = field.getAnnotation(HtmlField.class);
 		String content = response.getContent();
 		HtmlParser parser = new HtmlParser(request.getUrl(), content);
@@ -60,17 +62,17 @@ public class HtmlFieldRender implements FieldRender {
 				}
 			}
 		} else {
-			if(ReflectUtils.haveSuperType(type, SpiderBean.class)) {
-				//SpiderBean
-				return parser.$bean(cssPath, request, (Class<? extends SpiderBean>)type);
-			} else {
-				//Object
-				try {
-					return parser.$basic(cssPath, field);
-				} catch(Exception ex) {
-					throw new FieldRenderException(field, content, ex);
-				}
-			}
+		    //Object
+		    try {
+		        if(ReflectUtils.haveSuperType(type, SpiderBean.class)) {
+		            //SpiderBean
+		            return parser.$bean(cssPath, request, field);
+		        } else {
+		            return parser.$basic(cssPath, field);
+		        }
+		    } catch(Exception ex) {
+		        throw new FieldRenderException(field, content, ex);
+		    }
 		}
 	}
 	
