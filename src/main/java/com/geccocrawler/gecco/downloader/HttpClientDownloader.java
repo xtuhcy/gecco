@@ -1,5 +1,7 @@
 package com.geccocrawler.gecco.downloader;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -168,7 +170,8 @@ public class HttpClientDownloader extends AbstractDownloader {
 				resp.setContent(UrlUtils.relative2Absolute(request.getUrl(), redirectUrl));
 			} else if(status == 200) {
 				HttpEntity responseEntity = response.getEntity();
-				resp.setRaw(responseEntity.getContent());
+				InputStream raw = toByteInputStream(responseEntity.getContent());
+				resp.setRaw(raw);
 				String contentType = null;
 				Header contentTypeHeader = responseEntity.getContentType();
 				if(contentTypeHeader != null) {
@@ -178,7 +181,7 @@ public class HttpClientDownloader extends AbstractDownloader {
 				String charset = getCharset(request.getCharset(), contentType);
 				resp.setCharset(charset);
 				//String content = EntityUtils.toString(responseEntity, charset);
-				String content = getContent(responseEntity, charset);
+				String content = getContent(raw, responseEntity.getContentLength(), charset);
 				resp.setContent(content);
 			} else {
 				//404，500等
@@ -211,12 +214,11 @@ public class HttpClientDownloader extends AbstractDownloader {
 		}
 	}
 	
-	public String getContent(HttpEntity entity, String charset) throws IOException {
-        InputStream instream = entity.getContent();
+	public String getContent(InputStream instream, long contentLength, String charset) throws IOException {
         if (instream == null) {
             return null;
         }
-        int i = (int)entity.getContentLength();
+        int i = (int)contentLength;
         if (i < 0) {
             i = 4096;
         }
@@ -229,4 +231,32 @@ public class HttpClientDownloader extends AbstractDownloader {
         }
         return buffer.toString();
     }
+	
+	/**
+	 * 将原始的inputStream转换为ByteArrayInputStream使raw可以重复使用
+	 * 
+	 * @param in
+	 * @return
+	 */
+	private InputStream toByteInputStream(InputStream in) {
+		InputStream bis = null;
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		try {
+			byte[] b = new byte[1024];
+			for (int c = 0; (c = in.read(b)) != -1;) {
+				bos.write(b, 0, c);
+			}
+			b = null;
+			bis = new ByteArrayInputStream(bos.toByteArray());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				bos.close();
+			} catch (IOException e) {
+				bos = null;
+			}
+		}
+		return bis;
+	}
 }
