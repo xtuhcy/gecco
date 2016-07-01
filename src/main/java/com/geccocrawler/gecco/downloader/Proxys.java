@@ -35,12 +35,12 @@ public class Proxys {
 	private static Map<String, Proxy> proxys = null;
 	static{
 		try {
+			proxys = new ConcurrentHashMap<String, Proxy>();
+			proxyQueue = new ConcurrentLinkedQueue<Proxy>();
 			URL url = Resources.getResource("proxys");
 			File file = new File(url.getPath());
 			List<String> lines = Files.readLines(file, Charsets.UTF_8);
 			if(lines.size() > 0) {
-				proxys = new ConcurrentHashMap<String, Proxy>(lines.size());
-				proxyQueue = new ConcurrentLinkedQueue<Proxy>();
 				for(String line : lines) {
 					line = line.trim();
 					if(line.startsWith("#")) {

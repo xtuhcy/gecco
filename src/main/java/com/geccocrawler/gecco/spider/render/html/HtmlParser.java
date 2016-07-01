@@ -79,6 +79,9 @@ public class HtmlParser {
 			Attr attr = field.getAnnotation(Attr.class);
 			String name = attr.value();
 			return Conversion.getValue(field.getType(), $attr(selector, name));
+		} else if (field.isAnnotationPresent(Html.class)) {// @Html
+			Html html = field.getAnnotation(Html.class);
+			return $html(selector, html.outer());
 		} else {// @Html
 			return $html(selector);
 		}
@@ -108,8 +111,8 @@ public class HtmlParser {
 				String name = attr.value();
 				list.add(Conversion.getValue(field.getType(), $attr(el, name)));
 			} else if (field.isAnnotationPresent(Html.class)) {// @Html
-				Html attr = field.getAnnotation(Html.class);
-				list.add(attr.isOuter() ? el.outerHtml() : el.html());
+				Html html = field.getAnnotation(Html.class);
+				list.add(html.outer() ? el.outerHtml() : el.html());
 			} else {// Other
 				list.add(el.html());
 			}
@@ -169,10 +172,17 @@ public class HtmlParser {
 		}
 		return list;
 	}
-
+	
 	public String $html(String selector) {
+		return $html(selector, false);
+	}
+
+	public String $html(String selector, boolean isOuter) {
 		Elements elements = $(selector);
 		if (elements != null) {
+			if(isOuter) {
+				return elements.outerHtml();
+			}
 			return elements.html();
 		}
 		return null;

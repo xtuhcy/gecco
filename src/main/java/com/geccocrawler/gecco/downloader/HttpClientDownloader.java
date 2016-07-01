@@ -1,5 +1,7 @@
 package com.geccocrawler.gecco.downloader;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,9 +17,11 @@ import javax.net.ssl.SSLContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -30,10 +34,13 @@ import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.CharArrayBuffer;
@@ -57,7 +64,12 @@ public class HttpClientDownloader extends AbstractDownloader {
 	
 	private CloseableHttpClient httpClient;
 	
+	private HttpClientContext cookieContext;
+	
 	public HttpClientDownloader() {
+		
+		cookieContext = HttpClientContext.create();
+		cookieContext.setCookieStore(new BasicCookieStore());
 		
 		Registry<ConnectionSocketFactory> socketFactoryRegistry = null;
 		try {
@@ -86,7 +98,17 @@ public class HttpClientDownloader extends AbstractDownloader {
 		httpClient = HttpClientBuilder.create()
 				.setDefaultRequestConfig(clientConfig)
 				.setConnectionManager(syncConnectionManager)
-				.build();
+				.setRetryHandler(new HttpRequestRetryHandler() {
+					@Override
+					public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
+						int retryCount = SpiderThreadLocal.get().getEngine().getRetry();
+						boolean retry = (executionCount <= retryCount);
+						if(log.isDebugEnabled() && retry) {
+							log.debug("retry : " + executionCount);
+						}
+						return retry;
+					}
+				}).build();
 	}
 
 	@Override
@@ -133,8 +155,13 @@ public class HttpClientDownloader extends AbstractDownloader {
 		reqObj.setConfig(builder.build());
 		//request and response
 		try {
-			 HttpClientContext context = HttpClientContext.create();  
-			org.apache.http.HttpResponse response = httpClient.execute(reqObj, context);
+			for(Map.Entry<String, String> entry : request.getCookies().entrySet()) {
+				BasicClientCookie cookie = new BasicClientCookie(entry.getKey(), entry.getValue());
+				cookie.setPath("/");
+				cookie.setDomain(reqObj.getURI().getHost());
+				cookieContext.getCookieStore().addCookie(cookie);
+			}
+			org.apache.http.HttpResponse response = httpClient.execute(reqObj, cookieContext);
 			int status = response.getStatusLine().getStatusCode();
 			HttpResponse resp = new HttpResponse();
 			resp.setStatus(status);
@@ -143,13 +170,18 @@ public class HttpClientDownloader extends AbstractDownloader {
 				resp.setContent(UrlUtils.relative2Absolute(request.getUrl(), redirectUrl));
 			} else if(status == 200) {
 				HttpEntity responseEntity = response.getEntity();
-				resp.setRaw(responseEntity.getContent());
-				String contentType = responseEntity.getContentType().getValue();
+				InputStream raw = toByteInputStream(responseEntity.getContent());
+				resp.setRaw(raw);
+				String contentType = null;
+				Header contentTypeHeader = responseEntity.getContentType();
+				if(contentTypeHeader != null) {
+					contentType = contentTypeHeader.getValue();
+				}
 				resp.setContentType(contentType);
 				String charset = getCharset(request.getCharset(), contentType);
 				resp.setCharset(charset);
 				//String content = EntityUtils.toString(responseEntity, charset);
-				String content = getContent(responseEntity, charset);
+				String content = getContent(raw, responseEntity.getContentLength(), charset);
 				resp.setContent(content);
 			} else {
 				//404，500等
@@ -182,12 +214,11 @@ public class HttpClientDownloader extends AbstractDownloader {
 		}
 	}
 	
-	public String getContent(HttpEntity entity, String charset) throws IOException {
-        InputStream instream = entity.getContent();
+	public String getContent(InputStream instream, long contentLength, String charset) throws IOException {
         if (instream == null) {
             return null;
         }
-        int i = (int)entity.getContentLength();
+        int i = (int)contentLength;
         if (i < 0) {
             i = 4096;
         }
@@ -200,4 +231,32 @@ public class HttpClientDownloader extends AbstractDownloader {
         }
         return buffer.toString();
     }
+	
+	/**
+	 * 将原始的inputStream转换为ByteArrayInputStream使raw可以重复使用
+	 * 
+	 * @param in
+	 * @return
+	 */
+	private InputStream toByteInputStream(InputStream in) {
+		InputStream bis = null;
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		try {
+			byte[] b = new byte[1024];
+			for (int c = 0; (c = in.read(b)) != -1;) {
+				bos.write(b, 0, c);
+			}
+			b = null;
+			bis = new ByteArrayInputStream(bos.toByteArray());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				bos.close();
+			} catch (IOException e) {
+				bos = null;
+			}
+		}
+		return bis;
+	}
 }

@@ -27,5 +27,5 @@ public @interface Html {
 	 * @author LiuJunGuang
 	 * @return
 	 */
-	public boolean isOuter() default false;
+	public boolean outer() default false;
 }

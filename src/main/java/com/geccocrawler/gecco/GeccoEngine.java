@@ -48,9 +48,9 @@ public class GeccoEngine extends Thread {
 	
 	private Scheduler scheduler;
 	
-	public SpiderBeanFactory spiderBeanFactory;
+	private SpiderBeanFactory spiderBeanFactory;
 	
-	public PipelineFactory pipelineFactory;
+	private PipelineFactory pipelineFactory;
 	
 	private List<Spider> spiders;
 	
@@ -68,14 +68,18 @@ public class GeccoEngine extends Thread {
 	
 	private boolean debug;
 	
-	private GeccoEngine() {}
+	private int retry;
+	
+	private GeccoEngine() {
+		this.retry = 3;
+	}
 	
 	public static GeccoEngine create() {
 		GeccoEngine geccoEngine = new GeccoEngine();
 		geccoEngine.setName("GeccoEngine");
 		return geccoEngine;
 	}
-
+	
 	public GeccoEngine start(String url) {
 		return start(new HttpGetRequest(url));
 	}
@@ -105,6 +109,11 @@ public class GeccoEngine extends Thread {
 		return this;
 	}
 	
+	public GeccoEngine retry(int retry) {
+		this.retry = retry;
+		return this;
+	}
+	
 	public GeccoEngine loop(boolean loop) {
 		this.loop = loop;
 		return this;
@@ -129,6 +138,12 @@ public class GeccoEngine extends Thread {
 		this.pipelineFactory = pipelineFactory;
 		return this;
 	}
+	
+	public GeccoEngine spiderBeanFactory(SpiderBeanFactory spiderBeanFactory) {
+		this.spiderBeanFactory = spiderBeanFactory;
+		return this;
+	}
+	
 	
 	public void run() {
 		if(debug) {
@@ -218,6 +233,10 @@ public class GeccoEngine extends Thread {
 
 	public List<Spider> getSpiders() {
 		return spiders;
+	}
+
+	public int getRetry() {
+		return retry;
 	}
 
 	public int getThreadCount() {

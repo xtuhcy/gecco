@@ -99,11 +99,11 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 
 	@Override
 	public Map<String, String> getHeaders() {
-		StringBuffer sb = new StringBuffer();
+		/*StringBuffer sb = new StringBuffer();
 		for(Map.Entry<String, String> entry : cookies.entrySet()) {
 			sb.append(entry.getKey()).append("=").append(entry.getValue()).append(";");
 		}
-		headers.put("Cookie", sb.toString());
+		headers.put("Cookie", sb.toString());*/
 		return headers;
 	}
 
@@ -175,7 +175,6 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result	+ ((parameters == null) ? 0 : parameters.hashCode());
 		result = prime * result + ((url == null) ? 0 : url.hashCode());
 		return result;
 	}
