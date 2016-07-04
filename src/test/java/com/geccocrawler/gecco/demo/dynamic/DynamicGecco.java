@@ -14,41 +14,19 @@ import com.geccocrawler.gecco.annotation.dynamic.JavassistDynamicBean;
  * @author huchengyi
  *
  */
-public class DynamicMain {
+public class DynamicGecco {
 	
 	public static void main(String[] args) throws Exception {
 		//动态增加注解
-		JavassistDynamicBean.create("com.geccocrawler.gecco.demo.dynamic.MyGithub")
-		
-		//@Gecco(matchUrl="https://github.com/{user}/{project}", pipelines="consolePipeline")
+		JavassistDynamicBean.htmlBean("com.geccocrawler.gecco.demo.dynamic.MyGithub", false)
 		.gecco("https://github.com/xtuhcy/gecco", "consolePipeline")
-		
-		//@Text(own=false)
-		//@HtmlField(cssPath=".repository-meta-content")
 		.field("title").htmlField(".repository-meta-content").text(false).build()
-		
-		//@Text(own=false)
-		//@HtmlField(cssPath=".pagehead-actions li:nth-child(2) .social-count")
 		.field("star").htmlField(".pagehead-actions li:nth-child(2) .social-count").text(false).build()
-		
-		//@Text
-		//@HtmlField(cssPath=".pagehead-actions li:nth-child(3) .social-count")
 		.field("fork").htmlField(".pagehead-actions li:nth-child(3) .social-count").text().build()
-		
-		//@Href
-		//@HtmlField(cssPath="ul.numbers-summary > li:nth-child(4) > a")
 		.field("contributors").htmlField("ul.numbers-summary > li:nth-child(4) > a").href().build()
-		
-		//@Request
 		.field("request").request().build()
-		
-		//@RequestParameter("user")
 		.field("user").requestParameter("user").build()
-		
-		//@RequestParameter
 		.field("project").requestParameter().build()
-		
-		//载入class
 		.loadClass();
 		
 		//开始抓取

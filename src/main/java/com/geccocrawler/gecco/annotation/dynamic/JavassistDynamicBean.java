@@ -1,5 +1,6 @@
 package com.geccocrawler.gecco.annotation.dynamic;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -8,6 +9,9 @@ import com.geccocrawler.gecco.annotation.Gecco;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
+import javassist.CtField;
+import javassist.CtMethod;
+import javassist.CtNewMethod;
 import javassist.NotFoundException;
 import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ClassFile;
@@ -22,7 +26,13 @@ public class JavassistDynamicBean implements DynamicBean {
 
 	private static Log log = LogFactory.getLog(JavassistDynamicBean.class);
 	
+	private static final String HtmlBean = "html";
+	
+	private static final String JsonBean = "json";
+	
 	private static ClassPool pool = ClassPool.getDefault();
+	
+	private boolean create;
 	
 	private CtClass clazz;
 	
@@ -30,25 +40,38 @@ public class JavassistDynamicBean implements DynamicBean {
 	
 	private ConstPool cpool;
 	
-	public JavassistDynamicBean(String htmlBeanName) {
+	public JavassistDynamicBean(String spiderBeanName, String beanType, boolean create) {
+		this.create = create;
 		try {
-			clazz = pool.get(htmlBeanName);
-			/*clazz = pool.makeClass(htmlBeanName);
-			CtClass htmlBeanInterface = pool.get("com.geccocrawler.gecco.spider.HtmlBean");
-			clazz.addInterface(htmlBeanInterface);*/
+			if(create) {
+				clazz = pool.makeClass(spiderBeanName);
+				if(beanType.equals(HtmlBean)) {
+					CtClass htmlBeanInterface = pool.get("com.geccocrawler.gecco.spider.HtmlBean");
+					clazz.addInterface(htmlBeanInterface);
+				} else {
+					CtClass jsonBeanInterface = pool.get("com.geccocrawler.gecco.spider.JsonBean");
+					clazz.addInterface(jsonBeanInterface);
+				}
+			} else {
+				clazz = pool.get(spiderBeanName);
+			}
 			cfile = clazz.getClassFile();
 			cpool = cfile.getConstPool();
 			//clazz.defrost();
 			if(clazz.isFrozen()) {
-				log.error(htmlBeanName + " is frozen");
+				log.error(spiderBeanName + " is frozen");
 			}
 		} catch (NotFoundException e) {
-			log.error(htmlBeanName + " not found");
+			log.error(spiderBeanName + " not found");
 		}
 	}
 	
-	public static JavassistDynamicBean create(String htmlBeanName) {
-		return new JavassistDynamicBean(htmlBeanName);
+	public static JavassistDynamicBean htmlBean(String htmlBeanName, boolean create) {
+		return new JavassistDynamicBean(htmlBeanName, HtmlBean, create);
+	}
+	
+	public static JavassistDynamicBean jsonBean(String jsonBeanName, boolean create) {
+		return new JavassistDynamicBean(jsonBeanName, JsonBean, create);
 	}
 	
 	@Override
@@ -81,25 +104,62 @@ public class JavassistDynamicBean implements DynamicBean {
 		cfile.addAttribute(attr);
 		return this;
 	}
-
+	
 	@Override
 	public DynamicField field(String fieldName) {
-		/*try {
-			CtField f = new CtField(CtClass.charType, fieldName, clazz);
-			clazz.addField(f);
-		} catch(Exception ex) {
-			ex.printStackTrace();
-		}*/
 		return new JavassistDynamicField(this, clazz, cpool, fieldName);
 	}
 
 	@Override
-	public void loadClass() {
+	public DynamicField field(String fieldName, CtClass fieldType) {
+		if(create) {
+			try {
+				CtField f = new CtField(fieldType, fieldName, clazz);
+				clazz.addField(f);
+				getter(fieldName, f);
+				setter(fieldName, f);
+			} catch(Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return new JavassistDynamicField(this, clazz, cpool, fieldName);
+	}
+
+	public void getter(String fieldName, CtField field) {
 		try {
-			clazz.toClass();
+			CtMethod m = CtNewMethod.getter("get"+StringUtils.capitalize(fieldName), field);
+			//CtMethod m = CtNewMethod.make("public String get"+fieldName+"() { return "+fieldName+"; }", clazz);
+			clazz.addMethod(m);
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	public void setter(String fieldName, CtField field) {
+		try {
+			CtMethod m = CtNewMethod.setter("set"+StringUtils.capitalize(fieldName), field);
+			//CtMethod m = CtNewMethod.make("public void set"+fieldName+"(String v) { return "+fieldName+"; }", clazz);
+			clazz.addMethod(m);
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	@Override
+	public Class<?> loadClass() {
+		try {
+			GeccoClassLoader gcl = GeccoClassLoader.get();
+			Class<?> loadClass = clazz.toClass(gcl, null);
+			if(loadClass.getAnnotation(Gecco.class) != null) {
+				gcl.addClass(loadClass.getName(), loadClass);
+			}
+			return loadClass;
 		} catch (CannotCompileException e) {
 			log.error(clazz.getName() + " cannot compile,"+e.getMessage());
+			return null;
+		} finally {
+			//clazz.detach();
 		}
-        clazz.detach();
+        
 	}
 }
