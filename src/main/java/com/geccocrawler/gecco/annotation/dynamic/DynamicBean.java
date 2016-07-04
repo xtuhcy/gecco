@@ -2,6 +2,12 @@ package com.geccocrawler.gecco.annotation.dynamic;
 
 import javassist.CtClass;
 
+/**
+ * 动态生成SpiderBean
+ * 
+ * @author huchengyi
+ *
+ */
 public interface DynamicBean {
 	
 	public JavassistDynamicBean gecco(String matchUrl, String... pipelines);

@@ -22,6 +22,12 @@ import javassist.bytecode.annotation.IntegerMemberValue;
 import javassist.bytecode.annotation.MemberValue;
 import javassist.bytecode.annotation.StringMemberValue;
 
+/**
+ * 动态生成SpiderBean，支持类，属性和注解全部动态生成，也支持只动态生成注解
+ * 
+ * @author huchengyi
+ *
+ */
 public class JavassistDynamicBean implements DynamicBean {
 
 	private static Log log = LogFactory.getLog(JavassistDynamicBean.class);
@@ -40,6 +46,13 @@ public class JavassistDynamicBean implements DynamicBean {
 	
 	private ConstPool cpool;
 	
+	/**
+	 * 构造类
+	 * 
+	 * @param spiderBeanName 名称
+	 * @param beanType 类型html/json
+	 * @param create 是否新建类和属性。true表示创建写的类和属性已经setter/getter方法，false表示只动态生成注解
+	 */
 	public JavassistDynamicBean(String spiderBeanName, String beanType, boolean create) {
 		this.create = create;
 		try {
@@ -105,11 +118,17 @@ public class JavassistDynamicBean implements DynamicBean {
 		return this;
 	}
 	
+	/**
+	 * 只生成注解
+	 */
 	@Override
 	public DynamicField field(String fieldName) {
 		return new JavassistDynamicField(this, clazz, cpool, fieldName);
 	}
 
+	/**
+	 * 生成属性，setter/getter方法和注解
+	 */
 	@Override
 	public DynamicField field(String fieldName, CtClass fieldType) {
 		if(create) {
@@ -125,20 +144,18 @@ public class JavassistDynamicBean implements DynamicBean {
 		return new JavassistDynamicField(this, clazz, cpool, fieldName);
 	}
 
-	public void getter(String fieldName, CtField field) {
+	private void getter(String fieldName, CtField field) {
 		try {
 			CtMethod m = CtNewMethod.getter("get"+StringUtils.capitalize(fieldName), field);
-			//CtMethod m = CtNewMethod.make("public String get"+fieldName+"() { return "+fieldName+"; }", clazz);
 			clazz.addMethod(m);
 		} catch(Exception ex) {
 			ex.printStackTrace();
 		}
 	}
 	
-	public void setter(String fieldName, CtField field) {
+	private void setter(String fieldName, CtField field) {
 		try {
 			CtMethod m = CtNewMethod.setter("set"+StringUtils.capitalize(fieldName), field);
-			//CtMethod m = CtNewMethod.make("public void set"+fieldName+"(String v) { return "+fieldName+"; }", clazz);
 			clazz.addMethod(m);
 		} catch(Exception ex) {
 			ex.printStackTrace();

@@ -6,7 +6,7 @@ import org.reflections.vfs.Vfs.File;
 public class GeccoJavaReflectionAdapter extends JavaReflectionAdapter {
 
 	@Override
-	public Class getOfCreateClassObject(File file) throws Exception {
+	public Class<?> getOfCreateClassObject(File file) throws Exception {
 		return getOfCreateClassObject(file, GeccoClassLoader.get());
 	}
 

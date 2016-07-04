@@ -25,6 +25,12 @@ import javassist.bytecode.annotation.BooleanMemberValue;
 import javassist.bytecode.annotation.MemberValue;
 import javassist.bytecode.annotation.StringMemberValue;
 
+/**
+ * 动态生成属性的注解
+ * 
+ * @author huchengyi
+ *
+ */
 public class JavassistDynamicField implements DynamicField {
 	
 	private static Log log = LogFactory.getLog(JavassistDynamicField.class);

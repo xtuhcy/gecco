@@ -2,6 +2,11 @@ package com.geccocrawler.gecco.annotation.dynamic;
 
 public interface DynamicField {
 	
+/**
+ * 动态生成属性注解
+ * 
+ * @return
+ */
 public DynamicField request();
 	
 	public DynamicField requestParameter(String param);
