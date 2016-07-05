@@ -1,5 +1,6 @@
 package com.geccocrawler.gecco.spider.render.json;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -68,6 +69,7 @@ public class JsonFieldRender implements FieldRender {
 		String jsonPath = JSONPath.value();
 		Class<?> type = field.getType();//类属性的类
 		Object src = com.alibaba.fastjson.JSONPath.eval(json, jsonPath);
+		boolean isArray = type.isArray();
 		boolean isList = ReflectUtils.haveSuperType(type, List.class);//是List类型
 		if(isList) {
 			Type genericType = field.getGenericType();//获得包含泛型的类型
@@ -78,6 +80,17 @@ public class JsonFieldRender implements FieldRender {
 			} else {
 				//List<Object>
 				return objectRender(src, field, jsonPath, json);
+			}
+		} else if(isArray) {
+			Class genericClass = type.getComponentType();
+			if(ReflectUtils.haveSuperType(genericClass, SpiderBean.class)) {
+				//SpiderBean[]
+				List<SpiderBean> list = spiderBeanListRender(src, genericClass, request);
+				SpiderBean[] a = (SpiderBean[])Array.newInstance(genericClass, list.size());
+				return list.toArray(a);
+			} else {
+				//Object[]
+				return ((List<Object>)objectRender(src, field, jsonPath, json)).toArray();
 			}
 		} else {
         	if(ReflectUtils.haveSuperType(type, SpiderBean.class)) {
