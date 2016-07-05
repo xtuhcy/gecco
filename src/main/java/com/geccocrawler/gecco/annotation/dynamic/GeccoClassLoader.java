@@ -12,14 +12,15 @@ public class GeccoClassLoader extends ClassLoader {
 	
 	private Map<String, Class<?>> classes;
 	
-	private GeccoClassLoader() {
-		classes = new HashMap<String, Class<?>>();
-	}
-	
 	private static GeccoClassLoader instance;
 	
 	public static synchronized GeccoClassLoader create() {
-		instance = new GeccoClassLoader();
+		ClassLoader parent = Thread.currentThread().getContextClassLoader();
+		if(parent != null) {
+			instance = new GeccoClassLoader(parent);
+		} else {
+			instance = new GeccoClassLoader();
+		}
 		return instance;
 	}
 	
@@ -30,6 +31,15 @@ public class GeccoClassLoader extends ClassLoader {
 		return instance;
 	}
 	
+	public GeccoClassLoader() {
+		classes = new HashMap<String, Class<?>>();
+	}
+	
+	public GeccoClassLoader(ClassLoader parent) {
+		super(parent);
+		classes = new HashMap<String, Class<?>>();
+	}
+
 	@Override
 	protected Class<?> findClass(String name) throws ClassNotFoundException {
 		Class<?> clazz = classes.get(name);
@@ -42,6 +52,7 @@ public class GeccoClassLoader extends ClassLoader {
 	
 	@Override
 	public Class<?> loadClass(String name) throws ClassNotFoundException {
+		LOG.debug("load from GeccoClassLoader : " + name);
 		return super.loadClass(name);
 	}
 
