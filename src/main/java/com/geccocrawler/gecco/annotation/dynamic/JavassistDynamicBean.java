@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import com.geccocrawler.gecco.annotation.Gecco;
 
 import javassist.CannotCompileException;
+import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
@@ -36,7 +37,11 @@ public class JavassistDynamicBean implements DynamicBean {
 	
 	private static final String JsonBean = "json";
 	
-	private static ClassPool pool = ClassPool.getDefault();
+	private static ClassPool pool;
+	static {
+		pool = ClassPool.getDefault();
+		pool.insertClassPath(new ClassClassPath(JavassistDynamicBean.class));
+	}
 	
 	private boolean create;
 	
@@ -170,6 +175,7 @@ public class JavassistDynamicBean implements DynamicBean {
 			if(loadClass.getAnnotation(Gecco.class) != null) {
 				gcl.addClass(loadClass.getName(), loadClass);
 			}
+			log.debug("load class : " + clazz.getName());
 			return loadClass;
 		} catch (CannotCompileException e) {
 			log.error(clazz.getName() + " cannot compile,"+e.getMessage());
