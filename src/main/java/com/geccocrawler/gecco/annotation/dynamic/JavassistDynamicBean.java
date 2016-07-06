@@ -33,9 +33,9 @@ public class JavassistDynamicBean implements DynamicBean {
 
 	private static Log log = LogFactory.getLog(JavassistDynamicBean.class);
 	
-	private static final String HtmlBean = "html";
+	public static final String HtmlBean = "html";
 	
-	private static final String JsonBean = "json";
+	public static final String JsonBean = "json";
 	
 	private static ClassPool pool;
 	static {
@@ -82,14 +82,6 @@ public class JavassistDynamicBean implements DynamicBean {
 		} catch (NotFoundException e) {
 			log.error(spiderBeanName + " not found");
 		}
-	}
-	
-	public static JavassistDynamicBean htmlBean(String htmlBeanName, boolean create) {
-		return new JavassistDynamicBean(htmlBeanName, HtmlBean, create);
-	}
-	
-	public static JavassistDynamicBean jsonBean(String jsonBeanName, boolean create) {
-		return new JavassistDynamicBean(jsonBeanName, JsonBean, create);
 	}
 	
 	@Override

@@ -1,6 +1,7 @@
 package com.geccocrawler.gecco.demo.dynamic;
 
 import com.geccocrawler.gecco.GeccoEngine;
+import com.geccocrawler.gecco.annotation.dynamic.DynamicGecco;
 import com.geccocrawler.gecco.annotation.dynamic.JavassistDynamicBean;
 
 /**
@@ -14,11 +15,11 @@ import com.geccocrawler.gecco.annotation.dynamic.JavassistDynamicBean;
  * @author huchengyi
  *
  */
-public class DynamicGecco {
+public class DynamicTest {
 	
 	public static void main(String[] args) throws Exception {
 		//动态增加注解
-		JavassistDynamicBean.htmlBean("com.geccocrawler.gecco.demo.dynamic.MyGithub", false)
+		DynamicGecco.htmlBean("com.geccocrawler.gecco.demo.dynamic.MyGithub", false)
 		.gecco("https://github.com/xtuhcy/gecco", "consolePipeline")
 		.field("title").htmlField(".repository-meta-content").text(false).build()
 		.field("star").htmlField(".pagehead-actions li:nth-child(2) .social-count").text(false).build()
