@@ -249,7 +249,9 @@ public class HttpClientDownloader extends AbstractDownloader {
 			b = null;
 			bis = new ByteArrayInputStream(bos.toByteArray());
 		} catch (IOException e) {
-			e.printStackTrace();
+			//LazyDecompressingInputStream->GZIPIntputStream不支持
+			log.warn("inputstream = " + in.getClass().getName() + " don't support reuse!");
+			return in;
 		} finally {
 			try {
 				bos.close();

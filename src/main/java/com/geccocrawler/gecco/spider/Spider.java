@@ -104,11 +104,13 @@ public class Spider implements Runnable {
 				}
 			} catch(DownloadException dex) {
 				if(engine.isDebug()) {
+					dex.printStackTrace();
 					log.error(dex);
 				}
 				log.error(request.getUrl() + " DOWNLOAD ERROR :" + dex.getMessage());
 			} catch(Exception ex) {
 				if(engine.isDebug()) {
+					ex.printStackTrace();
 					log.error(ex);
 				}
 				log.error(request.getUrl(), ex);
