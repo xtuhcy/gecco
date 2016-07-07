@@ -159,8 +159,14 @@ public class JavassistDynamicBean implements DynamicBean {
 		}
 	}
 	
+	@Deprecated
 	@Override
 	public Class<?> loadClass() {
+		return register();
+	}
+	
+	@Override
+	public Class<?> register() { 
 		try {
 			GeccoClassLoader gcl = GeccoClassLoader.get();
 			Class<?> loadClass = clazz.toClass(gcl, null);
@@ -175,6 +181,5 @@ public class JavassistDynamicBean implements DynamicBean {
 		} finally {
 			//clazz.detach();
 		}
-        
 	}
 }

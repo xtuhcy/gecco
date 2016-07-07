@@ -61,8 +61,14 @@ public class JavassistDynamicField implements DynamicField {
         return dynamicBean;
 	}
 
+	@Deprecated
 	@Override
 	public DynamicField htmlField(String cssPath) {
+		return csspath(cssPath);
+	}
+	
+	@Override
+	public DynamicField csspath(String cssPath) {
 		Annotation annot = new Annotation(HtmlField.class.getName(), cpool);
         annot.addMemberValue("cssPath", new StringMemberValue(cssPath, cpool));
 		attr.addAnnotation(annot);

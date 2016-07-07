@@ -2,7 +2,6 @@ package com.geccocrawler.gecco.demo.dynamic;
 
 import com.geccocrawler.gecco.GeccoEngine;
 import com.geccocrawler.gecco.annotation.dynamic.DynamicGecco;
-import com.geccocrawler.gecco.annotation.dynamic.JavassistDynamicBean;
 
 /**
  * 对spiderBean动态增加注解的方法示例
@@ -19,16 +18,16 @@ public class DynamicTest {
 	
 	public static void main(String[] args) throws Exception {
 		//动态增加注解
-		DynamicGecco.htmlBean("com.geccocrawler.gecco.demo.dynamic.MyGithub", false)
+		DynamicGecco.htmlBean("com.geccocrawler.gecco.demo.dynamic.MyGithub")
 		.gecco("https://github.com/xtuhcy/gecco", "consolePipeline")
-		.field("title").htmlField(".repository-meta-content").text(false).build()
-		.field("star").htmlField(".pagehead-actions li:nth-child(2) .social-count").text(false).build()
-		.field("fork").htmlField(".pagehead-actions li:nth-child(3) .social-count").text().build()
-		.field("contributors").htmlField("ul.numbers-summary > li:nth-child(4) > a").href().build()
+		.field("title").csspath(".repository-meta-content").text(false).build()
+		.field("star").csspath(".pagehead-actions li:nth-child(2) .social-count").text(false).build()
+		.field("fork").csspath(".pagehead-actions li:nth-child(3) .social-count").text().build()
+		.field("contributors").csspath("ul.numbers-summary > li:nth-child(4) > a").href().build()
 		.field("request").request().build()
 		.field("user").requestParameter("user").build()
 		.field("project").requestParameter().build()
-		.loadClass();
+		.register();
 		
 		//开始抓取
 		GeccoEngine.create()

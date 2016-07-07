@@ -18,6 +18,9 @@ public interface DynamicBean {
 	
 	public DynamicField field(String fieldName);
 	
+	public Class<?> register();
+	
+	@Deprecated
 	public Class<?> loadClass();
-
+	
 }

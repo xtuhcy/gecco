@@ -13,7 +13,13 @@ public DynamicField request();
 	
 	public DynamicField requestParameter();
 
+	/**
+	 * replace by csspath
+	 */
+	@Deprecated
 	public DynamicField htmlField(String cssPath);
+	
+	public DynamicField csspath(String cssPath);
 	
 	public DynamicField text(boolean own);
 	

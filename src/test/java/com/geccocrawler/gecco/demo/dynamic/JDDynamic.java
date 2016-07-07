@@ -14,19 +14,19 @@ public class JDDynamic {
 	
 	public static void main(String[] args) throws Exception {
 		
-		DynamicGecco.htmlBean("com.geccocrawler.gecco.demo.dynamic.jd.ProductBrief", true)
-		.field("code", FieldType.stringType).htmlField(".j-sku-item").attr("data-sku").build()
-		.field("title", FieldType.stringType).htmlField(".p-name> a > em").text().build()
-		.field("detailUrl", FieldType.stringType).htmlField(".p-name > a").href().build()
-		.loadClass();
+		String productBrief = DynamicGecco.html()
+		.field("code", FieldType.stringType).csspath(".j-sku-item").attr("data-sku").build()
+		.field("title", FieldType.stringType).csspath(".p-name> a > em").text().build()
+		.field("detailUrl", FieldType.stringType).csspath(".p-name > a").href().build()
+		.register().getName();
 		
-		DynamicGecco.htmlBean("com.geccocrawler.gecco.demo.dynamic.jd.ProductList", true)
+		DynamicGecco.html()
 		.gecco("http://list.jd.com/list.html?cat={cat}", "consolePipeline", "jdDynamicListPipeline")
 		.field("request", FieldType.requestType).request().build()
-		.field("details", FieldType.listType("com.geccocrawler.gecco.demo.dynamic.jd.ProductBrief")).htmlField("#plist .gl-item").build()
-		.field("currPage", FieldType.intType).htmlField("#J_topPage > span > b").text().build()
-		.field("totalPage", FieldType.intType).htmlField("#J_topPage > span > i").text().build()
-		.loadClass();
+		.field("details", FieldType.listType(productBrief)).csspath("#plist .gl-item").build()
+		.field("currPage", FieldType.intType).csspath("#J_topPage > span > b").text().build()
+		.field("totalPage", FieldType.intType).csspath("#J_topPage > span > i").text().build()
+		.register();
 		
 		GeccoEngine.create()
 		.classpath("com.geccocrawler.gecco.demo.dynamic.jd")

@@ -1,12 +1,22 @@
 package com.geccocrawler.gecco.annotation.dynamic;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 public class DynamicGecco {
 	
-	public static JavassistDynamicBean htmlBean(String htmlBeanName, boolean create) {
-		return new JavassistDynamicBean(htmlBeanName, JavassistDynamicBean.HtmlBean, create);
+	public static JavassistDynamicBean htmlBean(String htmlBeanName) {
+		return new JavassistDynamicBean(htmlBeanName, JavassistDynamicBean.HtmlBean, false);
 	}
 	
-	public static JavassistDynamicBean jsonBean(String jsonBeanName, boolean create) {
-		return new JavassistDynamicBean(jsonBeanName, JavassistDynamicBean.JsonBean, create);
+	public static JavassistDynamicBean jsonBean(String jsonBeanName) {
+		return new JavassistDynamicBean(jsonBeanName, JavassistDynamicBean.JsonBean, false);
+	}
+	
+	public static JavassistDynamicBean html() {
+		return new JavassistDynamicBean("com.geccocrawler.gecco.dynamic.Bean"+RandomStringUtils.randomAlphabetic(6)+System.nanoTime(), JavassistDynamicBean.HtmlBean, true);
+	}
+	
+	public static JavassistDynamicBean json() {
+		return new JavassistDynamicBean("com.geccocrawler.gecco.dynamic.Bean"+RandomStringUtils.randomAlphabetic(6)+System.nanoTime(), JavassistDynamicBean.JsonBean, true);
 	}
 }
