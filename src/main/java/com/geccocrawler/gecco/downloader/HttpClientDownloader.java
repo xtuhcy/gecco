@@ -2,6 +2,7 @@ package com.geccocrawler.gecco.downloader;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -248,9 +249,11 @@ public class HttpClientDownloader extends AbstractDownloader {
 			}
 			b = null;
 			bis = new ByteArrayInputStream(bos.toByteArray());
+		} catch(EOFException eof){
+			bis = new ByteArrayInputStream(bos.toByteArray());
+			log.warn("inputstream " + in.getClass().getName() + " eof!");
 		} catch (IOException e) {
-			//LazyDecompressingInputStream->GZIPIntputStream不支持
-			log.warn("inputstream = " + in.getClass().getName() + " don't support reuse!");
+			log.warn("inputstream " + in.getClass().getName() + " don't to byte inputstream!");
 			return in;
 		} finally {
 			try {
