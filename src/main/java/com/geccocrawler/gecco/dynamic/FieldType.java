@@ -1,4 +1,4 @@
-package com.geccocrawler.gecco.annotation.dynamic;
+package com.geccocrawler.gecco.dynamic;
 
 import javassist.ClassPool;
 import javassist.CtClass;

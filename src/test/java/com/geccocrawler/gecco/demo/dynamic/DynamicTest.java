@@ -1,7 +1,7 @@
 package com.geccocrawler.gecco.demo.dynamic;
 
 import com.geccocrawler.gecco.GeccoEngine;
-import com.geccocrawler.gecco.annotation.dynamic.DynamicGecco;
+import com.geccocrawler.gecco.dynamic.DynamicGecco;
 
 /**
  * 对spiderBean动态增加注解的方法示例

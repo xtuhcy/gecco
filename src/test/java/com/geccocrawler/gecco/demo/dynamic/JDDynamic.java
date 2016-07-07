@@ -1,8 +1,8 @@
 package com.geccocrawler.gecco.demo.dynamic;
 
 import com.geccocrawler.gecco.GeccoEngine;
-import com.geccocrawler.gecco.annotation.dynamic.DynamicGecco;
-import com.geccocrawler.gecco.annotation.dynamic.FieldType;
+import com.geccocrawler.gecco.dynamic.DynamicGecco;
+import com.geccocrawler.gecco.dynamic.FieldType;
 
 /**
  * 京东列表页的动态生成spiderBean的例子

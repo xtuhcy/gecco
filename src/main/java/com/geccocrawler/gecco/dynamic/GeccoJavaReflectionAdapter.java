@@ -1,4 +1,4 @@
-package com.geccocrawler.gecco.annotation.dynamic;
+package com.geccocrawler.gecco.dynamic;
 
 import org.reflections.adapters.JavaReflectionAdapter;
 import org.reflections.vfs.Vfs.File;

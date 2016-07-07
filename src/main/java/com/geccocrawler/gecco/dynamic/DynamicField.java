@@ -1,4 +1,4 @@
-package com.geccocrawler.gecco.annotation.dynamic;
+package com.geccocrawler.gecco.dynamic;
 
 public interface DynamicField {
 	

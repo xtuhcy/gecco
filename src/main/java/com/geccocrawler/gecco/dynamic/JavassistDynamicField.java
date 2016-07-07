@@ -1,4 +1,4 @@
-package com.geccocrawler.gecco.annotation.dynamic;
+package com.geccocrawler.gecco.dynamic;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

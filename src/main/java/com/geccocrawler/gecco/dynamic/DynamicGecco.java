@@ -1,4 +1,4 @@
-package com.geccocrawler.gecco.annotation.dynamic;
+package com.geccocrawler.gecco.dynamic;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -13,10 +13,10 @@ public class DynamicGecco {
 	}
 	
 	public static JavassistDynamicBean html() {
-		return new JavassistDynamicBean("com.geccocrawler.gecco.dynamic.Bean"+RandomStringUtils.randomAlphabetic(6)+System.nanoTime(), JavassistDynamicBean.HtmlBean, true);
+		return new JavassistDynamicBean("com.geccocrawler.gecco.dynamic.HtlmBean"+RandomStringUtils.randomAlphabetic(6)+System.nanoTime(), JavassistDynamicBean.HtmlBean, true);
 	}
 	
 	public static JavassistDynamicBean json() {
-		return new JavassistDynamicBean("com.geccocrawler.gecco.dynamic.Bean"+RandomStringUtils.randomAlphabetic(6)+System.nanoTime(), JavassistDynamicBean.JsonBean, true);
+		return new JavassistDynamicBean("com.geccocrawler.gecco.dynamic.JsonBean"+RandomStringUtils.randomAlphabetic(6)+System.nanoTime(), JavassistDynamicBean.JsonBean, true);
 	}
 }

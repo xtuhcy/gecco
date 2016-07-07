@@ -14,11 +14,11 @@ import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ConfigurationBuilder;
 
 import com.geccocrawler.gecco.annotation.Gecco;
-import com.geccocrawler.gecco.annotation.dynamic.GeccoClassLoader;
-import com.geccocrawler.gecco.annotation.dynamic.GeccoJavaReflectionAdapter;
 import com.geccocrawler.gecco.downloader.DownloaderAOPFactory;
 import com.geccocrawler.gecco.downloader.DownloaderFactory;
 import com.geccocrawler.gecco.downloader.MonitorDownloaderFactory;
+import com.geccocrawler.gecco.dynamic.GeccoClassLoader;
+import com.geccocrawler.gecco.dynamic.GeccoJavaReflectionAdapter;
 import com.geccocrawler.gecco.pipeline.Pipeline;
 import com.geccocrawler.gecco.pipeline.DefaultPipelineFactory;
 import com.geccocrawler.gecco.pipeline.PipelineFactory;
