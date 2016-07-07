@@ -2,7 +2,6 @@ package com.geccocrawler.gecco.demo.dynamic;
 
 import com.geccocrawler.gecco.GeccoEngine;
 import com.geccocrawler.gecco.dynamic.DynamicGecco;
-import com.geccocrawler.gecco.dynamic.FieldType;
 
 /**
  * 京东列表页的动态生成spiderBean的例子
@@ -14,18 +13,18 @@ public class JDDynamic {
 	
 	public static void main(String[] args) throws Exception {
 		
-		String productBrief = DynamicGecco.html()
-		.field("code", FieldType.stringType).csspath(".j-sku-item").attr("data-sku").build()
-		.field("title", FieldType.stringType).csspath(".p-name> a > em").text().build()
-		.field("detailUrl", FieldType.stringType).csspath(".p-name > a").href().build()
-		.register().getName();
+		Class<?> productBrief = DynamicGecco.html()
+		.stringField("code").csspath(".j-sku-item").attr("data-sku").build()
+		.stringField("title").csspath(".p-name> a > em").text().build()
+		.stringField("detailUrl").csspath(".p-name > a").href().build()
+		.register();
 		
 		DynamicGecco.html()
 		.gecco("http://list.jd.com/list.html?cat={cat}", "consolePipeline", "jdDynamicListPipeline")
-		.field("request", FieldType.requestType).request().build()
-		.field("details", FieldType.listType(productBrief)).csspath("#plist .gl-item").build()
-		.field("currPage", FieldType.intType).csspath("#J_topPage > span > b").text().build()
-		.field("totalPage", FieldType.intType).csspath("#J_topPage > span > i").text().build()
+		.requestField("request").request().build()
+		.listField("details", productBrief).csspath("#plist .gl-item").build()
+		.intField("currPage").csspath("#J_topPage > span > b").text().build()
+		.intField("totalPage").csspath("#J_topPage > span > i").text().build()
 		.register();
 		
 		GeccoEngine.create()

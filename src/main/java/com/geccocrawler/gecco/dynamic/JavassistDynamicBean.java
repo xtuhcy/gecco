@@ -120,6 +120,9 @@ public class JavassistDynamicBean implements DynamicBean {
 	 */
 	@Override
 	public DynamicField field(String fieldName) {
+		if(create) {
+			throw new RuntimeException("need create field : " + fieldName);
+		}
 		return new JavassistDynamicField(this, clazz, cpool, fieldName);
 	}
 
@@ -159,6 +162,46 @@ public class JavassistDynamicBean implements DynamicBean {
 		}
 	}
 	
+	@Override
+	public DynamicField stringField(String fieldName) {
+		return field(fieldName, FieldType.stringType);
+	}
+
+	@Override
+	public DynamicField intField(String fieldName) {
+		return field(fieldName, FieldType.intType);
+	}
+
+	@Override
+	public DynamicField booleanField(String fieldName) {
+		return field(fieldName, FieldType.booleanType);
+	}
+
+	@Override
+	public DynamicField longField(String fieldName) {
+		return field(fieldName, FieldType.longType);
+	}
+
+	@Override
+	public DynamicField floatField(String fieldName) {
+		return field(fieldName, FieldType.floatType);
+	}
+
+	@Override
+	public DynamicField doubleField(String fieldName) {
+		return field(fieldName, FieldType.doubleType);
+	}
+
+	@Override
+	public DynamicField requestField(String fieldName) {
+		return field(fieldName, FieldType.requestType);
+	}
+
+	@Override
+	public DynamicField listField(String fieldName, Class<?> memberClass) {
+		return field(fieldName, FieldType.listType(memberClass.getName()));
+	}
+
 	@Deprecated
 	@Override
 	public Class<?> loadClass() {
