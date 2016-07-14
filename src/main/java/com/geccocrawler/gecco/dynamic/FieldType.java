@@ -46,9 +46,9 @@ public class FieldType {
 		}
 	}
 	
-	public static CtClass type(String className) {
+	public static CtClass type(Class<?> clazz) {
 		try {
-			return ClassPool.getDefault().get(className);
+			return ClassPool.getDefault().get(clazz.getName());
 		} catch (NotFoundException e) {
 			e.printStackTrace();
 			return voidType;

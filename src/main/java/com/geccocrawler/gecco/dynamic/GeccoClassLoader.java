@@ -14,7 +14,14 @@ public class GeccoClassLoader extends ClassLoader {
 	
 	private static GeccoClassLoader instance;
 	
+	/**
+	 * 创建一个新的GeccoClassLoader
+	 * @return
+	 */
 	public static synchronized GeccoClassLoader create() {
+		if(instance != null) {
+			instance.classes.clear();
+		}
 		ClassLoader parent = Thread.currentThread().getContextClassLoader();
 		if(parent != null) {
 			instance = new GeccoClassLoader(parent);

@@ -51,7 +51,7 @@ public class JavassistDynamicField implements DynamicField {
 			this.cfield  = clazz.getField(fieldName);
 			attr = new AnnotationsAttribute(cpool, AnnotationsAttribute.visibleTag);
 		} catch (NotFoundException e) {
-			log.error(fieldName + "not found");
+			log.error(fieldName + " not found");
 		}
 	}
 	

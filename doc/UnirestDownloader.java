@@ -87,10 +87,4 @@ public class UnirestDownloader implements Downloader {
 			e.printStackTrace();
 		}
 	}
-
-	public static void main(String[] args) throws Exception {
-		UnirestDownloader ud = new UnirestDownloader();
-		HttpResponse resp = ud.download(new HttpGetRequest("http://temai.tuniu.com/tours/212032167"));
-		System.out.println(resp.getContent());
-	}
 }

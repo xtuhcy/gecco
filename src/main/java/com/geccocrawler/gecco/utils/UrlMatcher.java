@@ -112,5 +112,8 @@ public class UrlMatcher {
 		//String regex = "http://temai.tuniu.com/{catalog}/{srcId}";
 		//String url = "http://temai.tuniu.com/tours/212055673";
 		//System.out.println(match(url, regex));
+		String url = "http://www.ly.com/HotelInfo-597101.html#id_nameAndSliderInfo&is=1&searchId=undefined&ab=0";
+		String regex = "http://www.ly.com/HotelInfo-{code}.html#{hash}";
+		System.out.println(match(url, regex));
 	}
 }

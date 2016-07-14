@@ -43,13 +43,19 @@ public class JavassistDynamicBean implements DynamicBean {
 		pool.insertClassPath(new ClassClassPath(JavassistDynamicBean.class));
 	}
 	
-	private boolean create;
-	
 	private CtClass clazz;
 	
 	private ClassFile cfile;
 	
 	private ConstPool cpool;
+	
+	public JavassistDynamicBean(String spiderBeanName) {
+		try {
+			clazz = pool.get(spiderBeanName);
+		} catch (NotFoundException e) {
+			log.error(spiderBeanName + " not found");
+		}
+	}
 	
 	/**
 	 * 构造类
@@ -58,10 +64,12 @@ public class JavassistDynamicBean implements DynamicBean {
 	 * @param beanType 类型html/json
 	 * @param create 是否新建类和属性。true表示创建写的类和属性已经setter/getter方法，false表示只动态生成注解
 	 */
-	public JavassistDynamicBean(String spiderBeanName, String beanType, boolean create) {
-		this.create = create;
+	public JavassistDynamicBean(String spiderBeanName, String beanType) {
 		try {
-			if(create) {
+			clazz = pool.get(spiderBeanName);
+		} catch (NotFoundException e) {
+			log.debug(spiderBeanName + " not found, to be create!");
+			try {
 				clazz = pool.makeClass(spiderBeanName);
 				if(beanType.equals(HtmlBean)) {
 					CtClass htmlBeanInterface = pool.get("com.geccocrawler.gecco.spider.HtmlBean");
@@ -70,18 +78,17 @@ public class JavassistDynamicBean implements DynamicBean {
 					CtClass jsonBeanInterface = pool.get("com.geccocrawler.gecco.spider.JsonBean");
 					clazz.addInterface(jsonBeanInterface);
 				}
-			} else {
-				clazz = pool.get(spiderBeanName);
+			} catch(NotFoundException cex) {
+				//create error
+				log.error("create class " + spiderBeanName + " error.", cex);
 			}
-			cfile = clazz.getClassFile();
-			cpool = cfile.getConstPool();
-			//clazz.defrost();
-			if(clazz.isFrozen()) {
-				log.error(spiderBeanName + " is frozen");
-			}
-		} catch (NotFoundException e) {
-			log.error(spiderBeanName + " not found");
 		}
+		if(clazz.isFrozen()) {
+			clazz.defrost();
+			log.info(spiderBeanName + " is frozen");
+		}
+		cfile = clazz.getClassFile();
+		cpool = cfile.getConstPool();
 	}
 	
 	@Override
@@ -115,29 +122,50 @@ public class JavassistDynamicBean implements DynamicBean {
 		return this;
 	}
 	
-	/**
-	 * 只生成注解
-	 */
 	@Override
-	public DynamicField field(String fieldName) {
-		if(create) {
-			throw new RuntimeException("need create field : " + fieldName);
+	public DynamicBean removeField(String fieldName) {
+		try {
+			clazz.removeField(clazz.getField(fieldName));
+			clazz.removeMethod(clazz.getDeclaredMethod("get"+StringUtils.capitalize(fieldName)));
+			clazz.removeMethod(clazz.getDeclaredMethod("set"+StringUtils.capitalize(fieldName)));
+		} catch (NotFoundException e) {
+			e.printStackTrace();
+			log.error("can't remove field : " + fieldName);
 		}
-		return new JavassistDynamicField(this, clazz, cpool, fieldName);
+		return this;
 	}
 
 	/**
-	 * 生成属性，setter/getter方法和注解
+	 * 返回已经存在的属性
+	 */
+	@Override
+	public DynamicField existField(String fieldName) {
+		return new JavassistDynamicField(this, clazz, cpool, fieldName);
+	}
+	
+	/**
+	 * 由于有歧义，已经被existField代替
+	 */
+	@Deprecated
+	public DynamicField field(String fieldName) {
+		return existField(fieldName);
+	}
+
+	/**
+	 * 如果当前属性不存在先创建属性以及setter/getter方法和注解。
+	 * 如果已经属性返回当前属性
 	 */
 	@Override
 	public DynamicField field(String fieldName, CtClass fieldType) {
-		if(create) {
+		try {
+			clazz.getField(fieldName);
+		} catch (NotFoundException e) {
 			try {
 				CtField f = new CtField(fieldType, fieldName, clazz);
 				clazz.addField(f);
 				getter(fieldName, f);
 				setter(fieldName, f);
-			} catch(Exception ex) {
+			} catch(CannotCompileException ex) {
 				ex.printStackTrace();
 			}
 		}
@@ -202,27 +230,36 @@ public class JavassistDynamicBean implements DynamicBean {
 		return field(fieldName, FieldType.listType(memberClass.getName()));
 	}
 
-	@Deprecated
 	@Override
 	public Class<?> loadClass() {
-		return register();
-	}
-	
-	@Override
-	public Class<?> register() { 
 		try {
-			GeccoClassLoader gcl = GeccoClassLoader.get();
-			Class<?> loadClass = clazz.toClass(gcl, null);
-			if(loadClass.getAnnotation(Gecco.class) != null) {
-				gcl.addClass(loadClass.getName(), loadClass);
-			}
+			Class<?> loadClass = clazz.toClass(GeccoClassLoader.get(), null);
 			log.debug("load class : " + clazz.getName());
 			return loadClass;
 		} catch (CannotCompileException e) {
+			e.printStackTrace();
 			log.error(clazz.getName() + " cannot compile,"+e.getMessage());
 			return null;
 		} finally {
 			//clazz.detach();
 		}
 	}
+	
+	@Override
+	public Class<?> register() {
+		Class<?> loadClass = loadClass();
+		if(loadClass.getAnnotation(Gecco.class) != null) {
+			GeccoClassLoader.get().addClass(loadClass.getName(), loadClass);
+		}
+		log.debug("register class : " + clazz.getName());
+		return loadClass;
+	}
+	
+	@Override
+	public void unloadClass() {
+		if(clazz != null) {
+			clazz.detach();
+		}
+	}
+	
 }

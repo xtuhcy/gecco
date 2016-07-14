@@ -1,10 +1,10 @@
 package com.geccocrawler.gecco.spider;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -86,8 +86,8 @@ public class SpiderBeanFactory {
 		} else {
 			this.pipelineFactory = new DefaultPipelineFactory(reflections);
 		}
-		this.spiderBeans = new HashMap<String, Class<? extends SpiderBean>>();
-		this.spiderBeanContexts = new HashMap<String, SpiderBeanContext>();
+		this.spiderBeans = new ConcurrentHashMap<String, Class<? extends SpiderBean>>();
+		this.spiderBeanContexts = new ConcurrentHashMap<String, SpiderBeanContext>();
 		loadSpiderBean(reflections);
 	}
 	
@@ -97,8 +97,7 @@ public class SpiderBeanFactory {
 	private void dynamic() {
 		GeccoClassLoader gcl = GeccoClassLoader.get();
 		for(String className : gcl.getClasses().keySet()) {
-			reflections.getStore().get(TypeAnnotationsScanner.class.getSimpleName())
-			.put(Gecco.class.getName(), className);
+			reflections.getStore().get(TypeAnnotationsScanner.class.getSimpleName()).put(Gecco.class.getName(), className);
 		}
 	}
 	
@@ -121,6 +120,17 @@ public class SpiderBeanFactory {
 			spiderBeans.put(matchUrl, (Class<? extends SpiderBean>)spiderBeanClass);
 			SpiderBeanContext context = initContext(spiderBeanClass);
 			spiderBeanContexts.put(spiderBeanClass.getName(), context);
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	public void removeSpiderBean(Class<?> spiderBeanClass) {
+		Gecco gecco = (Gecco)spiderBeanClass.getAnnotation(Gecco.class);
+		String matchUrl = gecco.matchUrl();
+		try {
+			spiderBeans.remove(matchUrl);
+			spiderBeanContexts.remove(spiderBeanClass.getName());
 		} catch(Exception ex) {
 			ex.printStackTrace();
 		}

@@ -36,16 +36,32 @@ public interface DynamicBean {
 	 * @param fieldName 已有字段名称
 	 * @return 字段
 	 */
+	public DynamicField existField(String fieldName);
+	
+	/**
+	 * 由于有歧义，已经被existField代替
+	 * 
+	 * @param fieldName
+	 * @return
+	 */
+	@Deprecated
 	public DynamicField field(String fieldName);
 	
 	/**
-	 * 新增一个字段
+	 * 新增一个字段，如果已经存在返回当前字段
 	 * 
 	 * @param fieldName 字段名称
 	 * @param fieldType 字段类型
 	 * @return
 	 */
 	public DynamicField field(String fieldName, CtClass fieldType);
+	
+	/**
+	 * 删除一个属性
+	 * 
+	 * @param fieldName
+	 */
+	public DynamicBean removeField(String fieldName);
 	
 	/**
 	 * string类型字段
@@ -113,18 +129,23 @@ public interface DynamicBean {
 	public DynamicField listField(String fieldName, Class<?> memberClass);
 	
 	/**
-	 * 注册Bean
+	 * 将加载的bean注册到爬虫引擎中。
+	 * 主要应用在先定义Bean后期的爬虫引擎的情况。
 	 * 
 	 * @return
 	 */
 	public Class<?> register();
 	
 	/**
-	 * 已经被register代替
+	 * 加载bean到classloader中
 	 * 
 	 * @return
 	 */
-	@Deprecated
 	public Class<?> loadClass();
+	
+	/**
+	 * 卸载bean
+	 */
+	public void unloadClass();
 	
 }

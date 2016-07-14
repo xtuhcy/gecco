@@ -4,7 +4,7 @@ import com.geccocrawler.gecco.GeccoEngine;
 import com.geccocrawler.gecco.dynamic.DynamicGecco;
 
 /**
- * 对spiderBean动态增加注解的方法示例
+ * 对已经存在的bean动态增加注解的方法示例，bean必须实现HtmlBean/JsonBean接口
  * 
  * 1、原理是利用Javassist进行字节码修改
  * 2、前提是该bean还没有被class loader到jvm中
@@ -14,19 +14,19 @@ import com.geccocrawler.gecco.dynamic.DynamicGecco;
  * @author huchengyi
  *
  */
-public class DynamicTest {
+public class DynamicAnnotationTest {
 	
 	public static void main(String[] args) throws Exception {
 		//动态增加注解
-		DynamicGecco.htmlBean("com.geccocrawler.gecco.demo.dynamic.MyGithub")
+		DynamicGecco.html("com.geccocrawler.gecco.demo.dynamic.MyGithub")
 		.gecco("https://github.com/xtuhcy/gecco", "consolePipeline")
-		.field("title").csspath(".repository-meta-content").text(false).build()
-		.field("star").csspath(".pagehead-actions li:nth-child(2) .social-count").text(false).build()
-		.field("fork").csspath(".pagehead-actions li:nth-child(3) .social-count").text().build()
-		.field("contributors").csspath("ul.numbers-summary > li:nth-child(4) > a").href().build()
-		.field("request").request().build()
-		.field("user").requestParameter("user").build()
-		.field("project").requestParameter().build()
+		.existField("title").csspath(".repository-meta-content").text(false).build()
+		.existField("star").csspath(".pagehead-actions li:nth-child(2) .social-count").text(false).build()
+		.existField("fork").csspath(".pagehead-actions li:nth-child(3) .social-count").text().build()
+		.existField("contributors").csspath("ul.numbers-summary > li:nth-child(4) > a").href().build()
+		.existField("request").request().build()
+		.existField("user").requestParameter("user").build()
+		.existField("project").requestParameter().build()
 		.register();
 		
 		//开始抓取
