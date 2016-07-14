@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.geccocrawler.gecco.demo.osc.mapper.OscnewsMapper" >
+
+  <resultMap id="BaseResultMap" type="com.geccocrawler.gecco.demo.osc.model.Oscnews" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="pubDate" property="pubDate" jdbcType="VARCHAR" />
+    <result column="textContent" property="textContent" jdbcType="VARCHAR" />
+    <result column="image" property="image" jdbcType="VARCHAR" />
+    <result column="newsLinks" property="newsLinks" jdbcType="VARCHAR" />
+    <result column="page" property="page" jdbcType="VARCHAR" />
+    <result column="createDate" property="createDate" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, pubDate, textContent, textContent, iamge, newsLinks, createDate
+  </sql>
+  <insert id="insert" parameterType="com.geccocrawler.gecco.demo.osc.model.Oscnews" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    insert into osc_news (title, pubDate, textContent, 
+      image, newsLinks, page, createDate)
+    values (#{title,jdbcType=INTEGER}, #{pubDate,jdbcType=VARCHAR}, #{textContent,jdbcType=VARCHAR}, 
+      #{image,jdbcType=VARCHAR}, #{newsLinks,jdbcType=VARCHAR}, #{page,jdbcType=VARCHAR},  #{createDate,jdbcType=VARCHAR})
+  </insert>
+</mapper>

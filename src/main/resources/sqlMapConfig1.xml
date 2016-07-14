@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//ibatis.apache.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+    <!-- 引入自定义 mapper 文件 -->
+    <mappers>
+        <mapper resource="sqlMapperXml/OscnewsMapper.xml"/>
+    </mappers>
+</configuration>

@@ -15,6 +15,7 @@ import com.geccocrawler.gecco.pipeline.Pipeline;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.scheduler.Scheduler;
+import com.geccocrawler.gecco.scheduler.SchedulerContext;
 import com.geccocrawler.gecco.scheduler.UniqueSpiderScheduler;
 import com.geccocrawler.gecco.spider.render.FieldRenderException;
 import com.geccocrawler.gecco.spider.render.Render;
@@ -87,6 +88,11 @@ public class Spider implements Runnable {
 			if(log.isDebugEnabled()) {
 				log.debug("match url : " + request.getUrl());
 			}
+			
+			String url = request.getUrl();
+			String num = url.substring(url.indexOf("news/")+5,url.lastIndexOf("/"));
+			String newurl = url.substring(0, url.indexOf("news/")+5)+(Integer.parseInt(num)-1)+"/";
+			
 			//匹配SpiderBean
 			currSpiderBeanClass = engine.getSpiderBeanFactory().matchSpider(request);
 			//download
@@ -94,7 +100,9 @@ public class Spider implements Runnable {
 			try {
 				if(currSpiderBeanClass == null) {//如果无法匹配但是是302跳转，需要放入抓取队列继续抓取
 					response = defaultDownload(request);
+					
 					if(response.getStatus() == 302 || response.getStatus() == 301){
+						log.error("redirect : " + response.getStatus());
 						spiderScheduler.into(request.subRequest(response.getContent()));
 					} else {
 						log.error("cant't match url : " + request.getUrl());
@@ -111,9 +119,13 @@ public class Spider implements Runnable {
 						pipelines(spiderBean, context);
 					} else if(response.getStatus() == 302 || response.getStatus() == 301){
 						spiderScheduler.into(request.subRequest(response.getContent()));
+					}else{
+						log.error("more redirect :" + request.getUrl());
+						SchedulerContext.into(request.subRequest(newurl));
 					}
 				}
 			} catch(RenderException rex) {
+				
 				if(engine.isDebug()) {
 					rex.printStackTrace();
 				} else {
@@ -125,18 +137,21 @@ public class Spider implements Runnable {
 				} else {
 					log.error(request.getUrl() + " RENDER ERROR : " + rex.getSpiderBeanClass().getName());
 				}
+				SchedulerContext.into(request.subRequest(newurl));
 			} catch(DownloadException dex) {
 				if(engine.isDebug()) {
 					dex.printStackTrace();
 					log.error(dex);
 				}
 				log.error(request.getUrl() + " DOWNLOAD ERROR :" + dex.getMessage());
+				SchedulerContext.into(request.subRequest(newurl));
 			} catch(Exception ex) {
 				if(engine.isDebug()) {
 					ex.printStackTrace();
 					log.error(ex);
 				}
 				log.error(request.getUrl(), ex);
+				SchedulerContext.into(request.subRequest(newurl));
 			} finally {
 				if(response != null) {
 					response.close();
