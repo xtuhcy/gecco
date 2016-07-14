@@ -130,6 +130,29 @@ public class MyGithub implements HtmlBean {
 }
 ```
 
+##DynamicGecco
+The purpose of DynamicGecco is to implement the runtime configuration of the crawl rule without defining the SpiderBean.In fact, the principle is the use of byte code programming, dynamic generation of SpiderBean, but also through the custom GeccoClassLoader to achieve the rule of hot deployment.Below is a simple Demo, more complex Demo can refer to the example below com.geccocrawler.gecco.demo.dynamic.
+
+The following code implements the runtime configuration of the crawl rule:
+
+	DynamicGecco.html()
+	.gecco("https://github.com/{user}/{project}", "consolePipeline")
+	.requestField("request").request().build()
+	.stringField("user").requestParameter("user").build()
+	.stringField("project").requestParameter().build()
+	.stringField("title").csspath(".repository-meta-content").text(false).build()
+	.intField("star").csspath(".pagehead-actions li:nth-child(2) .social-count").text(false).build()
+	.intField("fork").csspath(".pagehead-actions li:nth-child(3) .social-count").text().build()
+	.stringField("contributors").csspath("ul.numbers-summary > li:nth-child(4) > a").href().build()
+	.register();
+	
+	GeccoEngine.create()
+	.classpath("com.geccocrawler.gecco.demo")
+	.start("https://github.com/xtuhcy/gecco")
+	.run();
+
+You can see that the DynamicGecco way compared to the traditional way of annotation code greatly reduced, and a very cool point is DynamicGecco to support the operation of the definition and modification of rules.
+
 ##Demo
 [教您使用java爬虫gecco抓取JD全部商品信息（一）](http://my.oschina.net/u/2336761/blog/620158)
 
