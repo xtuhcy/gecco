@@ -33,6 +33,8 @@ public DynamicField request();
 	
 	public DynamicField image(String download, String... value);
 	
+	public DynamicField image();
+	
 	public DynamicField attr(String value);
 	
 	public DynamicField ajax(String url);

@@ -136,6 +136,11 @@ public class JavassistDynamicField implements DynamicField {
 	}
 
 	@Override
+	public DynamicField image() {
+		return image("");
+	}
+
+	@Override
 	public DynamicField attr(String value) {
 		Annotation annot = new Annotation(Attr.class.getName(), cpool);
         annot.addMemberValue("value", new StringMemberValue(value, cpool));

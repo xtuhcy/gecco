@@ -1,14 +1,8 @@
 package com.geccocrawler.gecco.demo.dynamic;
 
-import java.util.List;
-
 import com.alibaba.fastjson.JSONObject;
 import com.geccocrawler.gecco.GeccoEngine;
-import com.geccocrawler.gecco.annotation.JSONPath;
-import com.geccocrawler.gecco.demo.jd.JDPrice;
-import com.geccocrawler.gecco.demo.jd.JDad;
 import com.geccocrawler.gecco.dynamic.DynamicGecco;
-import com.geccocrawler.gecco.dynamic.FieldType;
 import com.geccocrawler.gecco.request.HttpGetRequest;
 
 /**
@@ -45,7 +39,7 @@ public class DynamicJD {
 		Class<?> productBrief = DynamicGecco.html()
 		.stringField("code").csspath(".j-sku-item").attr("data-sku").build()
 		.stringField("title").csspath(".p-name> a > em").text().build()
-		.stringField("preview").csspath(".p-img > a > img").image("", "data-lazy-img", "src").build()
+		.stringField("preview").csspath(".p-img > a > img").image("data-lazy-img", "src").build()
 		.stringField("detailUrl").csspath(".p-name > a").href(true).build()
 		.register();
 		
