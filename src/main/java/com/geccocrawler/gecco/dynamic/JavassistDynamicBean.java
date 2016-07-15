@@ -172,6 +172,11 @@ public class JavassistDynamicBean implements DynamicBean {
 		return new JavassistDynamicField(this, clazz, cpool, fieldName);
 	}
 
+	@Override
+	public DynamicField field(String fieldName, Class<?> fieldClass) {
+		return field(fieldName, FieldType.type(fieldClass));
+	}
+
 	private void getter(String fieldName, CtField field) {
 		try {
 			CtMethod m = CtNewMethod.getter("get"+StringUtils.capitalize(fieldName), field);
@@ -198,11 +203,6 @@ public class JavassistDynamicBean implements DynamicBean {
 	@Override
 	public DynamicField intField(String fieldName) {
 		return field(fieldName, FieldType.intType);
-	}
-
-	@Override
-	public DynamicField booleanField(String fieldName) {
-		return field(fieldName, FieldType.booleanType);
 	}
 
 	@Override

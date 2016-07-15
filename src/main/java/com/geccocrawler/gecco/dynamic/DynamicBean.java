@@ -56,6 +56,8 @@ public interface DynamicBean {
 	 */
 	public DynamicField field(String fieldName, CtClass fieldType);
 	
+	public DynamicField field(String fieldName, Class<?> fieldClass);
+	
 	/**
 	 * 删除一个属性
 	 * 
@@ -78,14 +80,6 @@ public interface DynamicBean {
 	 * @return 字段
 	 */
 	public DynamicField intField(String fieldName);
-	
-	/**
-	 * boolean类型字段
-	 * 
-	 * @param fieldName 字段名
-	 * @return 字段
-	 */
-	public DynamicField booleanField(String fieldName);
 	
 	/**
 	 * long类型字段

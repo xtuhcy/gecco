@@ -12,13 +12,11 @@ import javassist.NotFoundException;
  */
 public class FieldType {
 	
-	public static CtClass charType = CtClass.charType;
-	
 	public static CtClass intType = CtClass.intType;
 	
 	public static CtClass longType = CtClass.longType;
 	
-	public static CtClass booleanType = CtClass.booleanType;
+	//public static CtClass booleanType = CtClass.booleanType;
 	
 	public static CtClass doubleType = CtClass.doubleType;
 	

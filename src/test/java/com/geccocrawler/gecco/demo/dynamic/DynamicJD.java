@@ -1,6 +1,10 @@
 package com.geccocrawler.gecco.demo.dynamic;
 
+import java.util.List;
+
+import com.alibaba.fastjson.JSONObject;
 import com.geccocrawler.gecco.GeccoEngine;
+import com.geccocrawler.gecco.annotation.JSONPath;
 import com.geccocrawler.gecco.demo.jd.JDPrice;
 import com.geccocrawler.gecco.demo.jd.JDad;
 import com.geccocrawler.gecco.dynamic.DynamicGecco;
@@ -19,6 +23,7 @@ public class DynamicJD {
 
 	public static void main(String[] args) {
 		
+		//对应原来的Category和HrefBean类
 		Class<?> category = DynamicGecco.html()
 		.stringField("parentName").csspath("dt a").text().build()
 		.listField("categorys", 
@@ -28,6 +33,7 @@ public class DynamicJD {
 				.register()).csspath("dd a").build()
 		.register();
 		
+		//对应原来的AllSort类
 		DynamicGecco.html()
 		.gecco("http://www.jd.com/allSort.aspx", "consolePipeline", "allSortJsonPipeline")
 		.requestField("request").request().build()
@@ -35,6 +41,7 @@ public class DynamicJD {
 				.csspath(".category-items > div:nth-child(1) > div:nth-child(2) > div.mc > div.items > dl").build()
 		.register();
 		
+		//对应ProductBrief类
 		Class<?> productBrief = DynamicGecco.html()
 		.stringField("code").csspath(".j-sku-item").attr("data-sku").build()
 		.stringField("title").csspath(".p-name> a > em").text().build()
@@ -42,6 +49,7 @@ public class DynamicJD {
 		.stringField("detailUrl").csspath(".p-name > a").href(true).build()
 		.register();
 		
+		//对应ProductList类
 		DynamicGecco.html()
 		.gecco("http://list.jd.com/list.html?cat={cat}&delivery={delivery}&page={page}&JL={JL}&go=0", "consolePipeline", "productListJsonPipeline")
 		.requestField("request").request().build()
@@ -50,15 +58,28 @@ public class DynamicJD {
 		.listField("details", productBrief).csspath("#plist .gl-item").build()
 		.register();
 		
+		//对应JDad类
+		Class<?> jdAd = DynamicGecco.json()
+		.stringField("ad").jsonpath("$.ads[0].ad").build()
+		.listField("ads", JSONObject.class).jsonpath("$.ads").build()
+		.register();
 		
+		//对应JDPrice类
+		Class<?> jdPrice = DynamicGecco.json()
+		.stringField("code").jsonpath("$.id[0]").build()
+		.floatField("price").jsonpath("$.p[0]").build()
+		.floatField("srcPrice").jsonpath("$.m[0]").build()
+		.register();
+		
+		//对应ProductDetail类
 		DynamicGecco.html()
 		.gecco("http://item.jd.com/{code}.html", "consolePipeline")
 		.stringField("code").requestParameter().build()
 		.stringField("title").csspath("#name > h1").text().build()
 		.stringField("detail").csspath("#product-detail-2").build()
 		.stringField("image").csspath("#spec-n1 img").image("d:/gecco/jd/img").build()
-		.field("price", FieldType.type(JDPrice.class)).ajax("http://p.3.cn/prices/get?type=1&pdtk=&pdbp=0&skuid=J_{code}").build()
-		.field("jdAd", FieldType.type(JDad.class)).ajax("http://cd.jd.com/promotion/v2?skuId={code}&area=1_2805_2855_0&cat=737%2C794%2C798").build()
+		.field("price", jdPrice).ajax("http://p.3.cn/prices/get?type=1&pdtk=&pdbp=0&skuid=J_{code}").build()
+		.field("jdAd", jdAd).ajax("http://cd.jd.com/promotion/v2?skuId={code}&area=1_2805_2855_0&cat=737%2C794%2C798").build()
 		.register();
 		
 		HttpGetRequest start = new HttpGetRequest("http://www.jd.com/allSort.aspx");
