@@ -1,4 +1,4 @@
-package com.geccocrawler.gecco.annotation.dynamic;
+package com.geccocrawler.gecco.dynamic;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -9,6 +9,7 @@ import com.geccocrawler.gecco.annotation.Href;
 import com.geccocrawler.gecco.annotation.Html;
 import com.geccocrawler.gecco.annotation.HtmlField;
 import com.geccocrawler.gecco.annotation.Image;
+import com.geccocrawler.gecco.annotation.JSONPath;
 import com.geccocrawler.gecco.annotation.Request;
 import com.geccocrawler.gecco.annotation.RequestParameter;
 import com.geccocrawler.gecco.annotation.Text;
@@ -25,6 +26,12 @@ import javassist.bytecode.annotation.BooleanMemberValue;
 import javassist.bytecode.annotation.MemberValue;
 import javassist.bytecode.annotation.StringMemberValue;
 
+/**
+ * 动态生成属性的注解
+ * 
+ * @author huchengyi
+ *
+ */
 public class JavassistDynamicField implements DynamicField {
 	
 	private static Log log = LogFactory.getLog(JavassistDynamicField.class);
@@ -44,7 +51,7 @@ public class JavassistDynamicField implements DynamicField {
 			this.cfield  = clazz.getField(fieldName);
 			attr = new AnnotationsAttribute(cpool, AnnotationsAttribute.visibleTag);
 		} catch (NotFoundException e) {
-			log.error(fieldName + "not found");
+			log.error(fieldName + " not found");
 		}
 	}
 	
@@ -54,8 +61,14 @@ public class JavassistDynamicField implements DynamicField {
         return dynamicBean;
 	}
 
+	@Deprecated
 	@Override
 	public DynamicField htmlField(String cssPath) {
+		return csspath(cssPath);
+	}
+	
+	@Override
+	public DynamicField csspath(String cssPath) {
 		Annotation annot = new Annotation(HtmlField.class.getName(), cpool);
         annot.addMemberValue("cssPath", new StringMemberValue(cssPath, cpool));
 		attr.addAnnotation(annot);
@@ -123,6 +136,11 @@ public class JavassistDynamicField implements DynamicField {
 	}
 
 	@Override
+	public DynamicField image() {
+		return image("");
+	}
+
+	@Override
 	public DynamicField attr(String value) {
 		Annotation annot = new Annotation(Attr.class.getName(), cpool);
         annot.addMemberValue("value", new StringMemberValue(value, cpool));
@@ -174,7 +192,7 @@ public class JavassistDynamicField implements DynamicField {
 
 	@Override
 	public DynamicField jsonpath(String value) {
-		Annotation annot = new Annotation(RequestParameter.class.getName(), cpool);
+		Annotation annot = new Annotation(JSONPath.class.getName(), cpool);
         annot.addMemberValue("value", new StringMemberValue(value, cpool));
         attr.addAnnotation(annot);
 		return this;

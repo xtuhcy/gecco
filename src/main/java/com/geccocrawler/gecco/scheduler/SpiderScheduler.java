@@ -13,6 +13,7 @@ import com.geccocrawler.gecco.request.HttpRequest;
  * @author huchengyi
  *
  */
+@Deprecated
 public class SpiderScheduler implements Scheduler {
 	
 	private static Log log = LogFactory.getLog(SpiderScheduler.class);

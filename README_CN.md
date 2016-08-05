@@ -9,6 +9,7 @@ Gecco是一款用java语言开发的轻量化的易用的网络爬虫。Gecco整
 ##主要特征
 
 * [x] 简单易用，使用jquery风格的选择器抽取元素
+* [x] 支持爬取规则的动态配置和加载
 * [x] 支持页面中的异步ajax请求
 * [x] 支持页面中的javascript变量抽取
 * [x] 利用Redis实现分布式抓取,参考[gecco-redis](https://github.com/xtuhcy/gecco-redis)
@@ -17,6 +18,7 @@ Gecco是一款用java语言开发的轻量化的易用的网络爬虫。Gecco整
 * [x] 支持插件扩展机制
 * [x] 支持下载时UserAgent随机选取
 * [x] 支持下载代理服务器随机选取
+
 
 ##框架概述
 ![架构图](https://raw.githubusercontent.com/xtuhcy/gecco/master/doc/%E6%9E%B6%E6%9E%84%E5%9B%BE.jpg)
@@ -151,6 +153,30 @@ public class MyGithub implements HtmlBean {
     }
 }
 ```
+
+##DynamicGecco
+DynamicGecco的目的是在不定义SpiderBean的情况下实现爬取规则的运行时配置。其实现原理是采用字节码编程，动态生成SpiderBean，而且通过自定义的GeccoClassLoader实现了抓取规则的热部署。下面是一个简单Demo，更复杂的Demo可以参考com.geccocrawler.gecco.demo.dynamic下的例子。
+
+下面的代码实现了爬取规则的运行时配置：
+
+	DynamicGecco.html()
+	.gecco("https://github.com/{user}/{project}", "consolePipeline")
+	.requestField("request").request().build()
+	.stringField("user").requestParameter("user").build()
+	.stringField("project").requestParameter().build()
+	.stringField("title").csspath(".repository-meta-content").text(false).build()
+	.intField("star").csspath(".pagehead-actions li:nth-child(2) .social-count").text(false).build()
+	.intField("fork").csspath(".pagehead-actions li:nth-child(3) .social-count").text().build()
+	.stringField("contributors").csspath("ul.numbers-summary > li:nth-child(4) > a").href().build()
+	.register();
+	
+	//开始抓取
+	GeccoEngine.create()
+	.classpath("com.geccocrawler.gecco.demo")
+	.start("https://github.com/xtuhcy/gecco")
+	.run();
+
+可以看到，DynamicGecco的方式相比传统的注解方式代码量大大减少，而且很酷的一点是DynamicGecco支持运行时定义和修改规则。
 
 ##完整演示
 [教您使用java爬虫gecco抓取JD全部商品信息（一）](http://my.oschina.net/u/2336761/blog/620158)

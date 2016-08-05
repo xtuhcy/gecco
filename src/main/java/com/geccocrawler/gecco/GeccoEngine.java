@@ -17,6 +17,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.alibaba.fastjson.JSON;
+import com.geccocrawler.gecco.dynamic.DynamicGecco;
+import com.geccocrawler.gecco.dynamic.GeccoClassLoader;
 import com.geccocrawler.gecco.monitor.GeccoJmx;
 import com.geccocrawler.gecco.monitor.GeccoMonitor;
 import com.geccocrawler.gecco.pipeline.PipelineFactory;
@@ -74,14 +76,39 @@ public class GeccoEngine extends Thread {
 		this.retry = 3;
 	}
 	
+	/**
+	 * 动态配置规则不能使用该方法构造GeccoEngine
+	 * @return
+	 */
 	public static GeccoEngine create() {
 		GeccoEngine geccoEngine = new GeccoEngine();
 		geccoEngine.setName("GeccoEngine");
 		return geccoEngine;
 	}
 	
+	public static GeccoEngine create(String classpath) {
+		return create(classpath, null);
+	}
+	
+	public static GeccoEngine create(String classpath, PipelineFactory pipelineFactory) {
+		if(StringUtils.isEmpty(classpath)) {
+			//classpath不为空
+			throw new IllegalArgumentException("classpath cannot be empty");
+		}
+		GeccoEngine ge = create();
+		ge.spiderBeanFactory = new SpiderBeanFactory(classpath, pipelineFactory);
+		return ge;
+	}
+	
 	public GeccoEngine start(String url) {
 		return start(new HttpGetRequest(url));
+	}
+	
+	public GeccoEngine start(String... urls) {
+		for(String url : urls) {
+			start(url);
+		}
+		return this;
 	}
 	
 	public GeccoEngine start(HttpRequest request) {
@@ -90,7 +117,9 @@ public class GeccoEngine extends Thread {
 	}
 	
 	public GeccoEngine start(List<HttpRequest> requests) {
-		this.startRequests = requests;
+		for(HttpRequest request : requests) {
+			start(request);
+		}
 		return this;
 	}
 	
@@ -144,7 +173,16 @@ public class GeccoEngine extends Thread {
 		return this;
 	}
 	
+	public void register(Class<?> spiderBeanClass) {
+		getSpiderBeanFactory().addSpiderBean(spiderBeanClass);
+	}
 	
+	public void unregister(Class<?> spiderBeanClass) {
+		getSpiderBeanFactory().removeSpiderBean(spiderBeanClass);
+		DynamicGecco.unregister(spiderBeanClass);
+	}
+	
+	@Override
 	public void run() {
 		if(debug) {
 			Logger log = LogManager.getLogger("com.geccocrawler.gecco.spider.render");
@@ -171,7 +209,7 @@ public class GeccoEngine extends Thread {
 		startsJson();
 		if(startRequests.isEmpty()) {
 			//startRequests不为空
-			throw new IllegalArgumentException("startRequests cannot be empty");
+			//throw new IllegalArgumentException("startRequests cannot be empty");
 		}
 		for(HttpRequest startRequest : startRequests) {
 			scheduler.into(startRequest);
@@ -255,10 +293,16 @@ public class GeccoEngine extends Thread {
 		return debug;
 	}
 
-	public void notifyComplemet() {
+	/**
+	 * spider线程告知engine执行结束
+	 */
+	public void notifyComplete() {
 		this.cdl.countDown();
 	}
 	
+	/**
+	 * 非循环模式等待线程执行完毕后关闭
+	 */
 	public void closeUnitlComplete() {
 		if(!loop) {
 			try {
@@ -271,6 +315,50 @@ public class GeccoEngine extends Thread {
 			}
 			GeccoJmx.unexport();
 			log.info("close gecco!");
+		}
+	}
+	
+	/**
+	 * 启动引擎，并返回GeccoEngine对象
+	 * @return
+	 */
+	public GeccoEngine engineStart() {
+		start();
+		return this;
+	}
+	
+	/**
+	 * 暂停
+	 */
+	public void pause() {
+		for(Spider spider : spiders) {
+			spider.pause();
+		}
+	}
+	
+	/**
+	 * 重新开始抓取
+	 */
+	public void restart() {
+		for(Spider spider : spiders) {
+			spider.restart();
+		}
+	}
+	
+	public void beginUpdateRule() {
+		if(log.isDebugEnabled()) {
+			log.debug("begin update rule");
+		}
+		//修改规则前需要暂停引擎并且重新创建ClassLoader
+		pause();
+		GeccoClassLoader.create();
+	}
+	
+	public void endUpdateRule() {
+		//修改完成后重启引擎
+		restart();
+		if(log.isDebugEnabled()) {
+			log.debug("end update rule");
 		}
 	}
 }

@@ -1,14 +1,25 @@
-package com.geccocrawler.gecco.annotation.dynamic;
+package com.geccocrawler.gecco.dynamic;
 
 public interface DynamicField {
 	
+/**
+ * 动态生成属性注解
+ * 
+ * @return
+ */
 public DynamicField request();
 	
 	public DynamicField requestParameter(String param);
 	
 	public DynamicField requestParameter();
 
+	/**
+	 * replace by csspath
+	 */
+	@Deprecated
 	public DynamicField htmlField(String cssPath);
+	
+	public DynamicField csspath(String cssPath);
 	
 	public DynamicField text(boolean own);
 	
@@ -21,6 +32,8 @@ public DynamicField request();
 	public DynamicField href(String... value);
 	
 	public DynamicField image(String download, String... value);
+	
+	public DynamicField image();
 	
 	public DynamicField attr(String value);
 	

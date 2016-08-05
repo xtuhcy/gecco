@@ -21,12 +21,15 @@ public class DownloaderAOPFactory {
 		for(Class<?> aopClass : classes) {
 			GeccoClass geccoClass = (GeccoClass)aopClass.getAnnotation(GeccoClass.class);
 			try {
-				String name = geccoClass.value().getName();
-				Object o = aopClass.newInstance();
-				if(o instanceof BeforeDownload) {
-					beforeDownloads.put(name, (BeforeDownload)o);
-				} else if(o instanceof AfterDownload) {
-					afterDownloads.put(name, (AfterDownload)o);
+				Class<?>[] geccoClasses = geccoClass.value();
+				for(Class<?> c : geccoClasses) {
+					String name = c.getName();
+					Object o = aopClass.newInstance();
+					if(o instanceof BeforeDownload) {
+						beforeDownloads.put(name, (BeforeDownload)o);
+					} else if(o instanceof AfterDownload) {
+						afterDownloads.put(name, (AfterDownload)o);
+					}
 				}
 			} catch(Exception ex) {
 				ex.printStackTrace();

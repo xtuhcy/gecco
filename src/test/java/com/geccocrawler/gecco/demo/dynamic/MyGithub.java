@@ -1,13 +1,5 @@
 package com.geccocrawler.gecco.demo.dynamic;
 
-import com.geccocrawler.gecco.GeccoEngine;
-import com.geccocrawler.gecco.annotation.Gecco;
-import com.geccocrawler.gecco.annotation.Href;
-import com.geccocrawler.gecco.annotation.HtmlField;
-import com.geccocrawler.gecco.annotation.Request;
-import com.geccocrawler.gecco.annotation.RequestParameter;
-import com.geccocrawler.gecco.annotation.Text;
-import com.geccocrawler.gecco.annotation.dynamic.JavassistDynamicBean;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.spider.HtmlBean;
 

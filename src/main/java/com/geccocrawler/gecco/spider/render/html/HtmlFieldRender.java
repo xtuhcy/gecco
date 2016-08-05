@@ -1,7 +1,9 @@
 package com.geccocrawler.gecco.spider.render.html;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +11,7 @@ import java.util.Set;
 
 import net.sf.cglib.beans.BeanMap;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.reflections.ReflectionUtils;
 
 import com.geccocrawler.gecco.annotation.HtmlField;
@@ -43,7 +46,8 @@ public class HtmlFieldRender implements FieldRender {
 		HtmlParser parser = new HtmlParser(request.getUrl(), content);
 		//parser.setLogClass(clazz);
 		String cssPath = htmlField.cssPath();
-		Class<?> type = field.getType();//类属性的类
+		Class<?> type = field.getType();//属性的类
+		boolean isArray = type.isArray();//是否是数组类型
 		boolean isList = ReflectUtils.haveSuperType(type, List.class);//是List类型
 		if(isList) {
 			Type genericType = field.getGenericType();//获得包含泛型的类型
@@ -55,6 +59,20 @@ public class HtmlFieldRender implements FieldRender {
 				//List<Object>
 				try {
 					return parser.$basicList(cssPath, field);
+				} catch(Exception ex) {
+					throw new FieldRenderException(field, content, ex);
+				}
+			}
+		} else if(isArray) {
+			Class genericClass = type.getComponentType();
+			if(ReflectUtils.haveSuperType(genericClass, SpiderBean.class)) {
+				List<SpiderBean> list = parser.$beanList(cssPath, request, genericClass);
+				SpiderBean[] a = (SpiderBean[])Array.newInstance(genericClass, list.size());
+				return list.toArray(a);
+			} else {
+				//List<Object>
+				try {
+					return parser.$basicList(cssPath, field).toArray();
 				} catch(Exception ex) {
 					throw new FieldRenderException(field, content, ex);
 				}

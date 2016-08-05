@@ -16,6 +16,7 @@ import com.geccocrawler.gecco.request.HttpRequest;
  * @author huchengyi
  *
  */
+@Deprecated
 public class FIFOScheduler implements Scheduler {
 	
 	private static Log log = LogFactory.getLog(FIFOScheduler.class);

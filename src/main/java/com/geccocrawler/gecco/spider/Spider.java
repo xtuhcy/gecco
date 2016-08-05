@@ -1,6 +1,7 @@
 package com.geccocrawler.gecco.spider;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,10 +30,16 @@ import com.geccocrawler.gecco.spider.render.RenderException;
 public class Spider implements Runnable {
 	
 	private static Log log = LogFactory.getLog(Spider.class);
-
-	public GeccoEngine engine;
 	
-	public Scheduler spiderScheduler;
+	private CountDownLatch pauseCountDown;
+	
+	private boolean stop;
+	
+	private boolean pause;
+	
+	private GeccoEngine engine;
+	
+	private Scheduler spiderScheduler;
 	
 	/**
 	 * 当前待渲染的bean
@@ -42,12 +49,28 @@ public class Spider implements Runnable {
 	public Spider(GeccoEngine engine) {
 		this.engine = engine;
 		this.spiderScheduler = new UniqueSpiderScheduler();
+		this.pause = false;
+		this.stop = false;
 	}
 	
 	public void run() {
 		//将spider放入线程本地变量，之后需要使用
 		SpiderThreadLocal.set(this);
 		while(true) {
+			//停止
+			if(stop) {
+				//告知engine线程执行结束
+				engine.notifyComplete();
+				break;
+			}
+			//暂停抓取
+			if(pause) {
+				try {
+					this.pauseCountDown.await();
+				} catch (InterruptedException e) {
+					log.error("can't pause : ", e);
+				}
+			}
 			//获取待抓取的url
 			boolean start = false;
 			HttpRequest request = spiderScheduler.out();
@@ -56,7 +79,7 @@ public class Spider implements Runnable {
 				request = engine.getScheduler().out();
 				if(request == null) {
 					//告知engine线程执行结束
-					engine.notifyComplemet();
+					engine.notifyComplete();
 					break;
 				}
 				start = true;
@@ -104,11 +127,13 @@ public class Spider implements Runnable {
 				}
 			} catch(DownloadException dex) {
 				if(engine.isDebug()) {
+					dex.printStackTrace();
 					log.error(dex);
 				}
 				log.error(request.getUrl() + " DOWNLOAD ERROR :" + dex.getMessage());
 			} catch(Exception ex) {
 				if(engine.isDebug()) {
+					ex.printStackTrace();
 					log.error(ex);
 				}
 				log.error(request.getUrl(), ex);
@@ -125,6 +150,29 @@ public class Spider implements Runnable {
 				engine.getScheduler().into(request);
 			}
 		}
+	}
+	
+	/**
+	 * 暂停，当前正在抓取的请求会继续抓取完成，之后会等到restart的调用才继续抓取
+	 */
+	public void pause() {
+		this.pauseCountDown = new CountDownLatch(1);
+		this.pause = true;
+	}
+	
+	/**
+	 * 重新开始
+	 */
+	public void restart() {
+		this.pauseCountDown.countDown();
+		this.pause = false;
+	}
+	
+	/**
+	 * 停止抓取
+	 */
+	public void stop() {
+		this.stop = true;
 	}
 	
 	private void pipelines(SpiderBean spiderBean, SpiderBeanContext context) {

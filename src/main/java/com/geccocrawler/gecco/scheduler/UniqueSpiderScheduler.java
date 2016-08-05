@@ -7,8 +7,6 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.geccocrawler.gecco.request.HttpGetRequest;
-import com.geccocrawler.gecco.request.HttpPostRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
 
 /**
@@ -33,7 +31,7 @@ public class UniqueSpiderScheduler implements Scheduler {
 						return 0;
 					}
 				}
-				return (int)(o1.getPriority() - o2.getPriority());
+				return (o1.getPriority() - o2.getPriority()) > 0 ? 1 : -1 ;
 			}
 			
 		});
@@ -45,18 +43,20 @@ public class UniqueSpiderScheduler implements Scheduler {
 		if(sortHttpRequest == null) {
 			return null;
 		}
+		long priority = sortHttpRequest.getPriority();
 		HttpRequest request = sortHttpRequest.getHttpRequest();
 		if(request != null && log.isDebugEnabled()) {
-			log.debug("OUT:"+request.getUrl()+"(Referer:"+request.getHeaders().get("Referer")+")");
+			log.debug("OUT("+priority+"):"+request.getUrl()+"(Referer:"+request.getHeaders().get("Referer")+")");
 		}
 		return request;
 	}
 
 	@Override
 	public void into(HttpRequest request) {
-		boolean success = set.add(new SortHttpRequest(System.nanoTime(), request));
+		long priority = System.nanoTime();
+		boolean success = set.add(new SortHttpRequest(priority, request));
 		if(success && log.isDebugEnabled()) {
-			log.debug("INTO:"+request.getUrl()+"(Referer:"+request.getHeaders().get("Referer")+")");
+			log.debug("INTO("+priority+"):"+request.getUrl()+"(Referer:"+request.getHeaders().get("Referer")+")");
 		}
 		if(!success) {
 			log.error("not unique request : " + request.getUrl());
@@ -85,28 +85,4 @@ public class UniqueSpiderScheduler implements Scheduler {
 
 	}
 	
-	public static void main(String[] args) {
-		UniqueSpiderScheduler uss = new UniqueSpiderScheduler();
-		HttpPostRequest post1 = new HttpPostRequest();
-		post1.setUrl("http://www.1631.com");
-		post1.addField("a", "a");
-		HttpPostRequest post2 = new HttpPostRequest();
-		post2.setUrl("http://www.1632.com");
-		post2.addField("a", "b");
-		uss.into(post1);
-		uss.into(post2);
-		
-		HttpGetRequest get1 = new HttpGetRequest();
-		get1.setUrl("http://www.163.com");
-		get1.addParameter("1", "1");
-		HttpGetRequest get2 = new HttpGetRequest();
-		get2.setUrl("http://www.163.com");
-		uss.into(get1);
-		uss.into(get2);
-		
-		System.out.println(uss.out());
-		System.out.println(uss.out());
-		System.out.println(uss.out());
-		System.out.println(uss.out());
-	}
 }
