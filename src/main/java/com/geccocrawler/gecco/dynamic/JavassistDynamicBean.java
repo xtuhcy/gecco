@@ -262,4 +262,9 @@ public class JavassistDynamicBean implements DynamicBean {
 		}
 	}
 	
+	
+	public ConstPool getConstPool(){
+		return cpool;
+	}
+	
 }

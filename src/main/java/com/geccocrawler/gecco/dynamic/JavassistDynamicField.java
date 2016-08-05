@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.geccocrawler.gecco.annotation.Ajax;
 import com.geccocrawler.gecco.annotation.Attr;
+import com.geccocrawler.gecco.annotation.FieldRenderName;
 import com.geccocrawler.gecco.annotation.Href;
 import com.geccocrawler.gecco.annotation.Html;
 import com.geccocrawler.gecco.annotation.HtmlField;
@@ -197,5 +198,23 @@ public class JavassistDynamicField implements DynamicField {
         attr.addAnnotation(annot);
 		return this;
 	}
-
+	
+	@Override
+	public DynamicField renderName(String value) {
+		Annotation renderName = new Annotation(FieldRenderName.class.getName(), cpool);
+		renderName.addMemberValue("value", new StringMemberValue(value, cpool));
+        attr.addAnnotation(renderName);
+		return this;
+	}
+	
+	@Override
+	public DynamicField customAnnotation(Annotation annotation) {
+        attr.addAnnotation(annotation);
+		return this;
+	}
+	
+	@Override
+	public ConstPool getConstPool(){
+		return this.cpool;
+	}
 }
