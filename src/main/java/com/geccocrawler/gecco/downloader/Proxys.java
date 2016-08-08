@@ -2,6 +2,8 @@ package com.geccocrawler.gecco.downloader;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,9 +52,7 @@ public class Proxys {
 					if(hostPort.length == 2) {
 						String host = hostPort[0];
 						int port = NumberUtils.toInt(hostPort[1], 80);
-						Proxy proxy = new Proxy(host, port);
-						proxys.put(proxy.toHostString(), proxy);
-						proxyQueue.offer(proxy);
+						addProxy(host, port);
 					}
 				}
 			}
@@ -66,17 +66,27 @@ public class Proxys {
 			return null;
 		}
 		Proxy proxy = proxyQueue.poll();
-		log.debug("use proxy : " + proxy);
+		if(log.isDebugEnabled()) {
+			log.debug("use proxy : " + proxy);
+		}
 		if(proxy == null) {
 			return null;
 		}
 		return proxy.getHttpHost();
 	}
 	
-	public static void addProxy(String host, int port) {
+	public static boolean addProxy(String host, int port) {
 		Proxy proxy = new Proxy(host, port);
-		proxys.put(proxy.toHostString(), proxy);
-		proxyQueue.offer(proxy);
+		if(proxys.containsKey(proxy.toHostString())) {
+			return false;
+		} else {
+			proxys.put(proxy.toHostString(), proxy);
+			proxyQueue.offer(proxy);
+			if(log.isDebugEnabled()) {
+				log.debug("add proxy : " + host + ":" + port);
+			}
+			return true;
+		}
 	}
 	
 	/**
@@ -105,7 +115,7 @@ public class Proxys {
 	
 	private static void reProxy(Proxy proxy, long success, long failure) {
 		long sum = failure + success;
-		if(sum < 10) {
+		if(sum < 20) {
 			proxyQueue.offer(proxy);
 		} else {
 			if((success / (float)sum) >= 0.5f) {
@@ -113,4 +123,17 @@ public class Proxys {
 			}
 		}
 	}
+	
+    public static List<Map<String, Object>> export() {
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        for(Proxy proxy : proxys.values()) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("ip", proxy.getHttpHost().getHostName());
+            map.put("port", proxy.getHttpHost().getPort());
+            map.put("failure", proxy.getFailureCount());
+            map.put("success", proxy.getSuccessCount());
+            list.add(map);
+        }
+        return list;
+    }
 }

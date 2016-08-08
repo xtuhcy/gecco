@@ -64,6 +64,8 @@ public class GeccoEngine extends Thread {
 	
 	private int interval;
 	
+	private boolean proxy = true;
+	
 	private boolean loop;
 	
 	private boolean mobile;
@@ -145,6 +147,11 @@ public class GeccoEngine extends Thread {
 	
 	public GeccoEngine loop(boolean loop) {
 		this.loop = loop;
+		return this;
+	}
+	
+	public GeccoEngine proxy(boolean proxy) {
+		this.proxy = proxy;
 		return this;
 	}
 	
@@ -284,6 +291,10 @@ public class GeccoEngine extends Thread {
 	public boolean isLoop() {
 		return loop;
 	}
+	
+	public boolean isProxy() {
+		return proxy;
+	}
 
 	public boolean isMobile() {
 		return mobile;
@@ -359,6 +370,12 @@ public class GeccoEngine extends Thread {
 		restart();
 		if(log.isDebugEnabled()) {
 			log.debug("end update rule");
+		}
+	}
+	
+	public void engineStop() {
+		for(Spider spider : spiders) {
+			spider.stop();
 		}
 	}
 }

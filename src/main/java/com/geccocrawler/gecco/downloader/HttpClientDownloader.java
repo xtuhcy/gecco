@@ -144,14 +144,19 @@ public class HttpClientDownloader extends AbstractDownloader {
 		}
 		//request config
 		RequestConfig.Builder builder = RequestConfig.custom()
-		.setConnectionRequestTimeout(timeout)
-		.setSocketTimeout(timeout)
-		.setConnectionRequestTimeout(timeout)
+		.setConnectionRequestTimeout(1000)//从连接池获取连接的超时时间
+		.setSocketTimeout(timeout)//获取内容的超时时间
+		.setConnectTimeout(timeout)//建立socket连接的超时时间
 		.setRedirectsEnabled(false);
 		//proxy
-		HttpHost proxy = Proxys.getProxy();
-		if(proxy != null) {
-			builder.setProxy(proxy);
+		HttpHost proxy = null;
+		boolean isProxy = SpiderThreadLocal.get().getEngine().isProxy();
+		if(isProxy) {
+			proxy = Proxys.getProxy();
+			if(proxy != null) {
+				builder.setProxy(proxy);
+				builder.setConnectTimeout(1000);//如果走代理，连接超时时间固定为1s
+			}
 		}
 		reqObj.setConfig(builder.build());
 		//request and response

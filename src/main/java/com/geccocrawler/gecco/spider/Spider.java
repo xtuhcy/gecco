@@ -33,9 +33,9 @@ public class Spider implements Runnable {
 	
 	private CountDownLatch pauseCountDown;
 	
-	private boolean stop;
+	private volatile boolean stop;
 	
-	private boolean pause;
+	private volatile boolean pause;
 	
 	private GeccoEngine engine;
 	

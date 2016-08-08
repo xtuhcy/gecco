@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.geccocrawler</groupId>
 	<artifactId>gecco</artifactId>
-	<version>1.2.2</version>
+	<version>1.2.3-SNAPSHOT</version>
 
 	<name>Gecco</name>
 	<description>Easy to use lightweight web crawler</description>
@@ -55,6 +55,13 @@
 			<artifactId>jmxutils</artifactId>
 			<version>1.19</version>
 		</dependency>
+		
+		<dependency>
+    		<groupId>org.codehaus.groovy</groupId>
+		    <artifactId>groovy-all</artifactId>
+    		<version>2.4.7</version>
+		</dependency>
+		
 	</dependencies>
 	<build>
 		<pluginManagement>
