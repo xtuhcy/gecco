@@ -19,6 +19,7 @@ import com.geccocrawler.gecco.spider.conversion.Conversion;
 public class RequestParameterFieldRender implements FieldRender {
 
 	@Override
+	@SuppressWarnings({ "unchecked" })
 	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) throws FieldRenderException {
 		Map<String, Object> fieldMap = new HashMap<String, Object>();
 		Set<Field> requestParameterFields = ReflectionUtils.getAllFields(bean.getClass(), ReflectionUtils.withAnnotation(RequestParameter.class));

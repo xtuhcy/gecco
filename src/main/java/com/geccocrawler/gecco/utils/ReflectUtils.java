@@ -11,14 +11,14 @@ import org.reflections.ReflectionUtils;
 /**
  * 泛型，Type的相关知识
  * 
- * http://developer.51cto.com/art/201103/250028.htm
- * http://lsy.iteye.com/blog/220264
+ * http://developer.51cto.com/art/201103/250028.htm http://lsy.iteye.com/blog/220264
  * 
  * @author huchengyi
  *
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class ReflectUtils {
-	
+
 	/**
 	 * 获得类的所有基类和接口
 	 * 
@@ -28,23 +28,25 @@ public class ReflectUtils {
 	public static Set<Class<?>> getAllSuperType(Class clazz) {
 		return ReflectionUtils.getAllSuperTypes(clazz);
 	}
-	
+
 	/**
 	 * 是否继承某个基类
 	 * 
-	 * @param childClazz 子类
-	 * @param superClazz 基类
+	 * @param childClazz
+	 *            子类
+	 * @param superClazz
+	 *            基类
 	 * @return 是否继承某个基类
 	 */
 	public static boolean haveSuperType(Class childClazz, Class superClazz) {
-		for(Class<?> clazz : getAllSuperType(childClazz)) {
-			if(clazz.equals(superClazz)) {
+		for (Class<?> clazz : getAllSuperType(childClazz)) {
+			if (clazz.equals(superClazz)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 是否继承某个基类
 	 * 
@@ -55,12 +57,12 @@ public class ReflectUtils {
 	public static boolean haveSuperType(Object bean, Class superClazz) {
 		return haveSuperType(bean.getClass(), superClazz);
 	}
-	
+
 	public static Class getGenericClass(Type type, int i) {
 		if (type instanceof ParameterizedType) { // 处理泛型类型
 			return getGenericClass((ParameterizedType) type, i);
 		} else if (type instanceof TypeVariable) { // 处理泛型擦拭对象
-			return (Class) getGenericClass(((TypeVariable) type).getBounds()[0], 0);
+			return getGenericClass(((TypeVariable) type).getBounds()[0], 0);
 		} else {// class本身也是type，强制转型
 			return (Class) type;
 		}
@@ -73,10 +75,10 @@ public class ReflectUtils {
 		} else if (genericClass instanceof GenericArrayType) { // 处理数组泛型
 			return (Class) ((GenericArrayType) genericClass).getGenericComponentType();
 		} else if (genericClass instanceof TypeVariable) { // 处理泛型擦拭对象
-			return (Class) getGenericClass(((TypeVariable) genericClass).getBounds()[0], 0);
+			return getGenericClass(((TypeVariable) genericClass).getBounds()[0], 0);
 		} else {
 			return (Class) genericClass;
 		}
 	}
-	
+
 }

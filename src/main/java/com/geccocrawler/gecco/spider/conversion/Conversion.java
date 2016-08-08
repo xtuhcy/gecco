@@ -5,10 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Conversion {
-	
+
+	@SuppressWarnings({ "rawtypes" })
 	private static final Map<Class<?>, TypeHandle> TYPE_HANDLERS = new HashMap<Class<?>, TypeHandle>();
 	static {
-		//int, float, long, double, java.util.Date, boolean, String
+		// int, float, long, double, java.util.Date, boolean, String
 		TYPE_HANDLERS.put(Integer.class, new IntegerTypeHandle());
 		TYPE_HANDLERS.put(int.class, new IntegerTypeHandle());
 		TYPE_HANDLERS.put(Long.class, new LongTypeHandle());
@@ -21,25 +22,27 @@ public class Conversion {
 		TYPE_HANDLERS.put(boolean.class, new BooleanTypeHandle());
 		TYPE_HANDLERS.put(Date.class, new DateTypeHandle());
 	}
-	
+
+	@SuppressWarnings({ "rawtypes" })
 	public static void register(Class<?> type, TypeHandle typeHandle) {
 		TYPE_HANDLERS.put(type, typeHandle);
 	}
-	
+
 	public static void unregister(Class<?> type) {
 		TYPE_HANDLERS.remove(type);
 	}
-	
+
+	@SuppressWarnings({ "rawtypes" })
 	public static Object getValue(Class<?> type, Object value) throws Exception {
 		TypeHandle th = TYPE_HANDLERS.get(type);
-		if(th != null && value != null) {
+		if (th != null && value != null) {
 			return th.getValue(value);
-		} 
+		}
 		return value;
 	}
 
 	public static Object getDateValue(Object value, String format) throws Exception {
-		DateTypeHandle th = (DateTypeHandle)TYPE_HANDLERS.get(Date.class);
+		DateTypeHandle th = (DateTypeHandle) TYPE_HANDLERS.get(Date.class);
 		return th.getValue(value, format);
 	}
 }
