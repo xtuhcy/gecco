@@ -1,5 +1,8 @@
 package com.geccocrawler.gecco.dynamic;
 
+import javassist.bytecode.ConstPool;
+import javassist.bytecode.annotation.Annotation;
+
 public interface DynamicField {
 	
 /**
@@ -45,5 +48,11 @@ public DynamicField request();
 	
 	public DynamicField jsonpath(String value);
 	
+	public DynamicField renderName(String value);
+	
 	public DynamicBean build();
+
+	public DynamicField customAnnotation(Annotation annotation);
+	
+	public ConstPool getConstPool();
 }

@@ -1,6 +1,7 @@
 package com.geccocrawler.gecco.dynamic;
 
 import javassist.CtClass;
+import javassist.bytecode.ConstPool;
 
 /**
  * 动态生成SpiderBean
@@ -142,4 +143,10 @@ public interface DynamicBean {
 	 */
 	public void unloadClass();
 	
+	/**
+	 * Constant pool table.
+	 * 
+	 * @return
+	 */
+	public ConstPool getConstPool();
 }
