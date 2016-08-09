@@ -175,6 +175,7 @@ public class Spider implements Runnable {
 		this.stop = true;
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void pipelines(SpiderBean spiderBean, SpiderBeanContext context) {
 		List<Pipeline> pipelines = context.getPipelines();
 		if(pipelines != null) {

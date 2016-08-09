@@ -15,6 +15,7 @@ import com.geccocrawler.gecco.spider.SpiderBean;
 public class RequestFieldRender implements FieldRender {
 
 	@Override
+	@SuppressWarnings({"unchecked" })
 	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) throws FieldRenderException {
 		Set<Field> requestFields = ReflectionUtils.getAllFields(bean.getClass(), ReflectionUtils.withAnnotation(Request.class));
 		if(requestFields.size() > 0) {
