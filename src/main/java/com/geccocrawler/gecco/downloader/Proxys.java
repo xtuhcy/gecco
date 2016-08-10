@@ -2,13 +2,12 @@ package com.geccocrawler.gecco.downloader;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -76,7 +75,14 @@ public class Proxys {
 	}
 	
 	public static boolean addProxy(String host, int port) {
+		return addProxy(host, port, null);
+	}
+	
+	public static boolean addProxy(String host, int port, String src) {
 		Proxy proxy = new Proxy(host, port);
+		if(StringUtils.isNotEmpty(src)) {
+			proxy.setSrc(src);
+		}
 		if(proxys.containsKey(proxy.toHostString())) {
 			return false;
 		} else {
@@ -124,16 +130,7 @@ public class Proxys {
 		}
 	}
 	
-    public static List<Map<String, Object>> export() {
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        for(Proxy proxy : proxys.values()) {
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("ip", proxy.getHttpHost().getHostName());
-            map.put("port", proxy.getHttpHost().getPort());
-            map.put("failure", proxy.getFailureCount());
-            map.put("success", proxy.getSuccessCount());
-            list.add(map);
-        }
-        return list;
+    public static Map<String, Proxy> export() {
+        return proxys;
     }
 }
