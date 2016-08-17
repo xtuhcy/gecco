@@ -17,6 +17,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.alibaba.fastjson.JSON;
+import com.geccocrawler.gecco.downloader.proxy.FileProxys;
+import com.geccocrawler.gecco.downloader.proxy.Proxys;
 import com.geccocrawler.gecco.dynamic.DynamicGecco;
 import com.geccocrawler.gecco.dynamic.GeccoClassLoader;
 import com.geccocrawler.gecco.listener.EventListener;
@@ -64,7 +66,9 @@ public class GeccoEngine extends Thread {
 
 	private int interval;
 
-	private boolean proxy = true;
+	private Proxys proxys;
+	
+	private boolean enableProxy = true;
 
 	private boolean loop;
 
@@ -153,8 +157,13 @@ public class GeccoEngine extends Thread {
 		return this;
 	}
 
-	public GeccoEngine proxy(boolean proxy) {
-		this.proxy = proxy;
+	public GeccoEngine proxys(Proxys proxys) {
+		this.proxys = proxys;
+		return this;
+	}
+	
+	public GeccoEngine enableProxy(boolean enableProxy) {
+		this.enableProxy = enableProxy;
 		return this;
 	}
 
@@ -197,6 +206,9 @@ public class GeccoEngine extends Thread {
 		if (debug) {
 			Logger log = LogManager.getLogger("com.geccocrawler.gecco.spider.render");
 			log.setLevel(Level.DEBUG);
+		}
+		if(proxys == null) {//默认采用proxys文件代理集合
+			proxys = new FileProxys();
 		}
 		if (scheduler == null) {
 			if (loop) {
@@ -295,8 +307,8 @@ public class GeccoEngine extends Thread {
 		return loop;
 	}
 
-	public boolean isProxy() {
-		return proxy;
+	public Proxys getProxys() {
+		return proxys;
 	}
 
 	public boolean isMobile() {
@@ -305,6 +317,10 @@ public class GeccoEngine extends Thread {
 
 	public boolean isDebug() {
 		return debug;
+	}
+	
+	public boolean isEnableProxy() {
+		return enableProxy;
 	}
 
 	/**

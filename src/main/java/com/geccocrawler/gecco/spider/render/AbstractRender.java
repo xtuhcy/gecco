@@ -11,7 +11,7 @@ import com.geccocrawler.gecco.annotation.FieldRenderName;
 import com.geccocrawler.gecco.annotation.Href;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
-import com.geccocrawler.gecco.scheduler.SchedulerContext;
+import com.geccocrawler.gecco.scheduler.DeriveSchedulerContext;
 import com.geccocrawler.gecco.spider.SpiderBean;
 import com.geccocrawler.gecco.utils.ReflectUtils;
 
@@ -98,13 +98,13 @@ public abstract class AbstractRender implements Render {
 					List<String> list = (List<String>) o;
 					for (String url : list) {
 						if (StringUtils.isNotEmpty(url)) {
-							SchedulerContext.into(request.subRequest(url));
+							DeriveSchedulerContext.into(request.subRequest(url));
 						}
 					}
 				} else {
 					String url = (String) o;
 					if (StringUtils.isNotEmpty(url)) {
-						SchedulerContext.into(request.subRequest(url));
+						DeriveSchedulerContext.into(request.subRequest(url));
 					}
 				}
 			}

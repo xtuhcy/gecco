@@ -4,7 +4,7 @@ import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.spider.SpiderThreadLocal;
 
 /**
- * 使用DeriveSchedulerContext特指派生队列
+ * 被DeriveSchedulerContext替代，特指派生队列
  * 
  * @author huchengyi
  *
