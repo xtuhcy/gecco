@@ -5,11 +5,11 @@ import com.geccocrawler.gecco.spider.SpiderThreadLocal;
 public class ProxysContext {
 	
 	public static Proxys get() {
-		return SpiderThreadLocal.get().getEngine().getProxys();
+		return SpiderThreadLocal.get().getEngine().getProxysLoader();
 	}
 	
 	public static boolean isEnableProxy() {
-		return SpiderThreadLocal.get().getEngine().isEnableProxy();
+		return SpiderThreadLocal.get().getEngine().isProxy();
 	}
 
 }

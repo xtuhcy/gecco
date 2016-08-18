@@ -66,9 +66,9 @@ public class GeccoEngine extends Thread {
 
 	private int interval;
 
-	private Proxys proxys;
+	private Proxys proxysLoader;
 	
-	private boolean enableProxy = true;
+	private boolean proxy = true;
 
 	private boolean loop;
 
@@ -157,13 +157,13 @@ public class GeccoEngine extends Thread {
 		return this;
 	}
 
-	public GeccoEngine proxys(Proxys proxys) {
-		this.proxys = proxys;
+	public GeccoEngine proxysLoader(Proxys proxysLoader) {
+		this.proxysLoader = proxysLoader;
 		return this;
 	}
 	
-	public GeccoEngine enableProxy(boolean enableProxy) {
-		this.enableProxy = enableProxy;
+	public GeccoEngine proxy(boolean proxy) {
+		this.proxy = proxy;
 		return this;
 	}
 
@@ -207,8 +207,8 @@ public class GeccoEngine extends Thread {
 			Logger log = LogManager.getLogger("com.geccocrawler.gecco.spider.render");
 			log.setLevel(Level.DEBUG);
 		}
-		if(proxys == null) {//默认采用proxys文件代理集合
-			proxys = new FileProxys();
+		if(proxysLoader == null) {//默认采用proxys文件代理集合
+			proxysLoader = new FileProxys();
 		}
 		if (scheduler == null) {
 			if (loop) {
@@ -307,8 +307,8 @@ public class GeccoEngine extends Thread {
 		return loop;
 	}
 
-	public Proxys getProxys() {
-		return proxys;
+	public Proxys getProxysLoader() {
+		return proxysLoader;
 	}
 
 	public boolean isMobile() {
@@ -319,8 +319,8 @@ public class GeccoEngine extends Thread {
 		return debug;
 	}
 	
-	public boolean isEnableProxy() {
-		return enableProxy;
+	public boolean isProxy() {
+		return proxy;
 	}
 
 	/**
