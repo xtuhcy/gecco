@@ -252,6 +252,14 @@ public class GeccoEngine extends Thread {
 		closeUnitlComplete();
 	}
 
+	@Override
+	public synchronized void start() {
+		if (eventListener != null) {
+			eventListener.onStart(this);
+		}
+		super.start();
+	}
+
 	private GeccoEngine startsJson() {
 		try {
 			URL url = Resources.getResource("starts.json");
@@ -359,9 +367,6 @@ public class GeccoEngine extends Thread {
 	 */
 	public GeccoEngine engineStart() {
 		start();
-		if (eventListener != null) {
-			eventListener.onStart(this);
-		}
 		return this;
 	}
 
