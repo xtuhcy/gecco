@@ -54,8 +54,9 @@ public class AjaxFieldRender implements FieldRender {
 		url = UrlMatcher.replaceParams(url, request.getParameters());
 		url = UrlMatcher.replaceFields(url, beanMap);
 		HttpRequest subRequest = request.subRequest(url);
+		HttpResponse subReponse = null;
 		try {
-			HttpResponse subReponse = DownloaderContext.download(subRequest);
+			subReponse = DownloaderContext.download(subRequest);
 			RenderType type = RenderType.HTML;
 			if (ReflectUtils.haveSuperType(clazz, JsonBean.class)) {
 				type = RenderType.JSON;
@@ -64,6 +65,10 @@ public class AjaxFieldRender implements FieldRender {
 			return render.inject(clazz, subRequest, subReponse);
 		} catch (Exception ex) {
 			throw new FieldRenderException(field, ex.getMessage(), ex);
+		} finally {
+			if(subReponse != null) {
+				subReponse.close();
+			}
 		}
 	}
 }

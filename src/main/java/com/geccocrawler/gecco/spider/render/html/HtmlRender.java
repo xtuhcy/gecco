@@ -22,11 +22,14 @@ public class HtmlRender extends AbstractRender {
 	
 	private JSVarFieldRender jsVarFieldRender;
 	
+	private ImageFieldRender imageFieldRender;
+	
 	public HtmlRender() {
 		super();
 		this.htmlFieldRender = new HtmlFieldRender();
 		this.ajaxFieldRender = new AjaxFieldRender();
 		this.jsVarFieldRender = new JSVarFieldRender();
+		this.imageFieldRender = new ImageFieldRender();
 	}
 
 	@Override
@@ -34,6 +37,7 @@ public class HtmlRender extends AbstractRender {
 		htmlFieldRender.render(request, response, beanMap, bean);
 		ajaxFieldRender.render(request, response, beanMap, bean);
 		jsVarFieldRender.render(request, response, beanMap, bean);
+		imageFieldRender.render(request, response, beanMap, bean);
 	}
 
 }

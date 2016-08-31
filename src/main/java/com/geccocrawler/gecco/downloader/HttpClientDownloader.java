@@ -187,11 +187,13 @@ public class HttpClientDownloader extends AbstractDownloader {
 					contentType = contentTypeHeader.getValue();
 				}
 				resp.setContentType(contentType);
-				String charset = getCharset(request.getCharset(), contentType);
-				resp.setCharset(charset);
-				//String content = EntityUtils.toString(responseEntity, charset);
-				String content = getContent(raw, responseEntity.getContentLength(), charset);
-				resp.setContent(content);
+				if(!isImage(contentType)) { 
+					String charset = getCharset(request.getCharset(), contentType);
+					resp.setCharset(charset);
+					//String content = EntityUtils.toString(responseEntity, charset);
+					String content = getContent(raw, responseEntity.getContentLength(), charset);
+					resp.setContent(content);
+				}
 			} else {
 				//404，500等
 				if(proxy != null) {
@@ -271,5 +273,15 @@ public class HttpClientDownloader extends AbstractDownloader {
 			}
 		}
 		return bis;
+	}
+	
+	private boolean isImage(String contentType) {
+		if(contentType == null) {
+			return false;
+		}
+		if(contentType.toLowerCase().startsWith("image")) {
+			return true;
+		}
+		return false;
 	}
 }

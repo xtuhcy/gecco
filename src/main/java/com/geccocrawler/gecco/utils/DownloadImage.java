@@ -51,7 +51,30 @@ public class DownloadImage {
 			Files.write(ByteStreams.toByteArray(in), imageFile);
 			return imageFile.getAbsolutePath();
 		} catch(Exception ex) {
+			ex.printStackTrace();
 			log.error("image download error :"+imgUrl);
+			return null;
+		} finally {
+			try {
+				closer.close();
+			} catch (IOException e) {
+				closer = null;
+			}
+		}
+	}
+	
+	public static String download(String parentPath, String fileName, InputStream in) {
+		Closer closer = Closer.create();
+		try {
+			File imageDir = new File(parentPath);
+			if(!imageDir.exists()) {
+				imageDir.mkdirs();
+			}
+			File imageFile = new File(imageDir, fileName);
+			Files.write(ByteStreams.toByteArray(in), imageFile);
+			return imageFile.getAbsolutePath();
+		} catch(Exception ex) {
+			ex.printStackTrace();
 			return null;
 		} finally {
 			try {
