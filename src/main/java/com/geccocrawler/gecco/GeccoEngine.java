@@ -240,7 +240,7 @@ public class GeccoEngine extends Thread {
 		for (int i = 0; i < threadCount; i++) {
 			Spider spider = new Spider(this);
 			spiders.add(spider);
-			Thread thread = new Thread(spider, "Spider-" + i);
+			Thread thread = new Thread(spider, "T" + classpath + i);
 			thread.start();
 		}
 		startTime = new Date();

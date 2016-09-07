@@ -117,7 +117,7 @@ public class Spider implements Runnable {
 				if(engine.isDebug()) {
 					rex.printStackTrace();
 				} else {
-					log.error(rex.getMessage());
+					log.error(request.getUrl() + ":" + rex.getMessage());
 				}
 				FieldRenderException frex = (FieldRenderException)rex.getCause();
 				if(frex != null) {

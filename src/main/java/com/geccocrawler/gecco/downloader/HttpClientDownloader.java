@@ -1,8 +1,6 @@
 package com.geccocrawler.gecco.downloader;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -142,7 +140,7 @@ public class HttpClientDownloader extends AbstractDownloader {
 		boolean isMobile = SpiderThreadLocal.get().getEngine().isMobile();
 		reqObj.addHeader("User-Agent", UserAgent.getUserAgent(isMobile));
 		for(Map.Entry<String, String> entry : request.getHeaders().entrySet()) {
-			reqObj.addHeader(entry.getKey(), entry.getValue());
+			reqObj.setHeader(entry.getKey(), entry.getValue());
 		}
 		//request config
 		RequestConfig.Builder builder = RequestConfig.custom()
@@ -157,6 +155,7 @@ public class HttpClientDownloader extends AbstractDownloader {
 		if(proxys != null && isProxy) {
 			proxy = proxys.getProxy();
 			if(proxy != null) {
+				log.debug("proxy:" + proxy.getHostName()+":"+proxy.getPort());
 				builder.setProxy(proxy);
 				builder.setConnectTimeout(1000);//如果走代理，连接超时时间固定为1s
 			}
@@ -179,7 +178,7 @@ public class HttpClientDownloader extends AbstractDownloader {
 				resp.setContent(UrlUtils.relative2Absolute(request.getUrl(), redirectUrl));
 			} else if(status == 200) {
 				HttpEntity responseEntity = response.getEntity();
-				InputStream raw = toByteInputStream(responseEntity.getContent());
+				ByteArrayInputStream raw = toByteInputStream(responseEntity.getContent());
 				resp.setRaw(raw);
 				String contentType = null;
 				Header contentTypeHeader = responseEntity.getContentType();
@@ -226,54 +225,27 @@ public class HttpClientDownloader extends AbstractDownloader {
 	}
 	
 	public String getContent(InputStream instream, long contentLength, String charset) throws IOException {
-        if (instream == null) {
-            return null;
-        }
-        int i = (int)contentLength;
-        if (i < 0) {
-            i = 4096;
-        }
-        Reader reader = new InputStreamReader(instream, charset);
-        CharArrayBuffer buffer = new CharArrayBuffer(i);
-        char[] tmp = new char[1024];
-        int l;
-        while((l = reader.read(tmp)) != -1) {
-            buffer.append(tmp, 0, l);
-        }
-        return buffer.toString();
-    }
-	
-	/**
-	 * 将原始的inputStream转换为ByteArrayInputStream使raw可以重复使用
-	 * 
-	 * @param in
-	 * @return
-	 */
-	private InputStream toByteInputStream(InputStream in) {
-		InputStream bis = null;
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {
-			byte[] b = new byte[1024];
-			for (int c = 0; (c = in.read(b)) != -1;) {
-				bos.write(b, 0, c);
-			}
-			b = null;
-			bis = new ByteArrayInputStream(bos.toByteArray());
-		} catch(EOFException eof){
-			bis = new ByteArrayInputStream(bos.toByteArray());
-			log.warn("inputstream " + in.getClass().getName() + " eof!");
-		} catch (IOException e) {
-			log.warn("inputstream " + in.getClass().getName() + " don't to byte inputstream!");
-			return in;
+			if (instream == null) {
+	            return null;
+	        }
+	        int i = (int)contentLength;
+	        if (i < 0) {
+	            i = 4096;
+	        }
+	        Reader reader = new InputStreamReader(instream, charset);
+	        CharArrayBuffer buffer = new CharArrayBuffer(i);
+	        char[] tmp = new char[1024];
+	        int l;
+	        while((l = reader.read(tmp)) != -1) {
+	            buffer.append(tmp, 0, l);
+	        }
+	        return buffer.toString();
 		} finally {
-			try {
-				bos.close();
-			} catch (IOException e) {
-				bos = null;
-			}
+			instream.reset();
 		}
-		return bis;
-	}
+        
+    }
 	
 	private boolean isImage(String contentType) {
 		if(contentType == null) {

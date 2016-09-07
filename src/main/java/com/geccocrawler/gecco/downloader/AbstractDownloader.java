@@ -1,9 +1,19 @@
 package com.geccocrawler.gecco.downloader;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public abstract class AbstractDownloader implements Downloader {
+	
+	private static Log log = LogFactory.getLog(AbstractDownloader.class);
 
 	private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*\"?([^\\s;\"]*)");
 
@@ -30,6 +40,40 @@ public abstract class AbstractDownloader implements Downloader {
 			charset = "UTF-8";
 		}
 		return charset;
+	}
+	
+	/**
+	 * 将原始的inputStream转换为ByteArrayInputStream使raw可以重复使用
+	 * 
+	 * @param in
+	 * @return
+	 */
+	protected ByteArrayInputStream toByteInputStream(InputStream in) {
+		ByteArrayInputStream bis = null;
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		try {
+			byte[] b = new byte[1024];
+			for (int c = 0; (c = in.read(b)) != -1;) {
+				bos.write(b, 0, c);
+			}
+			b = null;
+			bis = new ByteArrayInputStream(bos.toByteArray());
+		} catch(EOFException eof){
+			bis = new ByteArrayInputStream(bos.toByteArray());
+			log.warn("inputstream " + in.getClass().getName() + " eof!");
+		} catch (IOException e) {
+			log.warn("inputstream " + in.getClass().getName() + " don't to byte inputstream!");
+			return null;
+		} finally {
+			try {
+				in.close();
+				bos.close();
+			} catch (IOException e) {
+				bos = null;
+				in = null;
+			}
+		}
+		return bis;
 	}
 
 }

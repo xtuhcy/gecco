@@ -1,12 +1,12 @@
 package com.geccocrawler.gecco.response;
 
-import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 
 import com.google.common.io.CharStreams;
 
 public class HttpResponse {
-	private InputStream raw;
+	private ByteArrayInputStream raw;
 
 	private String content;
 
@@ -22,11 +22,11 @@ public class HttpResponse {
 		return response;
 	}
 
-	public InputStream getRaw() {
+	public ByteArrayInputStream getRaw() {
 		return raw;
 	}
 
-	public void setRaw(InputStream raw) {
+	public void setRaw(ByteArrayInputStream raw) {
 		this.raw = raw;
 	}
 
