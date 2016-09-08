@@ -21,7 +21,7 @@ import com.geccocrawler.gecco.utils.DownloadImage;
 import net.sf.cglib.beans.BeanMap;
 
 /**
- * 渲染@Ajax属性
+ * 渲染@Image属性
  * 
  * @author huchengyi
  *
@@ -30,18 +30,19 @@ public class ImageFieldRender implements FieldRender {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean)
-			throws FieldRenderException {
+	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) {
 		Map<String, Object> fieldMap = new HashMap<String, Object>();
 		Set<Field> imageFields = ReflectionUtils.getAllFields(bean.getClass(), ReflectionUtils.withAnnotation(Image.class));
 		for (Field imageField : imageFields) {
 			Object value = injectImageField(request, beanMap, bean, imageField);
-			fieldMap.put(imageField.getName(), value);
+			if(value != null) {
+				fieldMap.put(imageField.getName(), value);
+			}
 		}
 		beanMap.putAll(fieldMap);
 	}
 
-	private Object injectImageField(HttpRequest request, BeanMap beanMap, SpiderBean bean, Field field) throws FieldRenderException {
+	private Object injectImageField(HttpRequest request, BeanMap beanMap, SpiderBean bean, Field field) {
 		Object value = beanMap.get(field.getName());
 		if(value == null) {
 			return null;
@@ -65,10 +66,12 @@ public class ImageFieldRender implements FieldRender {
 				imgUrl = before + "?" + last;
 			}
 			HttpRequest subRequest = request.subRequest(imgUrl);
-			subReponse = DownloaderContext.download(subRequest);
+			subReponse = DownloaderContext.defaultDownload(subRequest);
 			return DownloadImage.download(parentPath, fileName, subReponse.getRaw());
 		} catch (Exception ex) {
-			throw new FieldRenderException(field, ex.getMessage(), ex);
+			//throw new FieldRenderException(field, ex.getMessage(), ex);
+			FieldRenderException.log(field, "download image error : " + imgUrl, ex);
+			return imgUrl;
 		} finally {
 			if(subReponse != null) {
 				subReponse.close();

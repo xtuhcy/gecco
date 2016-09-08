@@ -23,7 +23,6 @@ import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.spider.SpiderBean;
 import com.geccocrawler.gecco.spider.conversion.Conversion;
 import com.geccocrawler.gecco.spider.render.FieldRender;
-import com.geccocrawler.gecco.spider.render.FieldRenderException;
 
 import net.sf.cglib.beans.BeanMap;
 
@@ -45,8 +44,7 @@ public class JSVarFieldRender implements FieldRender {
 
 	@Override
 	@SuppressWarnings({ "unchecked" })
-	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean)
-			throws FieldRenderException {
+	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) {
 		Context cx = Context.enter();
 		ScriptableObject scope = cx.initSafeStandardObjects();
 		String windowScript = "var window = {};var document = {};";
@@ -63,19 +61,19 @@ public class JSVarFieldRender implements FieldRender {
 			}
 		}
 		Map<String, Object> fieldMap = new HashMap<String, Object>();
-		Set<Field> jsVarFields = ReflectionUtils.getAllFields(bean.getClass(),
-				ReflectionUtils.withAnnotation(JSVar.class));
+		Set<Field> jsVarFields = ReflectionUtils.getAllFields(bean.getClass(), ReflectionUtils.withAnnotation(JSVar.class));
 		for (Field jsVarField : jsVarFields) {
 			Object value = injectJsVarField(request, beanMap, jsVarField, cx, scope);
-			fieldMap.put(jsVarField.getName(), value);
+			if(value != null) {
+				fieldMap.put(jsVarField.getName(), value);
+			}
 		}
 		beanMap.putAll(fieldMap);
 		Context.exit();
 	}
 
 	@SuppressWarnings({ "rawtypes" })
-	private Object injectJsVarField(HttpRequest request, BeanMap beanMap, Field field, Context cx,
-			ScriptableObject scope) {
+	private Object injectJsVarField(HttpRequest request, BeanMap beanMap, Field field, Context cx, ScriptableObject scope) {
 		Class clazz = field.getType();
 		JSVar jsVar = field.getAnnotation(JSVar.class);
 		String var = jsVar.var();

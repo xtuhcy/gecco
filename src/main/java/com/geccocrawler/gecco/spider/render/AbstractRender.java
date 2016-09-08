@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.reflections.ReflectionUtils;
 
 import com.geccocrawler.gecco.annotation.FieldRenderName;
@@ -24,6 +26,8 @@ import net.sf.cglib.beans.BeanMap;
  *
  */
 public abstract class AbstractRender implements Render {
+	
+	private static Log log = LogFactory.getLog(AbstractRender.class);
 
 	/**
 	 * request请求的注入
@@ -47,16 +51,14 @@ public abstract class AbstractRender implements Render {
 
 	@Override
 	@SuppressWarnings({ "unchecked" })
-	public SpiderBean inject(Class<? extends SpiderBean> clazz, HttpRequest request, HttpResponse response)
-			throws RenderException {
+	public SpiderBean inject(Class<? extends SpiderBean> clazz, HttpRequest request, HttpResponse response) {
 		try {
 			SpiderBean bean = clazz.newInstance();
 			BeanMap beanMap = BeanMap.create(bean);
 			requestFieldRender.render(request, response, beanMap, bean);
 			requestParameterFieldRender.render(request, response, beanMap, bean);
 			fieldRender(request, response, beanMap, bean);
-			Set<Field> customFields = ReflectionUtils.getAllFields(bean.getClass(),
-					ReflectionUtils.withAnnotation(FieldRenderName.class));
+			Set<Field> customFields = ReflectionUtils.getAllFields(bean.getClass(),	ReflectionUtils.withAnnotation(FieldRenderName.class));
 			for (Field customField : customFields) {
 				FieldRenderName fieldRender = customField.getAnnotation(FieldRenderName.class);
 				String name = fieldRender.value();
@@ -67,15 +69,14 @@ public abstract class AbstractRender implements Render {
 			}
 			requests(request, bean);
 			return bean;
-		} catch (FieldRenderException ex) {
-			throw new RenderException(ex.getMessage(), clazz, ex);
-		} catch (Exception ex) {
-			throw new RenderException(ex.getMessage(), clazz);
+		} catch(Exception ex) {
+			//throw new RenderException(ex.getMessage(), clazz);
+			log.error("instance SpiderBean error", ex);
+			return null;
 		}
 	}
 
-	public abstract void fieldRender(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean)
-			throws FieldRenderException;
+	public abstract void fieldRender(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean);
 
 	/**
 	 * 需要继续抓取的请求

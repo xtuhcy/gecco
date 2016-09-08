@@ -20,7 +20,7 @@ public class RequestParameterFieldRender implements FieldRender {
 
 	@Override
 	@SuppressWarnings({ "unchecked" })
-	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) throws FieldRenderException {
+	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) {
 		Map<String, Object> fieldMap = new HashMap<String, Object>();
 		Set<Field> requestParameterFields = ReflectionUtils.getAllFields(bean.getClass(), ReflectionUtils.withAnnotation(RequestParameter.class));
 		for(Field field : requestParameterFields) {
@@ -34,7 +34,8 @@ public class RequestParameterFieldRender implements FieldRender {
 				Object value = Conversion.getValue(field.getType(), src);
 				fieldMap.put(field.getName(), value);
 			} catch(Exception ex) {
-				throw new FieldRenderException(field, src, ex);
+				//throw new FieldRenderException(field, src, ex);
+				FieldRenderException.log(field, src, ex);
 			}
 		}
 		beanMap.putAll(fieldMap);

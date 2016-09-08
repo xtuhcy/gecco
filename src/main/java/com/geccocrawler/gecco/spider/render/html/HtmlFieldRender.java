@@ -16,7 +16,6 @@ import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.spider.SpiderBean;
 import com.geccocrawler.gecco.spider.render.FieldRender;
 import com.geccocrawler.gecco.spider.render.FieldRenderException;
-import com.geccocrawler.gecco.spider.render.RenderException;
 import com.geccocrawler.gecco.utils.ReflectUtils;
 
 import net.sf.cglib.beans.BeanMap;
@@ -25,24 +24,19 @@ import net.sf.cglib.beans.BeanMap;
 public class HtmlFieldRender implements FieldRender {
 
 	@Override
-	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean)
-			throws FieldRenderException {
+	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) {
 		Map<String, Object> fieldMap = new HashMap<String, Object>();
-		Set<Field> htmlFields = ReflectionUtils.getAllFields(bean.getClass(),
-				ReflectionUtils.withAnnotation(HtmlField.class));
+		Set<Field> htmlFields = ReflectionUtils.getAllFields(bean.getClass(), ReflectionUtils.withAnnotation(HtmlField.class));
 		for (Field htmlField : htmlFields) {
-			try {
-				Object value = injectHtmlField(request, response, htmlField, bean.getClass());
+			Object value = injectHtmlField(request, response, htmlField, bean.getClass());
+			if(value != null) {
 				fieldMap.put(htmlField.getName(), value);
-			} catch (RenderException ex) {
-				throw new FieldRenderException(htmlField, ex.getMessage(), ex);
 			}
 		}
 		beanMap.putAll(fieldMap);
 	}
 
-	private Object injectHtmlField(HttpRequest request, HttpResponse response, Field field,
-			Class<? extends SpiderBean> clazz) throws RenderException, FieldRenderException {
+	private Object injectHtmlField(HttpRequest request, HttpResponse response, Field field,	Class<? extends SpiderBean> clazz) {
 		HtmlField htmlField = field.getAnnotation(HtmlField.class);
 		String content = response.getContent();
 		HtmlParser parser = new HtmlParser(request.getUrl(), content);
@@ -62,7 +56,8 @@ public class HtmlFieldRender implements FieldRender {
 				try {
 					return parser.$basicList(cssPath, field);
 				} catch (Exception ex) {
-					throw new FieldRenderException(field, content, ex);
+					//throw new FieldRenderException(field, content, ex);
+					FieldRenderException.log(field, content, ex);
 				}
 			}
 		} else if (isArray) {
@@ -76,7 +71,8 @@ public class HtmlFieldRender implements FieldRender {
 				try {
 					return parser.$basicList(cssPath, field).toArray();
 				} catch (Exception ex) {
-					throw new FieldRenderException(field, content, ex);
+					//throw new FieldRenderException(field, content, ex);
+					FieldRenderException.log(field, content, ex);
 				}
 			}
 		} else {
@@ -88,10 +84,12 @@ public class HtmlFieldRender implements FieldRender {
 				try {
 					return parser.$basic(cssPath, field);
 				} catch (Exception ex) {
-					throw new FieldRenderException(field, content, ex);
+					//throw new FieldRenderException(field, content, ex);
+					FieldRenderException.log(field, content, ex);
 				}
 			}
 		}
+		return null;
 	}
 
 }

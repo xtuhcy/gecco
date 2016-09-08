@@ -27,7 +27,6 @@ import com.geccocrawler.gecco.spider.SpiderThreadLocal;
 import com.geccocrawler.gecco.spider.conversion.Conversion;
 import com.geccocrawler.gecco.spider.render.Render;
 import com.geccocrawler.gecco.spider.render.RenderContext;
-import com.geccocrawler.gecco.spider.render.RenderException;
 import com.geccocrawler.gecco.spider.render.RenderType;
 
 public class HtmlParser {
@@ -119,8 +118,7 @@ public class HtmlParser {
 		return list;
 	}
 
-	public SpiderBean $bean(String selector, HttpRequest request, Class<? extends SpiderBean> clazz)
-			throws RenderException {
+	public SpiderBean $bean(String selector, HttpRequest request, Class<? extends SpiderBean> clazz) {
 		String subHtml = $html(selector);
 		// table
 		HttpResponse subResponse = HttpResponse.createSimple(subHtml);
@@ -128,8 +126,7 @@ public class HtmlParser {
 		return render.inject(clazz, request, subResponse);
 	}
 
-	public List<SpiderBean> $beanList(String selector, HttpRequest request, Class<? extends SpiderBean> clazz)
-			throws RenderException {
+	public List<SpiderBean> $beanList(String selector, HttpRequest request, Class<? extends SpiderBean> clazz) {
 		List<SpiderBean> list = new ArrayList<SpiderBean>();
 		List<String> els = $list(selector);
 		for (String el : els) {
