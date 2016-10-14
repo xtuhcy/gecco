@@ -112,29 +112,33 @@ public class SpiderBeanFactory {
 	@SuppressWarnings({ "unchecked" })
 	public void addSpiderBean(Class<?> spiderBeanClass) {
 		Gecco gecco = spiderBeanClass.getAnnotation(Gecco.class);
-		String matchUrl = gecco.matchUrl();
-		try {
-			// SpiderBean spider = (SpiderBean)spiderBeanClass.newInstance();
-			// 判断是不是SpiderBeanClass????
-			if (spiderBeans.containsKey(matchUrl)) {
-				LOG.warn("there are multil '" + matchUrl + "' ,first htmlBean will be Override。");
+		for(String matchUrl : gecco.matchUrl()) {
+		//String matchUrl = gecco.matchUrl();
+			try {
+				// SpiderBean spider = (SpiderBean)spiderBeanClass.newInstance();
+				// 判断是不是SpiderBeanClass????
+				if (spiderBeans.containsKey(matchUrl)) {
+					LOG.warn("there are multil '" + matchUrl + "' ,first htmlBean will be Override。");
+				}
+				spiderBeans.put(matchUrl, (Class<? extends SpiderBean>) spiderBeanClass);
+				SpiderBeanContext context = initContext(spiderBeanClass);
+				spiderBeanContexts.put(spiderBeanClass.getName(), context);
+			} catch (Exception ex) {
+				ex.printStackTrace();
 			}
-			spiderBeans.put(matchUrl, (Class<? extends SpiderBean>) spiderBeanClass);
-			SpiderBeanContext context = initContext(spiderBeanClass);
-			spiderBeanContexts.put(spiderBeanClass.getName(), context);
-		} catch (Exception ex) {
-			ex.printStackTrace();
 		}
 	}
 
 	public void removeSpiderBean(Class<?> spiderBeanClass) {
 		Gecco gecco = spiderBeanClass.getAnnotation(Gecco.class);
-		String matchUrl = gecco.matchUrl();
-		try {
-			spiderBeans.remove(matchUrl);
-			spiderBeanContexts.remove(spiderBeanClass.getName());
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		for(String matchUrl : gecco.matchUrl()) {
+		//String matchUrl = gecco.matchUrl();
+			try {
+				spiderBeans.remove(matchUrl);
+				spiderBeanContexts.remove(spiderBeanClass.getName());
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 
