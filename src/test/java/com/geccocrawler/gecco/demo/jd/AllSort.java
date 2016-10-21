@@ -10,7 +10,7 @@ import com.geccocrawler.gecco.request.HttpGetRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.spider.HtmlBean;
 
-@Gecco(matchUrl="http://www.jd.com/allSort.aspx", pipelines={"consolePipeline", "allSortPipeline"})
+@Gecco(matchUrl="https://www.jd.com/allSort.aspx", pipelines={"consolePipeline", "allSortPipeline"})
 public class AllSort implements HtmlBean {
 
 	private static final long serialVersionUID = 665662335318691818L;
@@ -64,7 +64,7 @@ public class AllSort implements HtmlBean {
 
 	public static void main(String[] args) {
 		//先获取分类列表
-		HttpGetRequest start = new HttpGetRequest("http://www.jd.com/allSort.aspx");
+		HttpGetRequest start = new HttpGetRequest("https://www.jd.com/allSort.aspx");
 		start.setCharset("GBK");
 		GeccoEngine.create()
 		.classpath("com.geccocrawler.gecco.demo.jd")
