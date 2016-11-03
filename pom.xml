@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.geccocrawler</groupId>
 	<artifactId>gecco</artifactId>
-	<version>1.2.5-SNAPSHOT</version>
+	<version>1.2.5</version>
 
 	<name>Gecco</name>
 	<description>Easy to use lightweight web crawler</description>
@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
-			<version>1.9.1</version>
+			<version>1.10.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.reflections</groupId>
@@ -28,7 +28,7 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
-			<version>1.2.11</version>
+			<version>1.2.20</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -38,12 +38,12 @@
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
-			<version>3.2.2</version>
+			<version>3.2.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.4</version>
+			<version>3.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mozilla</groupId>
@@ -58,7 +58,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>19.0</version>
+			<version>20.0</version>
 		</dependency>
 	</dependencies>
 	<build>
