@@ -87,7 +87,7 @@ public class GeccoEngine extends Thread {
 	/**
 	 * 动态配置规则不能使用该方法构造GeccoEngine
 	 * 
-	 * @return
+	 * @return GeccoEngine
 	 */
 	public static GeccoEngine create() {
 		GeccoEngine geccoEngine = new GeccoEngine();
@@ -363,7 +363,7 @@ public class GeccoEngine extends Thread {
 	/**
 	 * 启动引擎，并返回GeccoEngine对象
 	 * 
-	 * @return
+	 * @return GeccoEngine
 	 */
 	public GeccoEngine engineStart() {
 		start();

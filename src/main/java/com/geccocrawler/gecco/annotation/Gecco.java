@@ -29,7 +29,7 @@ public @interface Gecco {
 	/**
 	 * 下载超时时间
 	 * 
-	 * @return
+	 * @return 下载超时时间
 	 */
 	int timeout() default 3000;
 	

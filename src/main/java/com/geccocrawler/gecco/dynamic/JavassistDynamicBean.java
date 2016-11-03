@@ -64,8 +64,6 @@ public class JavassistDynamicBean implements DynamicBean {
 	 *            名称
 	 * @param beanType
 	 *            类型html/json
-	 * @param create
-	 *            是否新建类和属性。true表示创建写的类和属性已经setter/getter方法，false表示只动态生成注解
 	 */
 	public JavassistDynamicBean(String spiderBeanName, String beanType) {
 		try {

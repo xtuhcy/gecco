@@ -29,7 +29,7 @@ public class DownloadImage {
 	 * 
 	 * @param parentPath 指定目录
 	 * @param imgUrl 图片地址
-	 * @return
+	 * @return 下载文件地址
 	 */
 	public static String download(String parentPath, String imgUrl) {
 		if(Strings.isNullOrEmpty(imgUrl) || Strings.isNullOrEmpty(parentPath)) {

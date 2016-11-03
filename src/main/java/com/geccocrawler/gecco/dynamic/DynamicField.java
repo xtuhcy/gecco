@@ -5,12 +5,12 @@ import javassist.bytecode.annotation.Annotation;
 
 public interface DynamicField {
 	
-/**
- * 动态生成属性注解
- * 
- * @return
- */
-public DynamicField request();
+	/**
+	 * 动态生成属性注解
+	 * 
+	 * @return DynamicField
+	 */
+	public DynamicField request();
 	
 	public DynamicField requestParameter(String param);
 	
@@ -18,6 +18,8 @@ public DynamicField request();
 
 	/**
 	 * replace by csspath
+	 * @param cssPath cssPath
+	 * @return DynamicField
 	 */
 	@Deprecated
 	public DynamicField htmlField(String cssPath);

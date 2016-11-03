@@ -45,8 +45,8 @@ public abstract class AbstractDownloader implements Downloader {
 	/**
 	 * 将原始的inputStream转换为ByteArrayInputStream使raw可以重复使用
 	 * 
-	 * @param in
-	 * @return
+	 * @param in 原始的inputStream
+	 * @return 可以重复使用的ByteArrayInputStream
 	 */
 	protected ByteArrayInputStream toByteInputStream(InputStream in) {
 		ByteArrayInputStream bis = null;

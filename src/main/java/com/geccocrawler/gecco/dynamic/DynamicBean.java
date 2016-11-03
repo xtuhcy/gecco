@@ -42,8 +42,8 @@ public interface DynamicBean {
 	/**
 	 * 由于有歧义，已经被existField代替
 	 * 
-	 * @param fieldName
-	 * @return
+	 * @param fieldName 字段名称
+	 * @return DynamicField
 	 */
 	@Deprecated
 	public DynamicField field(String fieldName);
@@ -53,7 +53,7 @@ public interface DynamicBean {
 	 * 
 	 * @param fieldName 字段名称
 	 * @param fieldType 字段类型
-	 * @return
+	 * @return DynamicField
 	 */
 	public DynamicField field(String fieldName, CtClass fieldType);
 	
@@ -62,7 +62,8 @@ public interface DynamicBean {
 	/**
 	 * 删除一个属性
 	 * 
-	 * @param fieldName
+	 * @param fieldName 字段名
+	 * @return DynamicBean
 	 */
 	public DynamicBean removeField(String fieldName);
 	
@@ -127,14 +128,14 @@ public interface DynamicBean {
 	 * 将加载的bean注册到爬虫引擎中。
 	 * 主要应用在先定义Bean后期的爬虫引擎的情况。
 	 * 
-	 * @return
+	 * @return spiderBeanClass
 	 */
 	public Class<?> register();
 	
 	/**
 	 * 加载bean到classloader中
 	 * 
-	 * @return
+	 * @return spiderBeanClass
 	 */
 	public Class<?> loadClass();
 	
@@ -146,7 +147,7 @@ public interface DynamicBean {
 	/**
 	 * Constant pool table.
 	 * 
-	 * @return
+	 * @return ConstPool
 	 */
 	public ConstPool getConstPool();
 }
