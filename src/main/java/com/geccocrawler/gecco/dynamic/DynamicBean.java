@@ -1,5 +1,7 @@
 package com.geccocrawler.gecco.dynamic;
 
+import java.util.List;
+
 import javassist.CtClass;
 import javassist.bytecode.ConstPool;
 
@@ -18,6 +20,8 @@ public interface DynamicBean {
 	 * @param pipelines 管道过滤器
 	 * @return SpiderBean
 	 */
+	public JavassistDynamicBean gecco(String[] matchUrl, String... pipelines);
+	
 	public JavassistDynamicBean gecco(String matchUrl, String... pipelines);
 	
 	/**
@@ -29,6 +33,8 @@ public interface DynamicBean {
 	 * @param pipelines 管道过滤器
 	 * @return SpiderBean
 	 */
+	public JavassistDynamicBean gecco(String[] matchUrl, String downloader, int timeout, String... pipelines);
+	
 	public JavassistDynamicBean gecco(String matchUrl, String downloader, int timeout, String... pipelines);
 	
 	/**
