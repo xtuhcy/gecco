@@ -16,9 +16,7 @@ import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.scheduler.Scheduler;
 import com.geccocrawler.gecco.scheduler.UniqueSpiderScheduler;
-import com.geccocrawler.gecco.spider.render.FieldRenderException;
 import com.geccocrawler.gecco.spider.render.Render;
-import com.geccocrawler.gecco.spider.render.RenderException;
 
 /**
  * 一个爬虫引擎可以包含多个爬虫，每个爬虫可以认为是一个单独线程，爬虫会从Scheduler中获取需要待抓取的请求。
@@ -106,37 +104,21 @@ public class Spider implements Runnable {
 					if(response.getStatus() == 200) {
 						//render
 						Render render = context.getRender();
-						SpiderBean spiderBean = render.inject(currSpiderBeanClass, request, response);
+						
+						SpiderBean spiderBean = null;
+						spiderBean = render.inject(currSpiderBeanClass, request, response);
+						
 						//pipelines
 						pipelines(spiderBean, context);
 					} else if(response.getStatus() == 302 || response.getStatus() == 301){
 						spiderScheduler.into(request.subRequest(response.getContent()));
 					}
 				}
-			} catch(RenderException rex) {
-				if(engine.isDebug()) {
-					rex.printStackTrace();
-				} else {
-					log.error(rex.getMessage());
-				}
-				FieldRenderException frex = (FieldRenderException)rex.getCause();
-				if(frex != null) {
-					log.error(request.getUrl() + " RENDER ERROR : " + rex.getSpiderBeanClass().getName() + "(" + frex.getField().getName()+")");
-				} else {
-					log.error(request.getUrl() + " RENDER ERROR : " + rex.getSpiderBeanClass().getName());
-				}
-			} catch(DownloadException dex) {
-				if(engine.isDebug()) {
-					dex.printStackTrace();
-					log.error(dex);
-				}
-				log.error(request.getUrl() + " DOWNLOAD ERROR :" + dex.getMessage());
 			} catch(Exception ex) {
 				if(engine.isDebug()) {
-					ex.printStackTrace();
-					log.error(ex);
+					log.error(request.getUrl() + " ERROR : ", ex);
 				}
-				log.error(request.getUrl(), ex);
+				log.error(request.getUrl() + " ERROR : " + ex.getClass().getName() + ex.getMessage());
 			} finally {
 				if(response != null) {
 					response.close();
@@ -177,6 +159,9 @@ public class Spider implements Runnable {
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void pipelines(SpiderBean spiderBean, SpiderBeanContext context) {
+		if(spiderBean == null) {
+			return ;
+		}
 		List<Pipeline> pipelines = context.getPipelines();
 		if(pipelines != null) {
 			for(Pipeline pipeline : pipelines) {

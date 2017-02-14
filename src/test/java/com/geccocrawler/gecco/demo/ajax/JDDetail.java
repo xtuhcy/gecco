@@ -11,7 +11,7 @@ import com.geccocrawler.gecco.request.HttpGetRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.spider.HtmlBean;
 
-@Gecco(matchUrl="http://item.jd.com/{code}.html", pipelines="consolePipeline")
+@Gecco(matchUrl="https://item.jd.com/{code}.html", pipelines="consolePipeline")
 public class JDDetail implements HtmlBean {
 
 	private static final long serialVersionUID = -377053120283382723L;
@@ -19,14 +19,14 @@ public class JDDetail implements HtmlBean {
 	@RequestParameter
 	private String code;
 	
-	@Ajax(url="http://p.3.cn/prices/get?type=1&pdtk=&pdbp=0&skuid=J_{code}")
+	@Ajax(url="https://p.3.cn/prices/get?type=1&pdtk=&pdbp=0&skuid=J_{code}")
 	private JDPrice price;
 	
 	@Text
 	@HtmlField(cssPath="#name > h1")
 	private String title;
 	
-	@Ajax(url="http://cd.jd.com/promotion/v2?skuId={code}&area=1_2805_2855_0&cat=737%2C794%2C798")
+	@Ajax(url="https://cd.jd.com/promotion/v2?skuId={code}&area=1_2805_2855_0&cat=737%2C794%2C798")
 	private JDad jdAd;
 	
 	@HtmlField(cssPath="#product-detail-2")
@@ -85,7 +85,7 @@ public class JDDetail implements HtmlBean {
 	}
 
 	public static void main(String[] args) throws Exception {
-		HttpRequest request = new HttpGetRequest("http://item.jd.com/1455427.html");
+		HttpRequest request = new HttpGetRequest("https://item.jd.com/1455427.html");
 		request.setCharset("GBK");
 		GeccoEngine.create()
 		.classpath("com.geccocrawler.gecco.demo.ajax")

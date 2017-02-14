@@ -14,7 +14,7 @@ public @interface Downloader {
 	/**
 	 * 下载器名称
 	 * 
-	 * @return
+	 * @return 下载器名称
 	 */
 	String value();
 	

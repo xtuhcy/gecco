@@ -34,6 +34,8 @@ public interface HttpRequest extends Cloneable {
 	
 	public void addCookie(String name, String value);
 	
+	public String getCookie(String name);
+	
 	public void clearCookie();
 
 	public long getPriority();

@@ -4,16 +4,15 @@ import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.spider.SpiderThreadLocal;
 
 /**
- * 被DeriveSchedulerContext替代，特指派生队列
+ * 初始队列队列上下文，可以在运行时将请求放入初始队列
  * 
  * @author huchengyi
  *
  */
-@Deprecated
-public class SchedulerContext {
+public class StartSchedulerContext {
 	
 	public static void into(HttpRequest request) {
-		SpiderThreadLocal.get().getSpiderScheduler().into(request);
+		SpiderThreadLocal.get().getEngine().getScheduler().into(request);
 	}
 
 }

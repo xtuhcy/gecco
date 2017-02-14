@@ -17,7 +17,7 @@ public @interface Gecco {
 	 * 
 	 * @return url匹配规则
 	 */
-	String matchUrl() default "*";
+	String[] matchUrl() default "*";
 	
 	/**
 	 * url下载器，默认为httpClientDownloader
@@ -29,7 +29,7 @@ public @interface Gecco {
 	/**
 	 * 下载超时时间
 	 * 
-	 * @return
+	 * @return 下载超时时间
 	 */
 	int timeout() default 3000;
 	

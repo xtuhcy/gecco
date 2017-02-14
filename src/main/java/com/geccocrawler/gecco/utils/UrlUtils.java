@@ -8,8 +8,8 @@ public class UrlUtils {
 	 * 相对地址转绝对地址
 	 * 
 	 * @param absolutePath 当前绝对地址
-	 * @param relativeUrl 相对地址
-	 * @return
+	 * @param relativePath 相对地址
+	 * @return 绝对地址
 	 */
 	public static String relative2Absolute(String absolutePath, String relativePath) {
 		if(relativePath == null) {

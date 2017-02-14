@@ -58,7 +58,7 @@ public class UniqueSpiderScheduler implements Scheduler {
 		if(success && log.isDebugEnabled()) {
 			log.debug("INTO("+priority+"):"+request.getUrl()+"(Referer:"+request.getHeaders().get("Referer")+")");
 		}
-		if(!success) {
+		if(!success && log.isDebugEnabled()) {
 			log.error("not unique request : " + request.getUrl());
 		}
 	}

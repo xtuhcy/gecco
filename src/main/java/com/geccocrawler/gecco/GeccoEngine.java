@@ -17,6 +17,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.alibaba.fastjson.JSON;
+import com.geccocrawler.gecco.downloader.proxy.FileProxys;
+import com.geccocrawler.gecco.downloader.proxy.Proxys;
 import com.geccocrawler.gecco.dynamic.DynamicGecco;
 import com.geccocrawler.gecco.dynamic.GeccoClassLoader;
 import com.geccocrawler.gecco.listener.EventListener;
@@ -64,6 +66,8 @@ public class GeccoEngine extends Thread {
 
 	private int interval;
 
+	private Proxys proxysLoader;
+	
 	private boolean proxy = true;
 
 	private boolean loop;
@@ -83,7 +87,7 @@ public class GeccoEngine extends Thread {
 	/**
 	 * 动态配置规则不能使用该方法构造GeccoEngine
 	 * 
-	 * @return
+	 * @return GeccoEngine
 	 */
 	public static GeccoEngine create() {
 		GeccoEngine geccoEngine = new GeccoEngine();
@@ -153,6 +157,11 @@ public class GeccoEngine extends Thread {
 		return this;
 	}
 
+	public GeccoEngine proxysLoader(Proxys proxysLoader) {
+		this.proxysLoader = proxysLoader;
+		return this;
+	}
+	
 	public GeccoEngine proxy(boolean proxy) {
 		this.proxy = proxy;
 		return this;
@@ -198,6 +207,9 @@ public class GeccoEngine extends Thread {
 			Logger log = LogManager.getLogger("com.geccocrawler.gecco.spider.render");
 			log.setLevel(Level.DEBUG);
 		}
+		if(proxysLoader == null) {//默认采用proxys文件代理集合
+			proxysLoader = new FileProxys();
+		}
 		if (scheduler == null) {
 			if (loop) {
 				scheduler = new StartScheduler();
@@ -228,7 +240,7 @@ public class GeccoEngine extends Thread {
 		for (int i = 0; i < threadCount; i++) {
 			Spider spider = new Spider(this);
 			spiders.add(spider);
-			Thread thread = new Thread(spider, "Spider-" + i);
+			Thread thread = new Thread(spider, "T" + classpath + i);
 			thread.start();
 		}
 		startTime = new Date();
@@ -238,6 +250,14 @@ public class GeccoEngine extends Thread {
 		GeccoJmx.export(classpath);
 		// 非循环模式等待线程执行完毕后关闭
 		closeUnitlComplete();
+	}
+
+	@Override
+	public synchronized void start() {
+		if (eventListener != null) {
+			eventListener.onStart(this);
+		}
+		super.start();
 	}
 
 	private GeccoEngine startsJson() {
@@ -295,8 +315,8 @@ public class GeccoEngine extends Thread {
 		return loop;
 	}
 
-	public boolean isProxy() {
-		return proxy;
+	public Proxys getProxysLoader() {
+		return proxysLoader;
 	}
 
 	public boolean isMobile() {
@@ -305,6 +325,10 @@ public class GeccoEngine extends Thread {
 
 	public boolean isDebug() {
 		return debug;
+	}
+	
+	public boolean isProxy() {
+		return proxy;
 	}
 
 	/**
@@ -339,13 +363,10 @@ public class GeccoEngine extends Thread {
 	/**
 	 * 启动引擎，并返回GeccoEngine对象
 	 * 
-	 * @return
+	 * @return GeccoEngine
 	 */
 	public GeccoEngine engineStart() {
 		start();
-		if (eventListener != null) {
-			eventListener.onStart(this);
-		}
 		return this;
 	}
 

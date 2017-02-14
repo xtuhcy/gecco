@@ -3,3 +3,6 @@
 /doc/
 .project
 .classpath
+/gecco.iml
+/.idea
+.gitignore

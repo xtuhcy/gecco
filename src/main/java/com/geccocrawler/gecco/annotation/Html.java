@@ -25,7 +25,7 @@ public @interface Html {
 	 * </pre>
 	 * 
 	 * @author LiuJunGuang
-	 * @return
+	 * @return 是否取外部Html
 	 */
 	public boolean outer() default false;
 }

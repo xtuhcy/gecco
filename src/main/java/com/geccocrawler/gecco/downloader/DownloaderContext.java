@@ -17,5 +17,12 @@ public class DownloaderContext {
 		SpiderBeanContext context = SpiderThreadLocal.get().getSpiderBeanContext();
 		return context.getDownloader().download(request, context.getTimeout());
 	}
+	
+	public static HttpResponse defaultDownload(HttpRequest request) throws DownloadException {
+		SpiderBeanContext context = SpiderThreadLocal.get().getSpiderBeanContext();
+		Downloader downloader = SpiderThreadLocal.get().getEngine().getSpiderBeanFactory().getDownloaderFactory().defaultDownloader();
+		return downloader.download(request, context.getTimeout());
+	}
+	
 
 }

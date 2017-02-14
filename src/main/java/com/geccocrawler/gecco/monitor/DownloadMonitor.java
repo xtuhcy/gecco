@@ -31,8 +31,8 @@ public class DownloadMonitor {
 	/**
 	 * 双重检查机制锁
 	 * 
-	 * @param host
-	 * @return
+	 * @param host host
+	 * @return DownloadStatistics
 	 */
 	public static DownloadStatistics getStatistics(String host) {
 		DownloadStatistics downloadStatistics = statistics.get(host);

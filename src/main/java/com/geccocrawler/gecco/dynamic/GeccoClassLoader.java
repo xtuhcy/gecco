@@ -16,7 +16,7 @@ public class GeccoClassLoader extends ClassLoader {
 	
 	/**
 	 * 创建一个新的GeccoClassLoader
-	 * @return
+	 * @return GeccoClassLoader
 	 */
 	public static synchronized GeccoClassLoader create() {
 		if(instance != null) {

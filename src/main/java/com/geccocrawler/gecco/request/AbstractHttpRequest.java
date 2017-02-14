@@ -60,6 +60,11 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 	}
 	
 	@Override
+	public String getCookie(String name) {
+		return cookies.get(name);
+	}
+
+	@Override
 	public void addParameter(String name, String value) {
 		parameters.put(name, value);
 	}

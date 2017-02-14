@@ -16,10 +16,9 @@ public class RequestFieldRender implements FieldRender {
 
 	@Override
 	@SuppressWarnings({"unchecked" })
-	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) throws FieldRenderException {
+	public void render(HttpRequest request, HttpResponse response, BeanMap beanMap, SpiderBean bean) {
 		Set<Field> requestFields = ReflectionUtils.getAllFields(bean.getClass(), ReflectionUtils.withAnnotation(Request.class));
-		if(requestFields.size() > 0) {
-			Field field = requestFields.iterator().next();
+		for(Field field : requestFields) {
 			beanMap.put(field.getName(), request);
 		}
 	}
