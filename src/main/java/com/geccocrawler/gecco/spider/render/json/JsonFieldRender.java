@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSONException;
 import com.geccocrawler.gecco.annotation.JSONPath;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
+import com.geccocrawler.gecco.spider.JsonBean;
 import com.geccocrawler.gecco.spider.SpiderBean;
 import com.geccocrawler.gecco.spider.conversion.Conversion;
 import com.geccocrawler.gecco.spider.render.FieldRender;
@@ -88,6 +89,9 @@ public class JsonFieldRender implements FieldRender {
 			}
 		} else {
 			if (ReflectUtils.haveSuperType(type, SpiderBean.class)) {
+				if(src == null) {
+					return null;
+				}
 				// spiderBean
 				return spiderBeanRender(src, type, request);
 			} else {
@@ -102,8 +106,10 @@ public class JsonFieldRender implements FieldRender {
 		List<SpiderBean> list = new ArrayList<SpiderBean>();
 		JSONArray ja = (JSONArray) src;
 		for (Object jo : ja) {
-			SpiderBean subBean = this.spiderBeanRender(jo, genericClass, request);
-			list.add(subBean);
+			if(jo != null) {
+				SpiderBean subBean = this.spiderBeanRender(jo, genericClass, request);
+				list.add(subBean);
+			}
 		}
 		return list;
 	}
@@ -111,7 +117,12 @@ public class JsonFieldRender implements FieldRender {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private SpiderBean spiderBeanRender(Object src, Class genericClass, HttpRequest request) {
 		HttpResponse subResponse = HttpResponse.createSimple(src.toString());
-		Render render = RenderContext.getRender(RenderType.JSON);
+		Render render = null;
+		if(ReflectUtils.haveSuperType(genericClass, JsonBean.class)) {
+			render = RenderContext.getRender(RenderType.JSON);
+		} else {
+			render = RenderContext.getRender(RenderType.HTML);
+		}
 		SpiderBean subBean = render.inject(genericClass, request, subResponse);
 		return subBean;
 	}
