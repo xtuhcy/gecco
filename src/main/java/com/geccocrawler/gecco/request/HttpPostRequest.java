@@ -34,6 +34,10 @@ public class HttpPostRequest extends AbstractHttpRequest {
 		fields.put(name, field);
 	}
 	
+	public String getField(String name) {
+		return fields.get(name);
+	}
+	
 	public static HttpPostRequest fromJson(JSONObject request) {
 		return (HttpPostRequest)JSON.toJavaObject(request, HttpPostRequest.class);
 	}
