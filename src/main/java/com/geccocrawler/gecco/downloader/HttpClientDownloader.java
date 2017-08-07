@@ -123,8 +123,8 @@ public class HttpClientDownloader extends AbstractDownloader {
 			reqObj = new HttpPost(post.getUrl());
 			//post fields
 			List<NameValuePair> fields = new ArrayList<NameValuePair>();
-			for(Map.Entry<String, Object> entry : post.getFields().entrySet()) {
-				NameValuePair nvp = new BasicNameValuePair(entry.getKey(), entry.getValue().toString());
+			for(Map.Entry<String, String> entry : post.getFields().entrySet()) {
+				NameValuePair nvp = new BasicNameValuePair(entry.getKey(), entry.getValue());
 				fields.add(nvp);
 			}
 			try {
