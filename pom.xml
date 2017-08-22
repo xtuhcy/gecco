@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.geccocrawler</groupId>
 	<artifactId>gecco</artifactId>
-	<version>1.2.9</version>
+	<version>1.2.10</version>
 
 	<name>Gecco</name>
 	<description>Easy to use lightweight web crawler</description>
@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
-			<version>1.10.2</version>
+			<version>1.10.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.reflections</groupId>
@@ -28,7 +28,7 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
-			<version>1.2.28</version>
+			<version>1.2.37</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
