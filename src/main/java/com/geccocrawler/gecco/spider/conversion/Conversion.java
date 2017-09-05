@@ -1,5 +1,6 @@
 package com.geccocrawler.gecco.spider.conversion;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +22,7 @@ public class Conversion {
 		TYPE_HANDLERS.put(Boolean.class, new BooleanTypeHandle());
 		TYPE_HANDLERS.put(boolean.class, new BooleanTypeHandle());
 		TYPE_HANDLERS.put(Date.class, new DateTypeHandle());
+		TYPE_HANDLERS.put(BigDecimal.class, new BigDecimalTypeHandle());
 	}
 
 	@SuppressWarnings({ "rawtypes" })
