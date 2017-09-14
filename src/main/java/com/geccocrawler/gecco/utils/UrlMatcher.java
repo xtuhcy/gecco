@@ -63,11 +63,18 @@ public class UrlMatcher {
 		Pattern pattern = Pattern.compile(regex1);
 		Matcher matcher = pattern.matcher(regexSrc);
 		List<String> names = new ArrayList<String>();
-		while(matcher.find()) {
+		/*while(matcher.find()) {
 			matcher.appendReplacement(sb, "([^/]*)");
 			//matcher.appendReplacement(sb, "(.*)");
 			String name = matcher.group(1);
 			names.add(name);
+		}*/
+		//每一个匹配都是键值对key:value或者只有key
+		while(matcher.find()) {
+			String name = matcher.group(1);
+			String[] splits = name.split("\\s*:\\s*");//使用:分割,只能分成两个组
+			names.add(splits[0]);
+			matcher.appendReplacement(sb, splits.length>1?"("+name.substring(name.indexOf(":")+1)+")":"([^/]*)");
 		}
 		if(names.size() > 0) {
 			matcher.appendTail(sb);
