@@ -166,8 +166,6 @@ You can see that the DynamicGecco way compared to the traditional way of annotat
 
 [一个完整的例子，分页处理，结合spring，mysql入库](http://git.oschina.net/xiaomaoguai/gecco-demo)
 
-[典型案例—闲逛APP](http://www.geccocrawler.com/xg/)
-
 ## Similar Tool Comparison
 
 A list of similar tools and how they compare is available here:
@@ -178,6 +176,12 @@ A list of similar tools and how they compare is available here:
 
 - blog：http://my.oschina.net/u/2336761/blog
 - email：xtuhcy@163.com
+
+## 请作者喝杯咖啡
+Gecco的发展离不开大家支持，扫一扫请作者喝杯咖啡～
+
+![支付宝](http://www.geccocrawler.com/content/images/jz-zfb.jpg?xx=2)
+![支付宝](http://www.geccocrawler.com/content/images/jz-wx.png)
 
 ## License
 Please follow the open source protocol [MIT](https://raw.githubusercontent.com/xtuhcy/gecco/master/LICENSE)!
