@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.reflections.ReflectionUtils;
 
 import com.geccocrawler.gecco.annotation.RequestParameter;
+import com.geccocrawler.gecco.request.HttpPostRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.spider.SpiderBean;
@@ -30,6 +31,10 @@ public class RequestParameterFieldRender implements FieldRender {
 				key = field.getName();
 			}
 			String src = request.getParameter(key);
+			if(request instanceof HttpPostRequest && StringUtils.isEmpty(src)) {
+				HttpPostRequest postRequest = (HttpPostRequest)request;
+				src = postRequest.getField(key);
+			}
 			try {
 				Object value = Conversion.getValue(field.getType(), src);
 				fieldMap.put(field.getName(), value);

@@ -63,11 +63,23 @@ public class UrlMatcher {
 		Pattern pattern = Pattern.compile(regex1);
 		Matcher matcher = pattern.matcher(regexSrc);
 		List<String> names = new ArrayList<String>();
-		while(matcher.find()) {
+		/*while(matcher.find()) {
 			matcher.appendReplacement(sb, "([^/]*)");
 			//matcher.appendReplacement(sb, "(.*)");
 			String name = matcher.group(1);
 			names.add(name);
+		}*/
+		//每一个匹配都是键值对key:value或者只有key
+		while(matcher.find()) {
+			String name = matcher.group(1);
+			String[] splits = name.split("\\s*:\\s*");//使用:分割,只能分成两个组
+			names.add(splits[0]);
+			//如果有自定义的正则表达式规则，使用自定义的正则表达式规则。类似Jersey的@Path语法
+			String regex2 = "([^/]*)";
+			if(splits.length > 1) {
+				regex2 = "("+splits[1]+")";
+			}
+			matcher.appendReplacement(sb, regex2);
 		}
 		if(names.size() > 0) {
 			matcher.appendTail(sb);
@@ -114,6 +126,11 @@ public class UrlMatcher {
 		//System.out.println(match(url, regex));
 		String url = "http://www.ly.com/HotelInfo-597101.html#id_nameAndSliderInfo&is=1&searchId=undefined&ab=0";
 		String regex = "http://www.ly.com/HotelInfo-{code}.html#{hash}";
-		System.out.println(match(url, regex));
+		String url1 = "http://xxx.com/index.html";
+		String url2 = "http://xxx.com/123456.html";
+		String regex2 = "http://xxx.com/{code:[0-9]+}.html";
+		String regex3 = "http://xxx.com/{code}.html";
+		System.out.println(match(url2, regex2));
+		System.out.println(match(url2, regex3));
 	}
 }

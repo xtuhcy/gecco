@@ -69,11 +69,13 @@ public class SpiderBeanFactory {
 		if (StringUtils.isNotEmpty(classPath)) {
 			reflections = new Reflections(
 					ConfigurationBuilder.build("com.geccocrawler.gecco", classPath, GeccoClassLoader.get())
-							.setMetadataAdapter(new GeccoJavaReflectionAdapter()));
+							.setMetadataAdapter(new GeccoJavaReflectionAdapter())
+							.setExpandSuperTypes(false));
 			// reflections = new Reflections("com.geccocrawler.gecco", classPath);
 		} else {
 			reflections = new Reflections(ConfigurationBuilder.build("com.geccocrawler.gecco", GeccoClassLoader.get())
-					.setMetadataAdapter(new GeccoJavaReflectionAdapter()));
+					.setMetadataAdapter(new GeccoJavaReflectionAdapter())
+					.setExpandSuperTypes(false));
 			// reflections = new Reflections("com.geccocrawler.gecco");
 		}
 		dynamic();

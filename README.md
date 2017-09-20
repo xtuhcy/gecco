@@ -1,14 +1,14 @@
 ![ci](https://api.travis-ci.org/xtuhcy/gecco.svg?branch=master)
 ![maven](https://img.shields.io/maven-central/v/com.geccocrawler/gecco.svg?style=flat-square)
 
-##What is Gecco
+## What is Gecco
 Gecco is a easy to use lightweight web crawler developed with java language.Gecco integriert jsoup, httpclient, fastjson, spring, htmlunit, redission ausgezeichneten framework,Let you only need to configure a number of jQuery style selector can be very quick to write a crawler.Gecco framework has excellent scalability, the framework based on the principle of open and close design, to modify the closure, the expansion of open.At the same time Gecco is based on a very open MIT open source protocol, whether you are a user or want to jointly improve the Gecco developer, welcome to request pull.If you like the crawler framework,please [star or fork](https://github.com/xtuhcy/gecco)!
 
 * [中文说明](https://github.com/xtuhcy/gecco/blob/master/README_CN.md)
 
 * [中文参考手册](http://www.geccocrawler.com/)
 
-##Main features
+## Main features
 
 * [x] Easy to use, use jQuery style selector to extract elements
 * [x] Support for asynchronous Ajax requests in the page
@@ -20,11 +20,11 @@ Gecco is a easy to use lightweight web crawler developed with java language.Gecc
 * [x] Support download UserAgent random selection
 * [x] Support the download proxy server randomly selected
 
-##Framework overview
+## Framework overview
 ![架构图](https://raw.githubusercontent.com/xtuhcy/gecco/master/doc/%E6%9E%B6%E6%9E%84%E5%9B%BE.jpg)
 
-##Download
-###Download via Maven
+## Download
+### Download via Maven
 
 ```xml
 <dependency>
@@ -36,10 +36,10 @@ Gecco is a easy to use lightweight web crawler developed with java language.Gecc
 
 ![maven](https://img.shields.io/maven-central/v/com.geccocrawler/gecco.svg?style=flat-square)
 
-###Dependent project
+### Dependent project
 httpclient，jsoup，fastjson，reflections，cglib，rhino，log4j，jmxutils，commons-lang3
 
-##Quick start
+## Quick start
 
 ```java
 @Gecco(matchUrl="https://github.com/{user}/{project}", pipelines="consolePipeline")
@@ -130,7 +130,7 @@ public class MyGithub implements HtmlBean {
 }
 ```
 
-##DynamicGecco
+## DynamicGecco
 The purpose of DynamicGecco is to implement the runtime configuration of the crawl rule without defining the SpiderBean.In fact, the principle is the use of byte code programming, dynamic generation of SpiderBean, but also through the custom GeccoClassLoader to achieve the rule of hot deployment.Below is a simple Demo, more complex Demo can refer to the example below com.geccocrawler.gecco.demo.dynamic.
 
 The following code implements the runtime configuration of the crawl rule:
@@ -153,7 +153,7 @@ The following code implements the runtime configuration of the crawl rule:
 
 You can see that the DynamicGecco way compared to the traditional way of annotation code greatly reduced, and a very cool point is DynamicGecco to support the operation of the definition and modification of rules.
 
-##Demo
+## Demo
 [教您使用java爬虫gecco抓取JD全部商品信息（一）](http://my.oschina.net/u/2336761/blog/620158)
 
 [教您使用java爬虫gecco抓取JD全部商品信息（二）](http://my.oschina.net/u/2336761/blog/620827)
@@ -166,12 +166,22 @@ You can see that the DynamicGecco way compared to the traditional way of annotat
 
 [一个完整的例子，分页处理，结合spring，mysql入库](http://git.oschina.net/xiaomaoguai/gecco-demo)
 
-[典型案例—闲逛APP](http://www.geccocrawler.com/xg/)
+## Similar Tool Comparison
 
-##Contact and communication
+A list of similar tools and how they compare is available here:
+
+[Web Archiving Software Comparision](https://github.com/archivers-space/research/tree/master/web_archiving)
+
+## Contact and communication
 
 - blog：http://my.oschina.net/u/2336761/blog
 - email：xtuhcy@163.com
 
-##License
+## 请作者喝杯咖啡
+Gecco的发展离不开大家支持，扫一扫请作者喝杯咖啡～
+
+![支付宝](http://www.geccocrawler.com/content/images/jz-zfb.jpg?xx=2)
+![支付宝](http://www.geccocrawler.com/content/images/jz-wx.png)
+
+## License
 Please follow the open source protocol [MIT](https://raw.githubusercontent.com/xtuhcy/gecco/master/LICENSE)!

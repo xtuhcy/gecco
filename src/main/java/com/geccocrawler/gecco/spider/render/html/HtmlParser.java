@@ -283,7 +283,7 @@ public class HtmlParser {
 
 	private boolean isTable(String content) {
 		if (!StringUtils.contains(content, "</html>")) {
-			String rege = "<\\s*(tr|td|th)[\\s\\S]+";
+			String rege = "<\\s*(thead|tbody|tr|td|th)[\\s\\S]+";
 			Pattern pattern = Pattern.compile(rege);
 			Matcher matcher = pattern.matcher(content);
 			if (matcher.matches()) {

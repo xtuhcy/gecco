@@ -13,12 +13,12 @@ public class StartRequestList {
 
 	private Map<String, String> headers;
 
-	private Map<String, Object> posts;
+	private Map<String, String> posts;
 	
 	public StartRequestList() {
 		cookies = new HashMap<String, String>();
 		headers = new HashMap<String, String>();
-		posts = new HashMap<String, Object>();
+		posts = new HashMap<String, String>();
 	}
 	
 	public HttpRequest toRequest() {
@@ -82,11 +82,11 @@ public class StartRequestList {
 		this.headers = headers;
 	}
 
-	public Map<String, Object> getPosts() {
+	public Map<String, String> getPosts() {
 		return posts;
 	}
 
-	public void setPosts(Map<String, Object> posts) {
+	public void setPosts(Map<String, String> posts) {
 		this.posts = posts;
 	}
 
