@@ -2,7 +2,7 @@
 ![maven](https://img.shields.io/maven-central/v/com.geccocrawler/gecco.svg?style=flat-square)
 
 ##Gecco是什么
-Gecco是一款用java语言开发的轻量化的易用的网络爬虫。Gecco整合了jsoup、httpclient、fastjson、spring、htmlunit、redission等优秀框架，让您只需要配置一些jquery风格的选择器就能很快的写出一个爬虫。Gecco框架有优秀的可扩展性，框架基于开闭原则进行设计，对修改关闭、对扩展开放。同时Gecco基于十分开放的MIT开源协议，无论你是使用者还是希望共同完善Gecco的开发者，欢迎pull request。如果你喜欢这款爬虫框架请[star 或者 fork](https://github.com/xtuhcy/gecco)!
+Gecco是一款用java语言开发的轻量化的易用的网络爬虫。Gecco整合了jsoup、httpclient、fastjson、spring、htmlunit、redission等优秀框架，让您只需要配置一些jquery风格的选择器就能很快的写出一个爬虫。Gecco框架有优秀的可扩展性，框架基于开闭原则进行设计，对修改关闭、对扩展开放。同时Gecco基于十分开放的MIT开源协议，无论你是使用者还是希望共同完善Gecco的开发者，欢迎pull request。如果你喜欢这款爬虫框架请[star 或者 fork](https://gitee.com/xtuhcy/gecco)!
 
 [参考手册](http://www.geccocrawler.com/)
 
