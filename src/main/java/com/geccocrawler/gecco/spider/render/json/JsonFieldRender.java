@@ -146,6 +146,20 @@ public class JsonFieldRender implements FieldRender {
 			return null;
 		}
 		jsonp = StringUtils.trim(jsonp);
+
+		if(jsonp.startsWith("try")){
+			String def = jsonp.substring(3,jsonp.indexOf("catch"));
+			if(StringUtils.isEmpty(def)){
+				return "";
+			}
+			int fromIndex = def.indexOf('(',1);
+			int toIndex = def.lastIndexOf(")");
+			if(fromIndex!=-1&&toIndex!=-1){
+				def = def.substring(fromIndex+1,toIndex).trim();
+				return def;
+			}
+		}
+
 		if (StringUtils.endsWith(jsonp, ";")) {
 			jsonp = StringUtils.substringBeforeLast(jsonp, ";");
 			jsonp = StringUtils.trim(jsonp);
