@@ -155,7 +155,7 @@ public class JsonFieldRender implements FieldRender {
 			int fromIndex = def.indexOf('(',1);
 			int toIndex = def.lastIndexOf(")");
 			if(fromIndex!=-1&&toIndex!=-1){
-				def = def.substring(fromIndex,toIndex).trim();
+				def = def.substring(fromIndex+1,toIndex).trim();
 				return def;
 			}
 		}
