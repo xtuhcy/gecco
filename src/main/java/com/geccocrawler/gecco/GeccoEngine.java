@@ -7,6 +7,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,7 +43,7 @@ import com.google.common.io.Resources;
  * @author huchengyi
  *
  */
-public class GeccoEngine extends Thread {
+public class GeccoEngine<V> extends Thread implements Callable<V> {
 
 	private static Log log = LogFactory.getLog(GeccoEngine.class);
 
@@ -79,6 +80,16 @@ public class GeccoEngine extends Thread {
 	private int retry;
 
 	private EventListener eventListener;
+
+	private V ret;//callable 返回值
+
+	public V getRet() {
+		return ret;
+	}
+
+	public void setRet(V ret) {
+		this.ret = ret;
+	}
 
 	private GeccoEngine() {
 		this.retry = 3;
@@ -433,5 +444,12 @@ public class GeccoEngine extends Thread {
 	public GeccoEngine setEventListener(EventListener eventListener) {
 		this.eventListener = eventListener;
 		return this;
+	}
+
+
+	@Override
+	public V call() throws Exception {
+		run();
+		return ret;
 	}
 }
