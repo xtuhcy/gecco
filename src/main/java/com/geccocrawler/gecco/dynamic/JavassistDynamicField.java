@@ -179,7 +179,7 @@ public class JavassistDynamicField implements DynamicField {
 
 	@Override
 	public DynamicField jsvar(String var, String jsonpath) {
-		Annotation annot = new Annotation(RequestParameter.class.getName(), cpool);
+		Annotation annot = new Annotation(JSVar.class.getName(), cpool);
         annot.addMemberValue("var", new StringMemberValue(var, cpool));
         annot.addMemberValue("jsonpath", new StringMemberValue(jsonpath, cpool));
         attr.addAnnotation(annot);
