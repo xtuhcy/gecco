@@ -11,6 +11,7 @@ import com.geccocrawler.gecco.annotation.Html;
 import com.geccocrawler.gecco.annotation.HtmlField;
 import com.geccocrawler.gecco.annotation.Image;
 import com.geccocrawler.gecco.annotation.JSONPath;
+import com.geccocrawler.gecco.annotation.JSVar;
 import com.geccocrawler.gecco.annotation.Request;
 import com.geccocrawler.gecco.annotation.RequestParameter;
 import com.geccocrawler.gecco.annotation.Text;
