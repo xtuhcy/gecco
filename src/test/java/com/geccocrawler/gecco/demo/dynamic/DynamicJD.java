@@ -79,7 +79,7 @@ public class DynamicJD {
 		HttpGetRequest start = new HttpGetRequest("http://www.jd.com/allSort.aspx");
 		start.setCharset("GBK");
 		GeccoEngine.create()
-		.classpath("com.geccocrawler.gecco.demo.jd")
+		.classpath("com.geccocrawler.gecco.demo.dynamic")
 		.start(start)
 		.interval(2000)
 		.run();
