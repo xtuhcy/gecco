@@ -2,6 +2,7 @@ package com.geccocrawler.gecco.spider.render.html;
 
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -42,12 +43,25 @@ public class ImageFieldRender implements FieldRender {
 		beanMap.putAll(fieldMap);
 	}
 
+	@SuppressWarnings("unchecked")
 	private Object injectImageField(HttpRequest request, BeanMap beanMap, SpiderBean bean, Field field) {
 		Object value = beanMap.get(field.getName());
 		if(value == null) {
 			return null;
 		}
-		String imgUrl = value.toString();
+		if(value instanceof Collection) {
+			Collection<Object> collection = (Collection<Object>)value;
+			for(Object item : collection) {
+				String imgUrl = downloadImage(request, field, item.toString());
+				item = imgUrl;
+			}
+			return collection;
+		} else {
+			return downloadImage(request, field, value.toString());
+		}
+	}
+	
+	private String downloadImage(HttpRequest request, Field field, String imgUrl) {
 		if(StringUtils.isEmpty(imgUrl)) {
 			return imgUrl;
 		}

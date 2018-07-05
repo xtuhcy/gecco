@@ -7,6 +7,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,7 +43,7 @@ import com.google.common.io.Resources;
  * @author huchengyi
  *
  */
-public class GeccoEngine extends Thread {
+public class GeccoEngine<V> extends Thread implements Callable<V> {
 
 	private static Log log = LogFactory.getLog(GeccoEngine.class);
 
@@ -75,10 +76,24 @@ public class GeccoEngine extends Thread {
 	private boolean mobile;
 
 	private boolean debug;
+	
+	private boolean monitor = true;
 
 	private int retry;
 
 	private EventListener eventListener;
+	
+	private String jmxPrefix;
+
+	private V ret;//callable 返回值
+
+	public V getRet() {
+		return ret;
+	}
+
+	public void setRet(V ret) {
+		this.ret = ret;
+	}
 
 	private GeccoEngine() {
 		this.retry = 3;
@@ -176,9 +191,19 @@ public class GeccoEngine extends Thread {
 		this.debug = debug;
 		return this;
 	}
+	
+	public GeccoEngine monitor(boolean monitor) {
+		this.monitor = monitor;
+		return this;
+	}
 
 	public GeccoEngine classpath(String classpath) {
 		this.classpath = classpath;
+		return this;
+	}
+	
+	public GeccoEngine jmxPrefix(String jmxPrefix) {
+		this.jmxPrefix = jmxPrefix;
 		return this;
 	}
 
@@ -244,10 +269,12 @@ public class GeccoEngine extends Thread {
 			thread.start();
 		}
 		startTime = new Date();
-		// 监控爬虫基本信息
-		GeccoMonitor.monitor(this);
-		// 启动导出jmx信息
-		GeccoJmx.export(classpath);
+		if(monitor) {
+			// 监控爬虫基本信息
+			GeccoMonitor.monitor(this);
+			// 启动导出jmx信息
+			GeccoJmx.export(jmxPrefix == null ? classpath : jmxPrefix);
+		}
 		// 非循环模式等待线程执行完毕后关闭
 		closeUnitlComplete();
 	}
@@ -329,6 +356,10 @@ public class GeccoEngine extends Thread {
 	
 	public boolean isProxy() {
 		return proxy;
+	}
+	
+	public boolean isMonitor() {
+		return monitor;
 	}
 
 	/**
@@ -433,5 +464,12 @@ public class GeccoEngine extends Thread {
 	public GeccoEngine setEventListener(EventListener eventListener) {
 		this.eventListener = eventListener;
 		return this;
+	}
+
+
+	@Override
+	public V call() throws Exception {
+		run();
+		return ret;
 	}
 }

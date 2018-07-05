@@ -11,6 +11,7 @@ import com.geccocrawler.gecco.annotation.Html;
 import com.geccocrawler.gecco.annotation.HtmlField;
 import com.geccocrawler.gecco.annotation.Image;
 import com.geccocrawler.gecco.annotation.JSONPath;
+import com.geccocrawler.gecco.annotation.JSVar;
 import com.geccocrawler.gecco.annotation.Request;
 import com.geccocrawler.gecco.annotation.RequestParameter;
 import com.geccocrawler.gecco.annotation.Text;
@@ -179,7 +180,7 @@ public class JavassistDynamicField implements DynamicField {
 
 	@Override
 	public DynamicField jsvar(String var, String jsonpath) {
-		Annotation annot = new Annotation(RequestParameter.class.getName(), cpool);
+		Annotation annot = new Annotation(JSVar.class.getName(), cpool);
         annot.addMemberValue("var", new StringMemberValue(var, cpool));
         annot.addMemberValue("jsonpath", new StringMemberValue(jsonpath, cpool));
         attr.addAnnotation(annot);
