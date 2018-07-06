@@ -5,11 +5,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketTimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.conn.ConnectTimeoutException;
 
 public abstract class AbstractDownloader implements Downloader {
 	
@@ -47,8 +49,9 @@ public abstract class AbstractDownloader implements Downloader {
 	 * 
 	 * @param in 原始的inputStream
 	 * @return 可以重复使用的ByteArrayInputStream
+	 * @throws IOException
 	 */
-	protected ByteArrayInputStream toByteInputStream(InputStream in) {
+	protected ByteArrayInputStream toByteInputStream(InputStream in) throws IOException {
 		ByteArrayInputStream bis = null;
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {
@@ -61,6 +64,10 @@ public abstract class AbstractDownloader implements Downloader {
 		} catch(EOFException eof){
 			bis = new ByteArrayInputStream(bos.toByteArray());
 			log.warn("inputstream " + in.getClass().getName() + " eof!");
+		} 
+		// 读取 org.apache.http.client.entity.LazyDecompressingInputStream 流时会抛出超时异常
+		catch(ConnectTimeoutException | SocketTimeoutException e) {
+			throw e;
 		} catch (IOException e) {
 			log.warn("inputstream " + in.getClass().getName() + " don't to byte inputstream!");
 			return null;
