@@ -33,15 +33,21 @@ public class FileProxys implements Proxys {
 	private static Log log = LogFactory.getLog(FileProxys.class);
 	
 	private ConcurrentLinkedQueue<Proxy> proxyQueue;
-	
+
+
+	//这个 Map 感觉有点多余
 	private Map<String, Proxy> proxys = null;
 	
 	public FileProxys() {
 		try {
 			proxys = new ConcurrentHashMap<String, Proxy>();
 			proxyQueue = new ConcurrentLinkedQueue<Proxy>();
+
+			// guava:com.google.common.io.Resources 辅助工具
 			URL url = Resources.getResource("proxys");
 			File file = new File(url.getPath());
+
+			// guava:com.google.common.io.Files 辅助工具
 			List<String> lines = Files.readLines(file, Charsets.UTF_8);
 			if(lines.size() > 0) {
 				for(String line : lines) {
@@ -52,6 +58,8 @@ public class FileProxys implements Proxys {
 					String[] hostPort = line.split(":");
 					if(hostPort.length == 2) {
 						String host = hostPort[0];
+
+						//Commons Lang NumberUtils 辅助工具
 						int port = NumberUtils.toInt(hostPort[1], 80);
 						addProxy(host, port);
 					}
@@ -104,7 +112,9 @@ public class FileProxys implements Proxys {
 			reProxy(proxy, success, failure);
 		}
 	}
-	
+
+
+	//重置代理队列
 	private void reProxy(Proxy proxy, long success, long failure) {
 		long sum = failure + success;
 		if(sum < 20) {

@@ -218,9 +218,12 @@ public class GeccoEngine<V> extends Thread implements Callable<V> {
 			Logger log = LogManager.getLogger("com.geccocrawler.gecco.spider.render");
 			log.setLevel(Level.DEBUG);
 		}
-		if(proxysLoader == null) {//默认采用proxys文件代理集合
+
+		//默认采用proxys文件代理集合
+		if(proxysLoader == null) {
 			proxysLoader = new FileProxys();
 		}
+
 		if (scheduler == null) {
 			if (loop) {
 				scheduler = new StartScheduler();
@@ -239,11 +242,11 @@ public class GeccoEngine<V> extends Thread implements Callable<V> {
 			threadCount = 1;
 		}
 		this.cdl = new CountDownLatch(threadCount);
-		startsJson();
 		if (startRequests.isEmpty()) {
 			// startRequests不为空
 			// throw new IllegalArgumentException("startRequests cannot be empty");
 		}
+		startsJson();
 		for (HttpRequest startRequest : startRequests) {
 			scheduler.into(startRequest);
 		}

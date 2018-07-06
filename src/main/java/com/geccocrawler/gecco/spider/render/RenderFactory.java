@@ -13,6 +13,7 @@ public abstract class RenderFactory {
 	private Map<RenderType, Render> renders;
 	
 	public RenderFactory(Reflections reflections) {
+		// customFieldRenderFactory 没鸡毛用
 		CustomFieldRenderFactory customFieldRenderFactory = new CustomFieldRenderFactory(reflections);
 		renders = new HashMap<RenderType, Render>();
 		

@@ -9,6 +9,9 @@
 	<description>Easy to use lightweight web crawler</description>
 	<url>https://github.com/xtuhcy/gecco</url>
 
+
+
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -61,9 +64,13 @@
 			<version>23.0</version>
 		</dependency>
 	</dependencies>
+
+
+
 	<build>
 		<pluginManagement>
 			<plugins>
+				<!-- 告诉 Maven 使用哪个 JDK 版本是用来编译项目 -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
@@ -77,9 +84,9 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<configuration>
-						<source>1.8</source>
-						<target>1.8</target>
-						<encoding>UTF-8</encoding>
+						<!--<source>1.8</source>-->
+						<!--<target>1.8</target>-->
+						<!--<encoding>UTF-8</encoding>-->
 						<skip>true</skip>
 					</configuration>
 				</plugin>
@@ -105,12 +112,19 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+
+
 	<scm>
 		<connection>scm:git:https://github.com/xtuhcy/gecco.git</connection>
 		<developerConnection>scm:git:https://github.com/xtuhcy/gecco.git</developerConnection>
 		<url>https://github.com/xtuhcy/gecco</url>
 		<tag>v1.0.6</tag>
 	</scm>
+
+
+
+
 	<developers>
 		<developer>
 			<name>xtuhcy</name>
@@ -119,6 +133,9 @@
 			<organizationUrl>http://www.geccocrawler.com</organizationUrl>
 		</developer>
 	</developers>
+
+
+
 	<licenses>
 		<license>
 			<name>The MIT License (MIT)</name>
@@ -191,7 +208,7 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
 						<configuration>
-							<encoding>UTF-8</encoding>
+							<!--<encoding>UTF-8</encoding>-->
 						</configuration>
 						<executions>
 							<execution>
@@ -221,4 +238,6 @@
 			</build>
 		</profile>
 	</profiles>
+
+
 </project>

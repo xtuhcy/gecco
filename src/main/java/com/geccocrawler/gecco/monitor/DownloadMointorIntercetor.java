@@ -13,6 +13,9 @@ public class DownloadMointorIntercetor implements MethodInterceptor {
 
 	@Override
 	public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
+		/**
+		 *  cglib 动态代理 Downloader，并记录 Downloader download 方法执行情况
+		 */
 		if(method.getName().equals("download")) {
 			HttpRequest request = (HttpRequest)args[0];
 			try {

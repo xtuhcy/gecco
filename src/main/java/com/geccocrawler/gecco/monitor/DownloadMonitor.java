@@ -36,12 +36,15 @@ public class DownloadMonitor {
 	 */
 	public static DownloadStatistics getStatistics(String host) {
 		DownloadStatistics downloadStatistics = statistics.get(host);
+
+		//第一重检查,防止多线程直接执行到 lock.lock() 方法,并发会导致程序效率变低
 		if(downloadStatistics != null) {
 			return downloadStatistics;
 		}
 		lock.lock();
 		try{
 			downloadStatistics = statistics.get(host);
+			//第二重检查
 			if(downloadStatistics == null) {
 				downloadStatistics = new DownloadStatistics();
 				statistics.put(host, downloadStatistics);
