@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -204,7 +206,9 @@ public class HttpClientDownloader extends AbstractDownloader {
 				proxys.success(proxy.getHostName(), proxy.getPort());
 			}
 			return resp;
-		} catch (IOException e) {
+		} catch(ConnectTimeoutException | SocketTimeoutException e) {
+			throw new DownloadTimeoutException(e);
+		} catch(IOException e) {
 			//超时等
 			if(proxy != null) {
 				proxys.failure(proxy.getHostName(), proxy.getPort());
