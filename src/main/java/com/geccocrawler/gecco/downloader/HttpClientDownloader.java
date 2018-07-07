@@ -207,9 +207,11 @@ public class HttpClientDownloader extends AbstractDownloader {
 			}
 			return resp;
 		} catch(ConnectTimeoutException | SocketTimeoutException e) {
+			if(proxy != null) {
+				proxys.failure(proxy.getHostName(), proxy.getPort());
+			}
 			throw new DownloadTimeoutException(e);
 		} catch(IOException e) {
-			//超时等
 			if(proxy != null) {
 				proxys.failure(proxy.getHostName(), proxy.getPort());
 			}
