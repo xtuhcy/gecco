@@ -126,6 +126,8 @@ public class FileProxys implements Proxys {
 		}
 	}
 
+
+	//proxy 是被所有线程共享的，出队之后，其他的线程获取不到代理，这样子的设计是对的吗？
 	@Override
 	public HttpHost getProxy() {
 		if(proxys == null || proxys.size() == 0) {

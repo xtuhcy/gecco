@@ -21,6 +21,9 @@ public class StartScheduler implements Scheduler {
 	@Override
 	public HttpRequest out() {
 		try {
+			//take:Retrieves and removes the head of this queue,
+			//waiting if necessary until an element becomes available.
+			//Block
 			return startQueue.take();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -31,6 +34,9 @@ public class StartScheduler implements Scheduler {
 	@Override
 	public void into(HttpRequest request) {
 		try {
+			//put:Inserts the specified element at the tail of this queue,
+			//waiting if necessary for space to become available.
+			//Block
 			startQueue.put(request);
 		} catch (InterruptedException e) {
 			e.printStackTrace();

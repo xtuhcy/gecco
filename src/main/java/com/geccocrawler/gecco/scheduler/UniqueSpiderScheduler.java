@@ -37,6 +37,8 @@ public class UniqueSpiderScheduler implements Scheduler {
 		});
 	}
 
+	//Retrieves and removes the first (lowest) element,
+	//or returns {@code null} if this set is empty.
 	@Override
 	public HttpRequest out() {
 		SortHttpRequest sortHttpRequest = set.pollFirst();

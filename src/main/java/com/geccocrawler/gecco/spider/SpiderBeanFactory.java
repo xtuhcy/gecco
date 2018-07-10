@@ -66,6 +66,8 @@ public class SpiderBeanFactory {
 	}
 
 	public SpiderBeanFactory(String classPath, PipelineFactory pipelineFactory) {
+
+		//reflections 创建过程中已经完成 Class 扫描操作
 		if (StringUtils.isNotEmpty(classPath)) {
 			reflections = new Reflections(
 					ConfigurationBuilder.build("com.geccocrawler.gecco", classPath, GeccoClassLoader.get())
@@ -78,7 +80,10 @@ public class SpiderBeanFactory {
 					.setExpandSuperTypes(false));
 			// reflections = new Reflections("com.geccocrawler.gecco");
 		}
+
+
 		dynamic();
+
 
 		this.downloaderFactory = new MonitorDownloaderFactory(reflections);
 		this.downloaderAOPFactory = new DownloaderAOPFactory(reflections);
