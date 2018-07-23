@@ -88,6 +88,8 @@ public class SpiderBeanFactory {
 		this.downloaderFactory = new MonitorDownloaderFactory(reflections);
 		this.downloaderAOPFactory = new DownloaderAOPFactory(reflections);
 		this.renderFactory = new MonitorRenderFactory(reflections);
+
+		//如果自定了 pipelineFactory
 		if (pipelineFactory != null) {
 			this.pipelineFactory = pipelineFactory;
 		} else {
@@ -148,7 +150,7 @@ public class SpiderBeanFactory {
 			}
 		}
 	}
-
+	//根据请求 Uri 获取对应的 spiderBean
 	public Class<? extends SpiderBean> matchSpider(HttpRequest request) {
 		String url = request.getUrl();
 		Class<? extends SpiderBean> commonSpider = null;// 通用爬虫
