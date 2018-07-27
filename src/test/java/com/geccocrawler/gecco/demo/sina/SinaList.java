@@ -3,10 +3,7 @@ package com.geccocrawler.gecco.demo.sina;
 import java.util.List;
 
 import com.geccocrawler.gecco.GeccoEngine;
-import com.geccocrawler.gecco.annotation.Gecco;
-import com.geccocrawler.gecco.annotation.HtmlField;
-import com.geccocrawler.gecco.annotation.PipelineName;
-import com.geccocrawler.gecco.annotation.Text;
+import com.geccocrawler.gecco.annotation.*;
 import com.geccocrawler.gecco.pipeline.Pipeline;
 import com.geccocrawler.gecco.spider.HtmlBean;
 
@@ -31,6 +28,7 @@ public class SinaList implements HtmlBean, Pipeline<SinaList> {
 		
 		private static final long serialVersionUID = 5243013123370386328L;
 
+		@Attr("href")
 		@HtmlField(cssPath="a")
 		private String url;
 		
@@ -53,12 +51,21 @@ public class SinaList implements HtmlBean, Pipeline<SinaList> {
 		public void setTag(String tag) {
 			this.tag = tag;
 		}
-		
+
+		@Override
+		public String toString() {
+			return "Item{" +
+					"url='" + url + '\'' +
+					", tag='" + tag + '\'' +
+					'}';
+		}
 	}
 
 	@Override
 	public void process(SinaList bean) {
-		System.out.println(bean.getItems().size());
+		for (Item item : bean.getItems()) {
+			System.out.println(item);
+		}
 	}
 
 	public static void main(String[] args) {

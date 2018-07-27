@@ -38,6 +38,9 @@ public class SogouWX implements HtmlBean {
 	
 	public static void main(String[] args) {
 		HttpGetRequest start = new HttpGetRequest("http://weixin.sogou.com/weixin?type=2&query=%E6%B7%B1%E5%9C%B3");
+
+		//这个样例应该是为了验证 BeforeArticleDownloader
+
 		start.addCookie("SNUID", "1D22392EF4F6C4A92076C208F4DE3AAB");
 		start.addCookie("SUID", "EED1CDDA6B20900A00000000570E1872");
 		start.addCookie("IPLOC", "CN1100");
@@ -49,8 +52,8 @@ public class SogouWX implements HtmlBean {
 		start.addHeader("Cache-Control", "max-age=0");
 		GeccoEngine.create()
 		.classpath("com.geccocrawler.gecco.demo.sogouwx")
-		.start(start)
-		//.start("http://mp.weixin.qq.com/s?__biz=MzAwMjIyODIwNA==&mid=2650194319&idx=7&sn=5fbba7eb7f393508461468ea5c412ba5&3rd=MzA3MDU4NTYzMw==&scene=6")
+//		.start(start)
+		.start("https://mp.weixin.qq.com/s?src=11&timestamp=1532404725&ver=1017&signature=*jZ6-p5r8H1OW-SXTrldAxpCI71SY8R*fcV3CvJtlR*y0WXe9wWGJ1kcPbvxg6gC*AhBKNqpEzTPy7ZbSKsGGcX9YBwzUpVhX2IAHim-vISY-uFjFg2Knzl1jEeipy99&new=1")
 		.interval(5000)
 		.run();
 	}

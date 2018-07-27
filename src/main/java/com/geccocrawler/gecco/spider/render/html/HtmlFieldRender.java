@@ -50,6 +50,7 @@ public class HtmlFieldRender implements FieldRender {
 			Class genericClass = ReflectUtils.getGenericClass(genericType, 0);// 泛型类
 			if (ReflectUtils.haveSuperType(genericClass, SpiderBean.class)) {
 				// List<spiderBean>
+				// 如果 Filed 泛型参数是 SpiderBean，则需要进一步解析
 				return parser.$beanList(cssPath, request, genericClass);
 			} else {
 				// List<Object>
