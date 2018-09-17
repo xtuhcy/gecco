@@ -189,7 +189,7 @@ public class HttpClientDownloader extends AbstractDownloader {
 				}
 				resp.setContentType(contentType);
 				if(!isImage(contentType)) { 
-					String charset = getCharset(request.getCharset(), contentType);
+					String charset = request.isForceUseCharset() ? request.getCharset():getCharset(request.getCharset(), contentType);
 					resp.setCharset(charset);
 					//String content = EntityUtils.toString(responseEntity, charset);
 					String content = getContent(raw, responseEntity.getContentLength(), charset);
