@@ -28,6 +28,10 @@ public interface HttpRequest extends Cloneable {
 	
 	public void setCharset(String charset);
 	
+	public void setForceUseCharset(boolean forceUseCharset);
+	
+	public boolean isForceUseCharset();
+	
 	public HttpRequest subRequest(String url);
 	
 	public Map<String, String> getCookies();

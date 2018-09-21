@@ -15,6 +15,8 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 
 	private String url;
 	
+	private boolean forceUseCharset = false;
+	
 	private String charset;
 	
 	private Map<String, String> parameters;
@@ -120,6 +122,16 @@ public abstract class AbstractHttpRequest implements HttpRequest, Comparable<Htt
 	@Override
 	public Map<String, String> getParameters() {
 		return parameters;
+	}
+	
+	@Override
+	public void setForceUseCharset(boolean forceUseCharset) {
+		this.forceUseCharset = forceUseCharset;
+	}
+
+	@Override
+	public boolean isForceUseCharset() {
+		return forceUseCharset;
 	}
 
 	@Override

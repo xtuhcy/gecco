@@ -189,7 +189,7 @@ public class HttpClientDownloader extends AbstractDownloader {
 				}
 				resp.setContentType(contentType);
 				if(!isImage(contentType)) { 
-					String charset = getCharset(request.getCharset(), contentType);
+					String charset = request.isForceUseCharset() ? request.getCharset():getCharset(request.getCharset(), contentType);
 					resp.setCharset(charset);
 					//String content = EntityUtils.toString(responseEntity, charset);
 					String content = getContent(raw, responseEntity.getContentLength(), charset);
@@ -207,9 +207,11 @@ public class HttpClientDownloader extends AbstractDownloader {
 			}
 			return resp;
 		} catch(ConnectTimeoutException | SocketTimeoutException e) {
+			if(proxy != null) {
+				proxys.failure(proxy.getHostName(), proxy.getPort());
+			}
 			throw new DownloadTimeoutException(e);
 		} catch(IOException e) {
-			//超时等
 			if(proxy != null) {
 				proxys.failure(proxy.getHostName(), proxy.getPort());
 			}
