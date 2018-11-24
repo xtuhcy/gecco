@@ -1,5 +1,6 @@
 package com.geccocrawler.gecco.spider.render;
 
+import com.geccocrawler.gecco.spider.render.json.UserRender;
 import org.reflections.Reflections;
 
 import net.sf.cglib.proxy.Enhancer;
@@ -29,7 +30,13 @@ public class MonitorRenderFactory extends RenderFactory {
 		enhancer.setCallback(new RenderMointorIntercetor());
 		return (JsonRender)enhancer.create();
 	}
-	
-	
+
+	@Override
+	public UserRender createUserRender() {
+		Enhancer enhancer = new Enhancer();
+		enhancer.setSuperclass(UserRender.class);
+		enhancer.setCallback(new RenderMointorIntercetor());
+		return (UserRender)enhancer.create();
+	}
 	
 }

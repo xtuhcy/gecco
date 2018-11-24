@@ -198,6 +198,9 @@ public class SpiderBeanFactory {
 		if (ReflectUtils.haveSuperType(spiderBeanClass, JsonBean.class)) {
 			renderType = RenderType.JSON;
 		}
+		if (ReflectUtils.haveSuperType(spiderBeanClass, UserBean.class)) {
+			renderType = RenderType.USER;
+		}
 		context.setRender(renderFactory.getRender(renderType));
 	}
 

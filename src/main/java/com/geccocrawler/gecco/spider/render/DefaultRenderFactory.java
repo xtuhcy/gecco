@@ -1,5 +1,6 @@
 package com.geccocrawler.gecco.spider.render;
 
+import com.geccocrawler.gecco.spider.render.json.UserRender;
 import org.reflections.Reflections;
 
 import com.geccocrawler.gecco.spider.render.html.HtmlRender;
@@ -18,5 +19,7 @@ public class DefaultRenderFactory extends RenderFactory {
 	public JsonRender createJsonRender() {
 		return new JsonRender();
 	}
-	
+	public UserRender createUserRender() {
+		return new UserRender();
+	}
 }

@@ -3,6 +3,7 @@ package com.geccocrawler.gecco.spider.render;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.geccocrawler.gecco.spider.render.json.UserRender;
 import org.reflections.Reflections;
 
 import com.geccocrawler.gecco.spider.render.html.HtmlRender;
@@ -24,6 +25,10 @@ public abstract class RenderFactory {
 		
 		renders.put(RenderType.HTML, htmlRender);
 		renders.put(RenderType.JSON, jsonRender);
+
+		AbstractRender userRender = createUserRender();
+		jsonRender.setCustomFieldRenderFactory(customFieldRenderFactory);
+		renders.put(RenderType.USER, userRender);
 	}
 	
 	public Render getRender(RenderType type) {
@@ -31,7 +36,9 @@ public abstract class RenderFactory {
 	}
 	
 	public abstract HtmlRender createHtmlRender();
-	
+
 	public abstract JsonRender createJsonRender();
-	
+
+	public abstract UserRender createUserRender();
+
 }
