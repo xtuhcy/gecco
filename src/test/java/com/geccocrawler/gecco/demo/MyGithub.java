@@ -25,13 +25,13 @@ public class MyGithub implements HtmlBean {
 	private String project;
 	
 	@Text(own=false)
-	@HtmlField(cssPath=".repository-meta-content")
+	@HtmlField(cssPath="#repo-meta-edit span.text-gray-dark.mr-2")
 	private String title;
 	
 	@Text(own=false)
 	@HtmlField(cssPath=".pagehead-actions li:nth-child(2) .social-count")
-	private int star;
-	
+	private String star;
+
 	@Text
 	@HtmlField(cssPath=".pagehead-actions li:nth-child(3) .social-count")
 	private int fork;
@@ -40,7 +40,7 @@ public class MyGithub implements HtmlBean {
 	@HtmlField(cssPath="ul.numbers-summary > li:nth-child(4) > a")
 	private String contributors;
 	
-	@HtmlField(cssPath=".entry-content")
+	//@HtmlField(cssPath=".entry-content")
 	private String readme;
 
 	public HttpRequest getRequest() {
@@ -83,11 +83,11 @@ public class MyGithub implements HtmlBean {
 		this.title = title;
 	}
 
-	public int getStar() {
+	public String getStar() {
 		return star;
 	}
 
-	public void setStar(int star) {
+	public void setStar(String star) {
 		this.star = star;
 	}
 

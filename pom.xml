@@ -13,12 +13,12 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.5.3</version>
+			<version>4.5.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
-			<version>1.10.3</version>
+			<version>1.11.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.reflections</groupId>
@@ -28,7 +28,7 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
-			<version>1.2.38</version>
+			<version>1.2.54</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -38,17 +38,17 @@
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
-			<version>3.2.5</version>
+			<version>3.2.10</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.6</version>
+			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mozilla</groupId>
 			<artifactId>rhino</artifactId>
-			<version>1.7.7.2</version>
+			<version>1.7.10</version>
 		</dependency>
 		<dependency>
 			<groupId>org.weakref</groupId>
@@ -58,7 +58,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>23.0</version>
+			<version>27.0.1-jre</version>
 		</dependency>
 	</dependencies>
 	<build>
