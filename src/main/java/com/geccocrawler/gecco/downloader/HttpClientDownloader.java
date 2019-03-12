@@ -248,7 +248,9 @@ public class HttpClientDownloader extends AbstractDownloader {
 	        }
 	        return buffer.toString();
 		} finally {
-			instream.reset();
+			if(instream != null){
+				instream.reset();
+			}
 		}
         
     }
