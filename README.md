@@ -1,5 +1,6 @@
 ![ci](https://api.travis-ci.org/xtuhcy/gecco.svg?branch=master)
 ![maven](https://img.shields.io/maven-central/v/com.geccocrawler/gecco.svg?style=flat-square)
+[![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
 
 ## What is Gecco
 Gecco is a easy to use lightweight web crawler developed with java language.Gecco integriert jsoup, httpclient, fastjson, spring, htmlunit, redission ausgezeichneten framework,Let you only need to configure a number of jQuery style selector can be very quick to write a crawler.Gecco framework has excellent scalability, the framework based on the principle of open and close design, to modify the closure, the expansion of open.At the same time Gecco is based on a very open MIT open source protocol, whether you are a user or want to jointly improve the Gecco developer, welcome to request pull.If you like the crawler framework,please [star or fork](https://github.com/xtuhcy/gecco)!
