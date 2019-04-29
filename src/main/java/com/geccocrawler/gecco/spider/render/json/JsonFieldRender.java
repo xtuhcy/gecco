@@ -104,7 +104,7 @@ public class JsonFieldRender implements FieldRender {
 	@SuppressWarnings({ "rawtypes" })
 	private List<SpiderBean> spiderBeanListRender(Object src, Class genericClass, HttpRequest request) {
 		List<SpiderBean> list = new ArrayList<SpiderBean>();
-		JSONArray ja = (JSONArray) src;
+		Iterable ja = (Iterable) src;
 		for (Object jo : ja) {
 			if(jo != null) {
 				SpiderBean subBean = this.spiderBeanRender(jo, genericClass, request);
