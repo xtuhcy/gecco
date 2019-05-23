@@ -13,7 +13,7 @@ public class DynamicGecco {
 	}
 	
 	public static JavassistDynamicBean html() {
-		return new JavassistDynamicBean("com.geccocrawler.gecco.dynamic.HtlmBean"+RandomStringUtils.randomAlphabetic(6)+System.nanoTime(), JavassistDynamicBean.HtmlBean);
+		return new JavassistDynamicBean("com.geccocrawler.gecco.dynamic.HtmlBean"+RandomStringUtils.randomAlphabetic(6)+System.nanoTime(), JavassistDynamicBean.HtmlBean);
 	}
 	
 	public static JavassistDynamicBean json() {
