@@ -12,6 +12,7 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.net.ssl.SSLContext;
 
@@ -248,7 +249,7 @@ public class HttpClientDownloader extends AbstractDownloader {
 	        }
 	        return buffer.toString();
 		} finally {
-			instream.reset();
+			Objects.requireNonNull(instream).reset();
 		}
         
     }
