@@ -111,9 +111,9 @@ public class MyGithub implements HtmlBean {
 		GeccoEngine.create()
 		.classpath("com.geccocrawler.gecco.demo")
 		//开始抓取的页面地址
-		.start("https://github.com/xtuhcy/gecco")
-		.start("https://github.com/xtuhcy/gecco-spring")
-		//开启几个爬虫线程,线程数量最好不要大于start request数量
+		.seed("https://github.com/xtuhcy/gecco")
+		.seed("https://github.com/xtuhcy/gecco-spring")
+		//开启几个爬虫线程,线程数量最好不要大于seed request数量
 		.thread(2)
 		//单个爬虫每次抓取完一个请求后的间隔时间
 		.interval(2000)
