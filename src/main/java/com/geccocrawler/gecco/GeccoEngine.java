@@ -124,25 +124,52 @@ public class GeccoEngine<V> extends Thread implements Callable<V> {
 		return ge;
 	}
 
+	@Deprecated
 	public GeccoEngine start(String url) {
-		return start(new HttpGetRequest(url));
+		return seed(new HttpGetRequest(url));
 	}
 
+	@Deprecated
 	public GeccoEngine start(String... urls) {
 		for (String url : urls) {
-			start(url);
+			seed(url);
 		}
 		return this;
 	}
 
+	@Deprecated
 	public GeccoEngine start(HttpRequest request) {
 		this.startRequests.add(request);
 		return this;
 	}
 
+	@Deprecated
 	public GeccoEngine start(List<HttpRequest> requests) {
 		for (HttpRequest request : requests) {
-			start(request);
+			seed(request);
+		}
+		return this;
+	}
+
+	public GeccoEngine seed(String url) {
+		return seed(new HttpGetRequest(url));
+	}
+
+	public GeccoEngine seed(String... urls) {
+		for (String url : urls) {
+			seed(url);
+		}
+		return this;
+	}
+
+	public GeccoEngine seed(HttpRequest request) {
+		this.startRequests.add(request);
+		return this;
+	}
+
+	public GeccoEngine seed(List<HttpRequest> requests) {
+		for (HttpRequest request : requests) {
+			seed(request);
 		}
 		return this;
 	}
