@@ -14,7 +14,7 @@ import org.reflections.Reflections;
  */
 public abstract class DownloaderFactory {
 	
-	public static final String DEFAULT_DWONLODER = "httpClientDownloader";
+	public static final String DEFAULT_DOWNLOADER = "httpClientDownloader";
 	
 	private Map<String, Downloader> downloaders;
 	
@@ -45,7 +45,7 @@ public abstract class DownloaderFactory {
 	}
 	
 	public Downloader defaultDownloader() {
-		return downloaders.get(DEFAULT_DWONLODER);
+		return downloaders.get(DEFAULT_DOWNLOADER);
 	}
 
 	protected abstract Object createDownloader(Class<?> downloaderClass) throws Exception;
