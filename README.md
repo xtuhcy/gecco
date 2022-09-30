@@ -8,8 +8,6 @@ Gecco is a easy to use lightweight web crawler developed with java language.Gecc
 
 - [中文说明](https://github.com/xtuhcy/gecco/blob/master/README_CN.md)
 
-- [中文参考手册](http://www.geccocrawler.com/)
-
 ## Main features
 
 - [x] Easy to use, use jQuery style selector to extract elements
