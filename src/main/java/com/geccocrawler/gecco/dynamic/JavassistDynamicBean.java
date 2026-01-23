@@ -100,7 +100,7 @@ public class JavassistDynamicBean implements DynamicBean {
 
 	@Override
 	public JavassistDynamicBean gecco(String matchUrl, String downloader, int timeout, String... pipelines) {
-		gecco(new String[]{matchUrl}, "", 3000, pipelines);
+		gecco(new String[]{matchUrl}, downloader, timeout, pipelines);
 		return this;
 	}
 

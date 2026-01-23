@@ -406,6 +406,7 @@ public class GeccoEngine<V> extends Thread implements Callable<V> {
 			} catch (InterruptedException e) {
 				log.error(e);
 			}
+			shutdownNoLoopScheduler();
 			if (spiderBeanFactory != null) {
 				spiderBeanFactory.getDownloaderFactory().closeAll();
 			}
@@ -479,6 +480,7 @@ public class GeccoEngine<V> extends Thread implements Callable<V> {
 				spider.stop();
 			}
 		}
+		shutdownNoLoopScheduler();
 		if (eventListener != null) {
 			eventListener.onStop(this);
 		}
@@ -493,6 +495,11 @@ public class GeccoEngine<V> extends Thread implements Callable<V> {
 		return this;
 	}
 
+	private void shutdownNoLoopScheduler() {
+		if (!loop && scheduler instanceof NoLoopStartScheduler) {
+			((NoLoopStartScheduler) scheduler).shutdown();
+		}
+	}
 
 	@Override
 	public V call() throws Exception {

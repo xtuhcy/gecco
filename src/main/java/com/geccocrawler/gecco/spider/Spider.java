@@ -77,9 +77,19 @@ public class Spider implements Runnable {
 				//startScheduler
 				request = engine.getScheduler().out();
 				if(request == null) {
-					//告知engine线程执行结束
-					engine.notifyComplete();
-					break;
+					if (engine.isLoop()) {
+						//循环模式下空队列意味着真正结束
+						engine.notifyComplete();
+						break;
+					}
+					// 非循环模式等待首个请求或调度器关闭
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+						break;
+					}
+					continue;
 				}
 				start = true;
 			}
